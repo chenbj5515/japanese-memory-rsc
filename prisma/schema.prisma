@@ -1,0 +1,26 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = "postgresql://postgres:shinniti@localhost:5432/postgres"
+}
+
+model memo_card {
+  id              String   @id @default(uuid())
+  translation     String
+  create_time     DateTime @default(now())
+  update_time     DateTime @updatedAt
+  record_file_path String?  // nullable
+  original_text   String?  // nullable
+  review_times    Int      @default(0)
+  user_id         String   @default("chenbj")
+  kana_pronunciation String? // nullable
+}
