@@ -26,11 +26,24 @@
 //   );
 // }
 
-export default async function Home() {
+import { signOut, auth } from "@/auth"
+import { redirect } from "next/navigation"
+
+export default async function LogoutButton() {
+  const session = await auth()
+
+  if (!session) {
+    redirect("/api/auth/signin")
+  }
 
   return (
-    <div>
-      <h1>Memo Cards</h1>
-    </div>
-  );
+    <form action={async () => {
+      "use server"
+      await signOut({
+        redirectTo: "/"
+      })
+    }}>
+      <button>Sign out</button>
+    </form>
+  )
 }

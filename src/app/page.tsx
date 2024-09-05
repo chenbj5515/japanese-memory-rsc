@@ -1,26 +1,14 @@
-"use client"
-// import { useCookies } from "react-cookie";
+import { auth } from "@/auth"
+import { redirect } from "next/navigation"
 
-// export default function App() {
-//   const [cookies] = useCookies(["user_id"]);
-//     if (!cookies.user_id) {
-//       window.location.href = "/welcome"
-//     }
-//     else {
-//       window.location.href = "/home"
-//     }
-//   return null;
-// }
+export default async function RootPage() {
+  const session = await auth()
 
-// export const dynamic = "force-dynamic";
-
-import { signIn } from "next-auth/react";
-
-export default function SignIn() {
-  return (
-    <div>
-      <h1>Sign In</h1>
-      <button onClick={() => signIn('github')}>Sign in with GitHub</button>
-    </div>
-  );
+  if (session) {
+    // 用户已登录，重定向到 /home
+    redirect("/home")
+  } else {
+    // 用户未登录，重定向到登录页面
+    redirect("/api/auth/signin")
+  }
 }
