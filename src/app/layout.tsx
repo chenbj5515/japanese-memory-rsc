@@ -14,7 +14,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const [theme, setTheme] = React.useState("light");
-  const [cookies] = useCookies(["user_id"]);
   const pathname = usePathname();
 
   async function handleLastestClick() {
@@ -115,3 +114,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+export const dynamic = "force-dynamic";
