@@ -4,6 +4,7 @@ import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
 
 const handler = NextAuth({
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     // GitHub 登录配置
     GithubProvider({
