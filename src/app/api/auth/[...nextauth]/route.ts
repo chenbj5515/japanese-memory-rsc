@@ -3,6 +3,8 @@ import GithubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 import EmailProvider from "next-auth/providers/email";
 
+console.log(process.env.NEXTAUTH_SECRET, "process.env.NEXTAUTH_SECRET==========")
+
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
