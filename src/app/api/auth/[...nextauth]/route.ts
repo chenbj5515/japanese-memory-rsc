@@ -7,6 +7,12 @@ console.log(process.env.NEXTAUTH_SECRET, "process.env.NEXTAUTH_SECRET=========="
 
 const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: 'jwt',  // 使用 JWT 而不是 session 存储
+  },
+  jwt: {
+    secret: process.env.NEXTAUTH_SECRET,  // 确保 JWT 使用同一个 secret
+  },
   providers: [
     // GitHub 登录配置
     GithubProvider({
