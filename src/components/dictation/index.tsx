@@ -1,6 +1,7 @@
 import React from "react";
 // import { gql, useMutation } from "@apollo/client";
 import diff_match_patch from "diff-match-patch";
+import { trpc } from '@/trpc/client'
 
 interface IProps {
   originalText: string;
@@ -29,65 +30,62 @@ export function Dictation(props: IProps) {
   const { originalText, cardID, onBlurChange } = props;
   const dictationRef = React.useRef<HTMLDivElement>(null);
   const [diffResult, setDiffResult] = React.useState<any>([]);
+  // 入力内容
   const inputContentRef = React.useRef("");
   const dictationCheckInputRef = React.useRef<HTMLInputElement>(null);
-  const firstRender = React.useRef(true);
-//   const [updateCardRecordPath] = useMutation(UPDATE_REVIEW_TIMES);
-  const [isFocused, setIsFocused] = React.useState(false);
+  //   const [updateCardRecordPath] = useMutation(UPDATE_REVIEW_TIMES);
+  const [showUserInput, setShowUserInput] = React.useState(true);
+  const incrementReviewTimes = trpc.incrementReviewTimes.useMutation();
 
   function handleDictationChange() {
     inputContentRef.current = dictationRef.current?.textContent || "";
   }
 
-  React.useEffect(() => {
-    onBlurChange?.(isFocused ? "focus" : "blur")
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
-    if (isFocused) {
-      if (dictationRef.current) {
-        dictationRef.current.textContent = inputContentRef.current;
-      }
-    } else {
-      // @ts-ignore
-      const dmp = new diff_match_patch();
-      const diff = dmp.diff_main(
-        originalText,
-        dictationRef.current?.textContent || ""
-      );
-      console.log(diff, "diff=======")
-      setDiffResult(diff);
-      // 默写正确
-      if (diff.length === 1 && diff[0][0] === 0) {
-        // 但是目前没有被打对号，需要标记为正确
-        if (!dictationCheckInputRef.current?.checked) {
-          dictationCheckInputRef.current?.click();
-        //   updateCardRecordPath({
-        //     variables: {
-        //       cardID
-        //     }
-        //   })
-        }
-      }
-      // 默写错误
-      else {
-        // 但是现在已经被打了对号，需要把标记清空
-        if (dictationCheckInputRef.current?.checked) {
-          dictationCheckInputRef.current?.click();
-        }
-      }
-      if (dictationRef.current) {
-        dictationRef.current.textContent = "";
+  async function handleInputBlur() {
+    // @ts-ignore
+    const dmp = new diff_match_patch();
+    const diff = dmp.diff_main(
+      originalText,
+      dictationRef.current?.textContent || ""
+    );
+    console.log(diff, "diff=======")
+    setDiffResult(diff);
+    // 默写正确
+    if (diff.length === 1 && diff[0][0] === 0) {
+      // 但是目前没有被打对号，需要标记为正确
+      if (!dictationCheckInputRef.current?.checked) {
+        dictationCheckInputRef.current?.click();
+        const updatedRecord = await incrementReviewTimes.mutateAsync(cardID);
       }
     }
-  }, [isFocused]);
+    // 默写错误
+    else {
+      // 但是现在已经被打了对号，需要把标记清空
+      if (dictationCheckInputRef.current?.checked) {
+        dictationCheckInputRef.current?.click();
+      }
+    }
+    if (dictationRef.current) {
+      dictationRef.current.textContent = "";
+    }
+    onBlurChange?.("blur")
+    setShowUserInput(false);
+  }
 
-  function handleClick() {
-    setIsFocused(true);
+  function handleDiffResultClick() {
+    setShowUserInput(true);
     setTimeout(() => {
-      dictationRef.current?.focus();
-    });
+      if (dictationRef.current) {
+        dictationRef.current.focus();
+      }
+    })
+  }
+
+  function handleFocus() {
+    if (dictationRef.current) {
+      dictationRef.current.textContent = inputContentRef.current;
+    }
+    onBlurChange?.("focus")
   }
 
   return (
@@ -115,41 +113,44 @@ export function Dictation(props: IProps) {
           请在下面默写原文
         </div>
       </div>
-      <div className="relative">
+      <div className="relative h-[52px]">
         <div
           ref={dictationRef}
-          className={`${
-            !isFocused && diffResult.length ? "hidden" : ""
-          } dictation-input dark:bg-bgDark dark:shadow-none w-full mt-4 text-[15px]`}
+          className="absolute dictation-input dark:bg-bgDark dark:shadow-none w-full mt-4 text-[15px]"
+          style={{ visibility: showUserInput ? "visible" : "hidden" }}
           contentEditable
-        //   placeholder="在这里默写原文"
           onInput={handleDictationChange}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
+          onFocus={handleFocus}
+          onBlur={handleInputBlur}
         />
-        {isFocused ? null : diffResult.length ? (
-          <div
-            className="dictation-input dark:bg-bgDark dark:shadow-none w-full mt-[16px] text-[15px]"
-            onClick={handleClick}
-          >
-            <div className="w-full left-0 text-[15px] placeholder pointer-events-none">
-              {diffResult.map(([result, text]: [number, string], i: number) => (
-                <span
-                  key={i}
-                  className={`${
-                    result === -1
-                      ? "text-wrong w-full break-words"
-                      : result === 1
-                      ? "text-correct w-full break-words"
-                      : ""
+        <div
+          className="absolute dictation-input dark:bg-bgDark dark:shadow-none w-full mt-[16px] text-[15px]"
+          style={{ visibility: showUserInput ? "hidden" : "visible" }}
+          onClick={handleDiffResultClick}
+        >
+          <div className="w-full left-0 text-[15px] placeholder pointer-events-none">
+            {diffResult.map(([result, text]: [number, string], i: number) => (
+              <span
+                key={i}
+                className={`${result === -1
+                  ? "text-wrong w-full break-words"
+                  : result === 1
+                    ? "text-correct w-full break-words"
+                    : ""
                   }`}
-                >
-                  {text}
-                </span>
-              ))}
-            </div>
+              >
+                {text}
+              </span>
+            ))}
           </div>
-        ) : null}
+        </div >
+
+        {/* {isFocused ? null : diffResult.length ? (
+          
+        ) : null} */}
+      </div >
+      <div>
+
       </div>
     </>
   );

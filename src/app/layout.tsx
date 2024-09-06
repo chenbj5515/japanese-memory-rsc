@@ -3,6 +3,7 @@ import './globals.css';
 import { Inter } from "next/font/google";
 import LiveIsland from "react-live-island";
 import React from "react";
+import TrpcProvider from '@/trpc/provider'
 import { useCookies } from "react-cookie";
 import { usePathname } from 'next/navigation'; // 正确的导入方式
 
@@ -43,7 +44,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <main className="flex flex-col dark:bg-bgDark bg-[#fff] overflow-scroll">
+        <main className="flex flex-col dark:bg-bgDark bg-[#fff]">
           {pathname !== "/welcome" ? (
             <>
               <LiveIsland
@@ -94,7 +95,7 @@ export default function RootLayout({
                   )
                 }
               </LiveIsland>
-              <header className="w-[100vw] p-[12px] justify-end items-center top-0 flex">
+              <header className="p-[12px] justify-end items-center top-0 flex">
                 <label className="text-base relative inline-block w-[56px] h-[28px]">
                   <input
                     onChange={handleToggle}
@@ -108,7 +109,7 @@ export default function RootLayout({
               </header>
             </>
           ) : null}
-          {children}
+          {<TrpcProvider>{children}</TrpcProvider>}
         </main>
       </body>
     </html>
