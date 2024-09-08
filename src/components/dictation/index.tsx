@@ -1,30 +1,12 @@
 import React from "react";
-// import { gql, useMutation } from "@apollo/client";
 import diff_match_patch from "diff-match-patch";
 import { trpc } from '@/trpc/client'
 
 interface IProps {
   originalText: string;
   onBlurChange?: (state: string) => void;
-  // isFocused: boolean;
-  // setIsFocused: React.Dispatch<React.SetStateAction<boolean>>;
   cardID: string;
 }
-
-// const UPDATE_REVIEW_TIMES = gql`
-//   mutation UpdateMemoCard(
-//     $cardID: uuid!
-//   ) {
-//     update_memo_card(
-//       _inc: { review_times: 1 }
-//       where: { id: { _eq: $cardID } }
-//     ) {
-//       returning {
-//         review_times
-//       }
-//     }
-//   }
-// `;
 
 export function Dictation(props: IProps) {
   const { originalText, cardID, onBlurChange } = props;
