@@ -26,6 +26,7 @@
     "react-cookie": "^7.2.0",
     "react-dom": "^18",
     "react-live-island": "^0.10.0",
+    "remixicon": "^4.3.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

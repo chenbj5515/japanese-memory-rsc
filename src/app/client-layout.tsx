@@ -3,6 +3,7 @@ import React from "react";
 import { usePathname } from 'next/navigation';
 import LiveIsland from "react-live-island";
 import { useSession } from "next-auth/react";
+import "remixicon/fonts/remixicon.css";
 
 export default function ClientLayout({
     children,
@@ -12,7 +13,6 @@ export default function ClientLayout({
     const [theme, setTheme] = React.useState("light");
     const pathname = usePathname();
     const { data } = useSession();
-    console.log(data, "data==========")
 
     async function handleLastestClick() {
     }

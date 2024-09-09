@@ -7,7 +7,6 @@ import { prisma } from "@/prisma"
 
 export default async function Home() {
   const session = await auth()
-  console.log(session, "session============")
   if (!session?.userId) {
     redirect("/api/auth/signin")
   }
@@ -26,25 +25,29 @@ export default async function Home() {
     <>
       <div>
         {memoCards.map(({ translation, kana_pronunciation, original_text, record_file_path, create_time, id }) => (
-          <CardInHistory
-            key={id}
-            translation={translation}
-            kanaPronunciation={kana_pronunciation}
-            originalText={original_text}
-            recorderPath={record_file_path}
-            createTime={create_time.toString()}
-            cardID={id}
-          />
+          <div className="mb-[38px]" key={id}>
+            <CardInHistory
+              translation={translation}
+              kanaPronunciation={kana_pronunciation}
+              originalText={original_text}
+              recorderPath={record_file_path}
+              createTime={create_time.toString()}
+              cardID={id}
+            />
+          </div>
         ))}
       </div>
-      <form action={async () => {
+      {/* <div onClick={() => redirect("/latest")}>
+        refresh
+      </div> */}
+      {/* <form action={async () => {
         "use server"
         await signOut({
           redirectTo: "/"
         })
       }}>
         <button>Sign out</button>
-      </form>
+      </form> */}
     </>
   )
 }

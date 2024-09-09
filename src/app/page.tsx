@@ -6,7 +6,7 @@ export default async function RootPage() {
 
   if (session) {
     // 用户已登录，重定向到 /home
-    redirect("/home")
+    redirect("/latest")
   } else {
     // 用户未登录，重定向到登录页面
     redirect("/api/auth/signin")

@@ -3,7 +3,8 @@
  * @link https://trpc.io/docs/server/routers
  */
 import { initTRPC } from '@trpc/server'
-import { getSession } from 'next-auth/react';
+import { auth } from "@/auth"
+// import { getSession } from 'next-auth/react';
 
 const t = initTRPC.create()
 
@@ -29,8 +30,7 @@ export const createCallerFactory = t.createCallerFactory
 // 创建一个鉴权中间件
 const isAuthed = t.middleware(async ({ ctx, next }) => {
   // 从请求上下文中获取 session
-  const session = await getSession(ctx);
-
+  const session = await auth()
   // 如果用户没有登录，抛出错误
   if (!session) {
     throw new Error('Not authenticated');

@@ -4,44 +4,11 @@ import { useRecorder } from "./hooks";
 import { useCookies } from "react-cookie";
 import { getTimeAgo, speakText, callChatApi } from "@/utils";
 import { Dictation } from "@/components";
+import { trpc } from '@/trpc/client'
 
 interface IProps {
     originalText: string;
 }
-
-interface IState {
-    tanslation: string;
-    kana: string;
-    state: string;
-    id: string;
-}
-
-type Action =
-    | {
-        type: "updateTranslationStream";
-        tanslation: string;
-    }
-    | {
-        type: "updateState";
-        state: string;
-    }
-    | {
-        type: "updateKanaStream";
-        kana: string;
-    };
-
-const reducer = (state: IState, action: Action): IState => {
-    switch (action.type) {
-        case "updateTranslationStream":
-            return { ...state, tanslation: state.tanslation + action.tanslation };
-        case "updateKanaStream":
-            return { ...state, kana: state.kana + action.kana };
-        case "updateState":
-            return { ...state, state: action.state };
-        default:
-            return state;
-    }
-};
 
 export function CardInHome(props: IProps) {
     const [recorderPressed, setRecorderPressedState] = React.useState(false);
@@ -268,14 +235,15 @@ interface IHistoryCardProps {
 export function CardInHistory(props: IHistoryCardProps) {
     const [recorderPressed, setRecorderPressedState] = React.useState(false);
     const [recordPlayBtnPressed, setRecordPlayBtnPressed] = React.useState(false);
-    const { translation, kanaPronunciation, originalText, recorderPath, createTime, cardID, forwardRef } =
-        props;
+    const { translation, kanaPronunciation, originalText, recorderPath, createTime, cardID, forwardRef } = props;
     const audioRef = React.useRef<any>();
     const [recorderLoading, setRecordedLoading] = React.useState(false);
     const [isFocused, setIsFocused] = React.useState(false);
     const translationTextRef = React.useRef<any>(null);
     const kanaTextRef = React.useRef<any>(null);
     const cardRef = React.useRef(forwardRef);
+    const updateKanaPronunciation = trpc.updateKanaPronunciation.useMutation();
+    const updateTraslation = trpc.updateTraslation.useMutation();
     //   useShareCardID(forwardRef ?? cardRef, cardID);
 
     function handleBlurChange(type: string) {
@@ -329,35 +297,29 @@ export function CardInHistory(props: IHistoryCardProps) {
         audioRef.current?.play();
     }
 
-    function handleBlur() {
+    async function handleBlur() {
+        const updatedRecord = await updateTraslation.mutateAsync({
+            id: cardID,
+            translation: translationTextRef.current.textContent
+        });
     }
 
-    function handleKanaBlur() {
+    async function handleKanaBlur() {
+        const updatedRecord = await updateKanaPronunciation.mutateAsync({
+            id: cardID,
+            kana_pronunciation: kanaTextRef.current.textContent
+        });
     }
-
-    React.useEffect(() => {
-        const textEle = translationTextRef.current;
-        if (textEle) {
-            textEle.textContent = translation;
-        }
-    }, [translation]);
-
-    React.useEffect(() => {
-        const textEle = kanaTextRef.current;
-        if (textEle) {
-            textEle.textContent = kanaPronunciation;
-        }
-    }, [kanaPronunciation]);
 
     return (
         <div
             ref={forwardRef ?? cardRef}
-            className="card rounded-[20px] dark:bg-eleDark dark:text-white dark:shadow-dark-shadow p-5 width-92-675 mx-auto mt-10 relative"
+            className="card rounded-[20px] dark:bg-eleDark dark:text-white dark:shadow-dark-shadow p-5 width-92-675 mx-auto mt-10 relative leading-[1.9] tracking-[1.5px]"
         >
             <div className="text-[14px] absolute -top-[30px] left-1 text-[gray]">
                 {createTime ? getTimeAgo(createTime) : ""}
             </div>
-            {/* AI朗读播放按钮 */}
+            {/* 朗读播放按钮 */}
             <div
                 className="play-button-bg dark:bg-bgDark dark:shadow-none rounded-[50%] w-12 h-12 absolute top-2 right-2 cursor-pointer"
                 onClick={handlePlayBtn}
@@ -386,18 +348,26 @@ export function CardInHistory(props: IHistoryCardProps) {
                 ) : null}
                 原文：{originalText}
             </div>
-            中文翻译：<div
-                contentEditable
-                ref={translationTextRef}
-                onBlur={handleBlur}
-                className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
-            ></div>
-            读音标记：<div
-                contentEditable
-                ref={kanaTextRef}
-                onBlur={handleKanaBlur}
-                className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
-            ></div>
+            中文翻译：
+                <div
+                    suppressContentEditableWarning
+                    contentEditable
+                    ref={translationTextRef}
+                    onBlur={handleBlur}
+                    className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
+                >
+                    {translation}
+                </div>
+            读音标记：
+                <div
+                    suppressContentEditableWarning
+                    contentEditable
+                    ref={kanaTextRef}
+                    onBlur={handleKanaBlur}
+                    className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
+                >
+                    {kanaPronunciation}
+                </div>
             <div className="flex justify-center mt-3 relative cursor-pointer">
                 {/* 录音按钮 */}
                 <div className="toggle w-[40px] h-[40px] mr-[30px]">

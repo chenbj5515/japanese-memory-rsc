@@ -11,27 +11,35 @@ interface IProps {
 export function Dictation(props: IProps) {
   const { originalText, cardID, onBlurChange } = props;
   const dictationRef = React.useRef<HTMLDivElement>(null);
-  const [diffResult, setDiffResult] = React.useState<any>([]);
   // 入力内容
   const inputContentRef = React.useRef("");
   const dictationCheckInputRef = React.useRef<HTMLInputElement>(null);
-  //   const [updateCardRecordPath] = useMutation(UPDATE_REVIEW_TIMES);
-  const [showUserInput, setShowUserInput] = React.useState(true);
   const incrementReviewTimes = trpc.incrementReviewTimes.useMutation();
 
   function handleDictationChange() {
     inputContentRef.current = dictationRef.current?.textContent || "";
   }
 
-  async function handleInputBlur() {
+  async function handleBlur() {
     // @ts-ignore
     const dmp = new diff_match_patch();
     const diff = dmp.diff_main(
       originalText,
       dictationRef.current?.textContent || ""
     );
-    console.log(diff, "diff=======")
-    setDiffResult(diff);
+    console.log(diff, "diff=============")
+    const htmlString = diff.map(([result, text]) => {
+      return `<span class="${
+        result === -1
+          ? "text-wrong w-full break-words pointer-events-none"
+          : result === 0
+          ? "text-correct w-full break-words pointer-events-none"
+          : ""
+      }">${text}</span>`;
+    }).join("");
+    if (dictationRef.current) {
+      dictationRef.current.innerHTML = htmlString;
+    }
     // 默写正确
     if (diff.length === 1 && diff[0][0] === 0) {
       // 但是目前没有被打对号，需要标记为正确
@@ -47,20 +55,7 @@ export function Dictation(props: IProps) {
         dictationCheckInputRef.current?.click();
       }
     }
-    if (dictationRef.current) {
-      dictationRef.current.textContent = "";
-    }
     onBlurChange?.("blur")
-    setShowUserInput(false);
-  }
-
-  function handleDiffResultClick() {
-    setShowUserInput(true);
-    setTimeout(() => {
-      if (dictationRef.current) {
-        dictationRef.current.focus();
-      }
-    })
   }
 
   function handleFocus() {
@@ -95,45 +90,15 @@ export function Dictation(props: IProps) {
           请在下面默写原文
         </div>
       </div>
-      <div className="relative h-[52px]">
-        <div
+      <div
+          suppressContentEditableWarning
           ref={dictationRef}
-          className="absolute dictation-input dark:bg-bgDark dark:shadow-none w-full mt-4 text-[15px]"
-          style={{ visibility: showUserInput ? "visible" : "hidden" }}
+          className="dictation-input dark:bg-bgDark dark:shadow-none w-full mt-4 text-[15px] min-h-[40px]"
           contentEditable
           onInput={handleDictationChange}
           onFocus={handleFocus}
-          onBlur={handleInputBlur}
+          onBlur={handleBlur}
         />
-        <div
-          className="absolute dictation-input dark:bg-bgDark dark:shadow-none w-full mt-[16px] text-[15px]"
-          style={{ visibility: showUserInput ? "hidden" : "visible" }}
-          onClick={handleDiffResultClick}
-        >
-          <div className="w-full left-0 text-[15px] placeholder pointer-events-none">
-            {diffResult.map(([result, text]: [number, string], i: number) => (
-              <span
-                key={i}
-                className={`${result === -1
-                  ? "text-wrong w-full break-words"
-                  : result === 1
-                    ? "text-correct w-full break-words"
-                    : ""
-                  }`}
-              >
-                {text}
-              </span>
-            ))}
-          </div>
-        </div >
-
-        {/* {isFocused ? null : diffResult.length ? (
-          
-        ) : null} */}
-      </div >
-      <div>
-
-      </div>
     </>
   );
 }

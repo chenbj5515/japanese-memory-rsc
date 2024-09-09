@@ -3,8 +3,8 @@ import { Inter } from "next/font/google";
 import TrpcProvider from '@/trpc/provider'
 import { SessionProvider } from "next-auth/react";
 import ClientLayout from "./client-layout";
-import './globals.css';
 import { auth } from "@/auth";
+import './globals.css';
 
 const inter = Inter({ subsets: ["latin"] });
 

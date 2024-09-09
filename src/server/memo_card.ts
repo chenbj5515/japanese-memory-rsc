@@ -1,13 +1,10 @@
+import { z } from 'zod'
 import { prisma } from "@/prisma"
 import { protectedProcedure } from './trpc'
 
 export const memoCardRouters = {
     incrementReviewTimes: protectedProcedure
-        .input((val: unknown) => {
-            // 验证输入为数字类型
-            if (typeof val === 'string') return val;
-            throw new Error('Invalid input');
-        })
+        .input(z.string())
         .mutation(async ({ input }) => {
             const updatedRecord = await prisma.memo_card.update({
                 where: { id: input }, // 使用输入的ID查找
@@ -18,5 +15,31 @@ export const memoCardRouters = {
                 },
             });
             return updatedRecord;
+        }),
+    updateKanaPronunciation: protectedProcedure
+        .input(z.object({
+            id: z.string(),  // 假设 id 是字符串类型
+            kana_pronunciation: z.string(),
+        }))
+        .mutation(async ({ input }) => {
+            const { id, kana_pronunciation } = input;
+            const updatedCard = await prisma.memo_card.update({
+                where: { id },
+                data: { kana_pronunciation },
+            });
+            return updatedCard;
+        }),
+    updateTraslation: protectedProcedure
+        .input(z.object({
+            id: z.string(),  // 假设 id 是字符串类型
+            translation: z.string(),
+        }))
+        .mutation(async ({ input }) => {
+            const { id, translation } = input;
+            const updatedCard = await prisma.memo_card.update({
+                where: { id },
+                data: { translation },
+            });
+            return updatedCard;
         }),
 }
