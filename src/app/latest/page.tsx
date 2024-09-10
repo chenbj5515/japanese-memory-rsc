@@ -4,6 +4,7 @@ import { signOut, auth } from "@/auth"
 import { MemoCard } from "@/components"
 import { prisma } from "@/prisma"
 import { InputBox } from "@/components";
+import { LocalCards } from "./local-cards";
 // import { createCaller } from '@/server'
 
 export default async function Home() {
@@ -31,6 +32,7 @@ export default async function Home() {
           </div>
         ))}
       </div>
+      <LocalCards />
       <div className="fixed z-[12] width-80-680 left-[50%] -translate-x-1/2 bottom-2 h-[50px] w-[100%]">
         <InputBox />
       </div>

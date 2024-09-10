@@ -1,21 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { Prisma } from '@prisma/client';
 
-export interface ILoaclCard {
-  key: number;
-  originalText: string,
-}
-
 export const localCardsSlice = createSlice({
   name: "localCards",
   initialState: {
-    localCards: [] as ILoaclCard[],
+    localCards: [] as Prisma.memo_cardGetPayload<{}>[],
   },
   reducers: {
     addCard: (state, action) => {
       state.localCards.push({
-        key: new Date().getTime(),
-        originalText: action.payload.originalText
+        ...action.payload
       })
     },
   },

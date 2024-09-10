@@ -23,10 +23,9 @@ export function InputBox() {
       const pronunciation = await askAI(originalText, "对我给出的日文，给出假名形式的读音标记");
       const record = await insertMemoCard(originalText, translation, pronunciation);
       dispatch(
-        addCard({
-          originalText,
-        })
+        addCard(JSON.parse(record))
       );
+      console.log(JSON.parse(record), "record========")
       if (editableRef.current) {
         editableRef.current.textContent = "";
         forUpdate();
