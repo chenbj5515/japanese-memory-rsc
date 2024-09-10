@@ -1,9 +1,9 @@
 import React from "react";
 import { Inter } from "next/font/google";
-import TrpcProvider from '@/trpc/provider'
 import { SessionProvider } from "next-auth/react";
-import ClientLayout from "./client-layout";
+import TrpcProvider from '@/trpc/provider';
 import { auth } from "@/auth";
+import ClientLayout from "./client-layout";
 import './globals.css';
 
 const inter = Inter({ subsets: ["latin"] });
@@ -21,7 +21,7 @@ export default async function RootLayout({
         <main className="flex flex-col dark:bg-bgDark bg-[#fff]">
           <TrpcProvider>
             <SessionProvider session={session}>
-              <ClientLayout children={children} />
+                <ClientLayout children={children} />
             </SessionProvider>
           </TrpcProvider>
         </main>

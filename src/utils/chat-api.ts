@@ -36,3 +36,19 @@ export function callChatApi(content: string, {
     onerror,
   });
 }
+
+export function fetchChatApi(content: string, prompt: string) {
+  return fetch(apiUrl, {
+    method: 'POST',
+    headers,
+    body: JSON.stringify({
+      model: 'gpt-3.5-turbo-0125', // 使用指定的模型
+      messages: [
+        { role: "system", content: prompt || defaultPrompt },
+        { role: "user", content },
+      ],
+      max_tokens: 100, // 控制输出的长度
+      temperature: 0.7, // 控制生成内容的创意性
+    }),
+  })
+}

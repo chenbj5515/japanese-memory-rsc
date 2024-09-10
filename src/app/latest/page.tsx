@@ -1,8 +1,9 @@
 import React from "react"
 import { redirect } from "next/navigation"
 import { signOut, auth } from "@/auth"
-import { CardInHistory, Loading } from "@/components"
+import { MemoCard } from "@/components"
 import { prisma } from "@/prisma"
+import { InputBox } from "@/components";
 // import { createCaller } from '@/server'
 
 export default async function Home() {
@@ -20,26 +21,19 @@ export default async function Home() {
     },
     take: 20,  // 获取最新的20条数据
   });
-  
+
   return (
     <>
-      <div>
-        {memoCards.map(({ translation, kana_pronunciation, original_text, record_file_path, create_time, id }) => (
-          <div className="mb-[38px]" key={id}>
-            <CardInHistory
-              translation={translation}
-              kanaPronunciation={kana_pronunciation}
-              originalText={original_text}
-              recorderPath={record_file_path}
-              createTime={create_time.toString()}
-              cardID={id}
-            />
+      <div className="pb-[50px]">
+        {memoCards.map(memoCard => (
+          <div className="mb-[48px]" key={memoCard.id}>
+            <MemoCard {...memoCard} />
           </div>
         ))}
       </div>
-      {/* <div onClick={() => redirect("/latest")}>
-        refresh
-      </div> */}
+      <div className="fixed z-[12] width-80-680 left-[50%] -translate-x-1/2 bottom-2 h-[50px] w-[100%]">
+        <InputBox />
+      </div>
       {/* <form action={async () => {
         "use server"
         await signOut({
