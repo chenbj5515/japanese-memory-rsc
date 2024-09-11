@@ -10,6 +10,7 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^0.0.58",
     "@microsoft/fetch-event-source": "^2.0.1",
     "@prisma/client": "^5.19.1",
     "@reduxjs/toolkit": "^2.2.7",
@@ -18,11 +19,13 @@
     "@trpc/next": "^11.0.0-rc.498",
     "@trpc/react-query": "^11.0.0-rc.498",
     "@trpc/server": "^11.0.0-rc.498",
+    "ai": "^3.3.32",
     "diff-match-patch": "^1.0.5",
     "microsoft-cognitiveservices-speech-sdk": "^1.40.0",
     "multer": "^1.4.5-lts.1",
     "next": "14.2.7",
     "next-auth": "^5.0.0-beta.20",
+    "openai": "^4.58.2",
     "react": "^18",
     "react-cookie": "^7.2.0",
     "react-dom": "^18",

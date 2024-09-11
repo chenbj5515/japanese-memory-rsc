@@ -1,11 +1,12 @@
 "use client"
-import { useRef, useReducer } from "react";
+import React, { useRef, useReducer } from "react";
 import { useDispatch } from "react-redux";
+import { fetchEventSource } from "@microsoft/fetch-event-source";
+import { useChat } from 'ai/react';
 import { addCard } from "@/store/local-cards-slice";
-import { insertPlainTextAtCursor } from "@/utils";
+import { insertPlainTextAtCursor, callChatApi } from "@/utils";
 import { useForceUpdate } from "@/hooks";
 import { allowSendStatereducer } from "./reducers";
-import { askAI, insertMemoCard } from "./server-actions";
 
 export function InputBox() {
   const editableRef = useRef<any>();
@@ -19,13 +20,15 @@ export function InputBox() {
 
   async function handleSendBtnClick(originalText: string) {
     try {
-      const translation = await askAI(originalText, "对我给出的日文，给出中文翻译");
-      const pronunciation = await askAI(originalText, "对我给出的日文，给出假名形式的读音标记");
-      const record = await insertMemoCard(originalText, translation, pronunciation);
+      
+      // 使用正则表达式提取出所有符合「0:"信息"」的内容
+
+      // const translation = await askAI(originalText, "对我给出的日文，给出中文翻译");
+      // const pronunciation = await askAI(originalText, "对我给出的日文，给出假名形式的读音标记");
+      // const record = await insertMemoCard(originalText, translation, pronunciation);
       dispatch(
-        addCard(JSON.parse(record))
+        addCard(originalText)
       );
-      console.log(JSON.parse(record), "record========")
       if (editableRef.current) {
         editableRef.current.textContent = "";
         forUpdate();
@@ -62,6 +65,7 @@ export function InputBox() {
 
   return (
     <>
+      sdsdsdsd
       <div
         ref={editableRef}
         onInput={handleInput}
@@ -88,6 +92,23 @@ export function InputBox() {
           ></path>
         </svg>
       </div>
+      {/* <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
+        {messages.map(m => (
+          <div key={m.id} className="whitespace-pre-wrap">
+            {m.role === 'user' ? 'User: ' : 'AI: '}
+            {m.content}
+          </div>
+        ))}
+
+        <form onSubmit={handleCustomSubmit}>
+          <input
+            className="dark:bg-bgDark dark:text-white dark:border-[1px] absolute input bg-[#fff] left-[50%] bottom-0 transhtmlForm -translate-x-1/2"
+            value={input}
+            placeholder="こちらで分からない日本語を入力してください"
+            onChange={handleInputChange}
+          />
+        </form>
+      </div> */}
     </>
   );
 }

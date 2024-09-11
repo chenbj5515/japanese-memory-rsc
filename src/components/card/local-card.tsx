@@ -2,12 +2,15 @@
 import React from "react";
 import { Prisma } from '@prisma/client';
 import { useRecorder } from "./hooks";
-import { getTimeAgo, speakText } from "@/utils";
-import { Dictation } from "@/components";
-import { trpc } from '@/trpc/client'
+import { getTimeAgo, speakText, callChatApi } from "@/utils";
+import { Dictation } from "@/components/dictation";
+import { trpc } from "@/trpc/client";
+import { ILoaclCard } from "@/store/local-cards-slice";
+import { insertMemoCard } from "./server-actions";
 
-export function MemoCard(props: Prisma.memo_cardGetPayload<{}>) {
-    const { translation, kana_pronunciation, original_text, record_file_path, create_time, id } = props;
+
+export function LocalCard(props: ILoaclCard) {
+    const { original_text } = props;
     const [recorderPressed, setRecorderPressedState] = React.useState(false);
     const [recordPlayBtnPressed, setRecordPlayBtnPressed] = React.useState(false);
     const audioRef = React.useRef<any>();
@@ -15,6 +18,9 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}>) {
     const [isFocused, setIsFocused] = React.useState(false);
     const translationTextRef = React.useRef<any>(null);
     const kanaTextRef = React.useRef<any>(null);
+
+    const [translation, setTranslation] = React.useState("");
+    const [kanaPronunciation, setKanaPronunciation] = React.useState("");
     // const cardRef = React.useRef(forwardRef);
     const updateKanaPronunciation = trpc.updateKanaPronunciation.useMutation();
     const updateTraslation = trpc.updateTraslation.useMutation();
@@ -24,30 +30,69 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}>) {
         setIsFocused(type === "blur" ? false : true);
     }
 
-    const { mediaRecorderRef } = useRecorder({
-        async onEnd(recordedChunks) {
-            setRecordedLoading(true);
-            const audioBlob = new Blob(recordedChunks, { type: "audio/acc" });
-            const formData = new FormData();
-            const timeStamp = new Date().getTime();
-            const recordFileName = `${id}${timeStamp}.mp3`;
-            // const recordFileName = `${cardID}${timeStamp}.acc`;
-            formData.append("audio", audioBlob, recordFileName);
-            await fetch("/api/upload", {
-                method: "POST",
-                body: formData,
-            });
-            const audio = document.createElement("audio");
-            audio.src = `http://localhost:8080/uploads/${recordFileName}`;
-            // audio.src = `https://storage.googleapis.com/${process.env.NEXT_PUBLIC_GOOGLE_CLOUD_BUKET}/${cardID}${timeStamp}.acc`;
-            audioRef.current = audio;
-            setRecordedLoading(false);
-        },
-    });
+    async function handleAllDone() {
+        const record = await insertMemoCard(original_text, translationTextRef.current.textContent, kanaTextRef.current.textContent);
+        console.log(record, "record============")
+    }
+
+    React.useEffect(() => {
+        let translateDone = false, kanaDone = false;
+        callChatApi(original_text, {
+            onmessage: (res: string) => {
+                if (translationTextRef.current) {
+                    translationTextRef.current.textContent += res;
+                }
+            },
+            onerror: (e: any) => {
+            },
+            onclose: () => {
+                translateDone = true
+                if (translateDone && kanaDone) {
+                    handleAllDone();
+                }
+            },
+            prompt: '对我给出的日文，给出中文翻译。注意，不要说多余的废话，只给你觉得最有可能的翻译结果就行。'
+        })
+        callChatApi(original_text, {
+            onmessage: (res: string) => {
+                if (kanaTextRef.current) {
+                    kanaTextRef.current.textContent += res;
+                }
+            },
+            onerror: (e: any) => { },
+            onclose: () => {
+                kanaDone = true
+                if (translateDone && kanaDone) {
+                    handleAllDone();
+                }
+            },
+            prompt: '对我给出的日文，给出平假名的读音。注意，不要说多余的废话，只给平假名的读音就行。'
+        })
+    }, []);
+
+    // const { mediaRecorderRef } = useRecorder({
+    //     async onEnd(recordedChunks) {
+    //         setRecordedLoading(true);
+    //         const audioBlob = new Blob(recordedChunks, { type: "audio/acc" });
+    //         const formData = new FormData();
+    //         const timeStamp = new Date().getTime();
+    //         const recordFileName = `${id}${timeStamp}.mp3`;
+    //         formData.append("audio", audioBlob, recordFileName);
+    //         await fetch("/api/upload", {
+    //             method: "POST",
+    //             body: formData,
+    //         });
+    //         const audio = document.createElement("audio");
+    //         audio.src = `http://localhost:8080/uploads/${recordFileName}`;
+    //         // audio.src = `https://storage.googleapis.com/${process.env.NEXT_PUBLIC_GOOGLE_CLOUD_BUKET}/${cardID}${timeStamp}.acc`;
+    //         audioRef.current = audio;
+    //         setRecordedLoading(false);
+    //     },
+    // });
 
     React.useEffect(() => {
         const audio = document.createElement("audio");
-        audio.src = record_file_path || "";
+        // audio.src = record_file_path || "";
         audioRef.current = audio;
     }, []);
 
@@ -59,11 +104,11 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}>) {
 
     function handleRecordBtnClick() {
         setRecorderPressedState((prev) => !prev);
-        if (recorderPressed) {
-            mediaRecorderRef.current?.stop();
-        } else {
-            mediaRecorderRef.current?.start();
-        }
+        // if (recorderPressed) {
+        //     mediaRecorderRef.current?.stop();
+        // } else {
+        //     mediaRecorderRef.current?.start();
+        // }
     }
 
     function handleRecordPlayBtnClick() {
@@ -72,17 +117,17 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}>) {
     }
 
     async function handleBlur() {
-        const updatedRecord = await updateTraslation.mutateAsync({
-            id,
-            translation: translationTextRef.current.textContent
-        });
+        // const updatedRecord = await updateTraslation.mutateAsync({
+        //     id,
+        //     translation: translationTextRef.current.textContent
+        // });
     }
 
     async function handleKanaBlur() {
-        const updatedRecord = await updateKanaPronunciation.mutateAsync({
-            id,
-            kana_pronunciation: kanaTextRef.current.textContent
-        });
+        // const updatedRecord = await updateKanaPronunciation.mutateAsync({
+        //     id,
+        //     kana_pronunciation: kanaTextRef.current.textContent
+        // });
     }
 
     return (
@@ -91,7 +136,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}>) {
             className="card rounded-[20px] dark:bg-eleDark dark:text-white dark:shadow-dark-shadow p-5 width-92-675 mx-auto mt-10 relative leading-[1.9] tracking-[1.5px]"
         >
             <div className="text-[14px] absolute -top-[30px] left-1 text-[gray]">
-                {create_time ? getTimeAgo(create_time.toString()) : ""}
+                {/* {create_time ? getTimeAgo(create_time.toString()) : ""} */}
             </div>
             {/* 朗读播放按钮 */}
             <div
@@ -123,25 +168,25 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}>) {
                 原文：{original_text}
             </div>
             中文翻译：
-                <div
-                    suppressContentEditableWarning
-                    contentEditable
-                    ref={translationTextRef}
-                    onBlur={handleBlur}
-                    className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
-                >
-                    {translation}
-                </div>
+            <div
+                suppressContentEditableWarning
+                contentEditable
+                ref={translationTextRef}
+                onBlur={handleBlur}
+                className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
+            >
+                {/* {translation} */}
+            </div>
             读音标记：
-                <div
-                    suppressContentEditableWarning
-                    contentEditable
-                    ref={kanaTextRef}
-                    onBlur={handleKanaBlur}
-                    className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
-                >
-                    {kana_pronunciation}
-                </div>
+            <div
+                suppressContentEditableWarning
+                contentEditable
+                ref={kanaTextRef}
+                onBlur={handleKanaBlur}
+                className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
+            >
+                {/* {kanaPronunciation} */}
+            </div>
             <div className="flex justify-center mt-3 relative cursor-pointer">
                 {/* 录音按钮 */}
                 <div className="toggle w-[40px] h-[40px] mr-[30px]">
@@ -175,7 +220,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}>) {
                     )}
                 </div>
             </div>
-            <div className="relative flex flex-col mt-2">
+            {/* <div className="relative flex flex-col mt-2">
                 {
                     original_text ? (
                         <Dictation
@@ -185,7 +230,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}>) {
                         />
                     ) : null
                 }
-            </div>
+            </div> */}
         </div>
     );
 }

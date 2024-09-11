@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { Prisma } from '@prisma/client';
-import localCardsSlice from './local-cards-slice';
+import localCardsSlice, {ILoaclCard} from './local-cards-slice';
 
 export default configureStore({
   reducer: {
@@ -10,6 +10,6 @@ export default configureStore({
 
 export interface RootState {
   localCardsSlice: {
-    localCards: Prisma.memo_cardGetPayload<{}>[];
+    localCards: ILoaclCard[];
   };
 }

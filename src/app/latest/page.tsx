@@ -1,7 +1,7 @@
 import React from "react"
 import { redirect } from "next/navigation"
 import { signOut, auth } from "@/auth"
-import { MemoCard } from "@/components"
+import { MemoCard } from "@/components/card"
 import { prisma } from "@/prisma"
 import { InputBox } from "@/components";
 import { LocalCards } from "./local-cards";
@@ -25,14 +25,14 @@ export default async function Home() {
 
   return (
     <>
-      <div className="pb-[50px]">
+      <div className="pb-[86px]">
         {memoCards.map(memoCard => (
-          <div className="mb-[48px]" key={memoCard.id}>
+          <div key={memoCard.id}>
             <MemoCard {...memoCard} />
           </div>
         ))}
+        <LocalCards />
       </div>
-      <LocalCards />
       <div className="fixed z-[12] width-80-680 left-[50%] -translate-x-1/2 bottom-2 h-[50px] w-[100%]">
         <InputBox />
       </div>
