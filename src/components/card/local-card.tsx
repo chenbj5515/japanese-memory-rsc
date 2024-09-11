@@ -1,12 +1,15 @@
 "use client"
 import React from "react";
 import { Prisma } from '@prisma/client';
-import { useRecorder } from "./hooks";
+import { useDispatch } from "react-redux";
 import { getTimeAgo, speakText, callChatApi } from "@/utils";
 import { Dictation } from "@/components/dictation";
 import { trpc } from "@/trpc/client";
-import { ILoaclCard } from "@/store/local-cards-slice";
-import { insertMemoCard } from "./server-actions";
+import { ILoaclCard, deleteCard } from "@/store/local-cards-slice";
+import { useTripleClick } from "@/hooks";
+import { insertMemoCard, deleteMemoCard } from "./server-actions";
+import { useRecorder } from "./hooks";
+
 
 
 export function LocalCard(props: ILoaclCard) {
@@ -18,21 +21,22 @@ export function LocalCard(props: ILoaclCard) {
     const [isFocused, setIsFocused] = React.useState(false);
     const translationTextRef = React.useRef<any>(null);
     const kanaTextRef = React.useRef<any>(null);
+    const recordRef = React.useRef<any>(null);
+    const dispatch = useDispatch();
 
-    const [translation, setTranslation] = React.useState("");
-    const [kanaPronunciation, setKanaPronunciation] = React.useState("");
+    const ref = useTripleClick(async () => {
+        dispatch(
+            deleteCard(original_text)
+        );
+        await deleteMemoCard(recordRef.current.id);
+    })
+
     // const cardRef = React.useRef(forwardRef);
-    const updateKanaPronunciation = trpc.updateKanaPronunciation.useMutation();
-    const updateTraslation = trpc.updateTraslation.useMutation();
     //   useShareCardID(forwardRef ?? cardRef, cardID);
-
-    function handleBlurChange(type: string) {
-        setIsFocused(type === "blur" ? false : true);
-    }
 
     async function handleAllDone() {
         const record = await insertMemoCard(original_text, translationTextRef.current.textContent, kanaTextRef.current.textContent);
-        console.log(record, "record============")
+        recordRef.current = JSON.parse(record);
     }
 
     React.useEffect(() => {
@@ -132,7 +136,7 @@ export function LocalCard(props: ILoaclCard) {
 
     return (
         <div
-            // ref={forwardRef ?? cardRef}
+            ref={ref}
             className="card rounded-[20px] dark:bg-eleDark dark:text-white dark:shadow-dark-shadow p-5 width-92-675 mx-auto mt-10 relative leading-[1.9] tracking-[1.5px]"
         >
             <div className="text-[14px] absolute -top-[30px] left-1 text-[gray]">

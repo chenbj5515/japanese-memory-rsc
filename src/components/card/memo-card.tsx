@@ -1,23 +1,38 @@
 "use client"
 import React from "react";
 import { Prisma } from '@prisma/client';
-import { useRecorder } from "./hooks";
+import { useRouter } from "next/navigation";
 import { getTimeAgo, speakText } from "@/utils";
 import { Dictation } from "@/components/dictation";
 import { trpc } from '@/trpc/client'
+import { useTripleClick } from "@/hooks";
+import { deleteMemoCard } from "./server-actions";
+import { useRecorder } from "./hooks";
 
-export function MemoCard(props: Prisma.memo_cardGetPayload<{}>) {
-    const { translation, kana_pronunciation, original_text, record_file_path, create_time, id } = props;
+export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
+    setMemoCards: any
+}) {
+    const { translation, kana_pronunciation, original_text, record_file_path, create_time, id, setMemoCards } = props;
+    const router = useRouter();
+    console.log(setMemoCards, "setMemoCards====")
+
     const [recorderPressed, setRecorderPressedState] = React.useState(false);
     const [recordPlayBtnPressed, setRecordPlayBtnPressed] = React.useState(false);
     const audioRef = React.useRef<any>();
     const [recorderLoading, setRecordedLoading] = React.useState(false);
     const [isFocused, setIsFocused] = React.useState(false);
     const translationTextRef = React.useRef<any>(null);
+    const prevTranslationTextRef = React.useRef<any>(null);
     const kanaTextRef = React.useRef<any>(null);
+    const prevKanaTextRef = React.useRef<any>(null);
+    
     // const cardRef = React.useRef(forwardRef);
     const updateKanaPronunciation = trpc.updateKanaPronunciation.useMutation();
     const updateTraslation = trpc.updateTraslation.useMutation();
+    const ref = useTripleClick(async () => {
+        setMemoCards((prev: any) => prev.filter((card: any) => card.id !== id));
+        await deleteMemoCard(id);
+    })
     //   useShareCardID(forwardRef ?? cardRef, cardID);
 
     function handleBlurChange(type: string) {
@@ -71,23 +86,35 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}>) {
         audioRef.current?.play();
     }
 
+    function handleFocus() {
+        prevTranslationTextRef.current = translationTextRef.current.textContent;
+    }
+
     async function handleBlur() {
-        const updatedRecord = await updateTraslation.mutateAsync({
-            id,
-            translation: translationTextRef.current.textContent
-        });
+        if (translationTextRef.current.textContent !== prevTranslationTextRef.current) {
+            const updatedRecord = await updateTraslation.mutateAsync({
+                id,
+                translation: translationTextRef.current.textContent
+            });
+        }
+    }
+
+    function hanldeKanaFocus() {
+        prevKanaTextRef.current = kanaTextRef.current.textContent;
     }
 
     async function handleKanaBlur() {
-        const updatedRecord = await updateKanaPronunciation.mutateAsync({
-            id,
-            kana_pronunciation: kanaTextRef.current.textContent
-        });
+        if (kanaTextRef.current.textContent !== prevKanaTextRef.current) {
+            const updatedRecord = await updateKanaPronunciation.mutateAsync({
+                id,
+                kana_pronunciation: kanaTextRef.current.textContent
+            });
+        }
     }
 
     return (
         <div
-            // ref={forwardRef ?? cardRef}
+            ref={ref}
             className="card rounded-[20px] dark:bg-eleDark dark:text-white dark:shadow-dark-shadow p-5 width-92-675 mx-auto mt-10 relative leading-[1.9] tracking-[1.5px]"
         >
             <div className="text-[14px] absolute -top-[30px] left-1 text-[gray]">
@@ -128,6 +155,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}>) {
                     contentEditable
                     ref={translationTextRef}
                     onBlur={handleBlur}
+                    onFocus={handleFocus}
                     className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
                 >
                     {translation}
@@ -137,6 +165,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}>) {
                     suppressContentEditableWarning
                     contentEditable
                     ref={kanaTextRef}
+                    onFocus={hanldeKanaFocus}
                     onBlur={handleKanaBlur}
                     className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
                 >

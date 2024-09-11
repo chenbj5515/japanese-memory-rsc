@@ -1,8 +1,6 @@
 "use client"
 import React, { useRef, useReducer } from "react";
 import { useDispatch } from "react-redux";
-import { fetchEventSource } from "@microsoft/fetch-event-source";
-import { useChat } from 'ai/react';
 import { addCard } from "@/store/local-cards-slice";
 import { insertPlainTextAtCursor, callChatApi } from "@/utils";
 import { useForceUpdate } from "@/hooks";
@@ -21,11 +19,6 @@ export function InputBox() {
   async function handleSendBtnClick(originalText: string) {
     try {
       
-      // 使用正则表达式提取出所有符合「0:"信息"」的内容
-
-      // const translation = await askAI(originalText, "对我给出的日文，给出中文翻译");
-      // const pronunciation = await askAI(originalText, "对我给出的日文，给出假名形式的读音标记");
-      // const record = await insertMemoCard(originalText, translation, pronunciation);
       dispatch(
         addCard(originalText)
       );

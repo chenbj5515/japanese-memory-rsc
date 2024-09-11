@@ -16,9 +16,12 @@ export const localCardsSlice = createSlice({
         original_text: action.payload
       })
     },
+    deleteCard: (state, action) => {
+      state.localCards = state.localCards.filter(card => card.original_text !== action.payload)
+    },
   },
 });
 
-export const { addCard } = localCardsSlice.actions;
+export const { addCard, deleteCard } = localCardsSlice.actions;
 
 export default localCardsSlice.reducer;

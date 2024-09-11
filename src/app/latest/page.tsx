@@ -5,6 +5,7 @@ import { MemoCard } from "@/components/card"
 import { prisma } from "@/prisma"
 import { InputBox } from "@/components";
 import { LocalCards } from "./local-cards";
+import { MemoCards } from "./memo-cards";
 // import { createCaller } from '@/server'
 
 export default async function Home() {
@@ -26,11 +27,12 @@ export default async function Home() {
   return (
     <>
       <div className="pb-[86px]">
-        {memoCards.map(memoCard => (
+        {/* {memoCards.map(memoCard => (
           <div key={memoCard.id}>
             <MemoCard {...memoCard} />
           </div>
-        ))}
+        ))} */}
+        <MemoCards memoCardsInitial={memoCards} />
         <LocalCards />
       </div>
       <div className="fixed z-[12] width-80-680 left-[50%] -translate-x-1/2 bottom-2 h-[50px] w-[100%]">
