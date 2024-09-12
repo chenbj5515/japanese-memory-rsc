@@ -11,21 +11,23 @@ export function WordCards(props: any) {
 
     const [showGlass, setShowGlass] = React.useState(false);
 
+    const containerRef = React.useRef<any>();
+
     async function handleRecognizeClick(id: string) {
         await updateReviewTimes(id);
         setWordList(prev => prev.filter(item => item.id !== id));
     }
 
-    // React.useEffect(() => {
-    //     document.addEventListener("mouseup", (event) => {
-    //         const inContainer =
-    //             event.target === containerRef.current ||
-    //             containerRef.current?.contains(event.target as any);
-    //         if (inContainer === false) {
-    //             setShowGlass(false);
-    //         }
-    //     });
-    // }, []);
+    React.useEffect(() => {
+        document.addEventListener("mouseup", (event) => {
+            const inContainer =
+                event.target === containerRef.current ||
+                containerRef.current?.contains(event.target as any);
+            if (inContainer === false) {
+                setShowGlass(false);
+            }
+        });
+    }, []);
 
     function handleUnRecognizeClick(item: any) {
         setShowGlass(true);
@@ -41,8 +43,8 @@ export function WordCards(props: any) {
     return (
         <>
             {showGlass && cardInfo.id ? (
-                <div className="fixed w-full h-full glass overflow-scroll z-[10000]">
-                    <div className="absolute left-[50%] top-[50%] center">
+                <div className="fixed w-[100vw] h-[100vh] left-[0] top-[0] glass overflow-scroll z-[10000]">
+                    <div ref={containerRef} className="absolute w-[750px] left-[50%] top-[50%] center">
                         <MemoCard {...cardInfo} />
                     </div>
                 </div>
