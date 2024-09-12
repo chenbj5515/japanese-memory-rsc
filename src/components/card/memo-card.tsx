@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { getTimeAgo, speakText } from "@/utils";
 import { Dictation } from "@/components/dictation";
 import { trpc } from '@/trpc/client'
-import { useTripleClick } from "@/hooks";
+import { useLongPress } from "@/hooks";
 import { deleteMemoCard } from "./server-actions";
 import { useRecorder } from "./hooks";
 
@@ -13,9 +13,6 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     setMemoCards: any
 }) {
     const { translation, kana_pronunciation, original_text, record_file_path, create_time, id, setMemoCards } = props;
-    const router = useRouter();
-    console.log(setMemoCards, "setMemoCards====")
-
     const [recorderPressed, setRecorderPressedState] = React.useState(false);
     const [recordPlayBtnPressed, setRecordPlayBtnPressed] = React.useState(false);
     const audioRef = React.useRef<any>();
@@ -29,7 +26,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     // const cardRef = React.useRef(forwardRef);
     const updateKanaPronunciation = trpc.updateKanaPronunciation.useMutation();
     const updateTraslation = trpc.updateTraslation.useMutation();
-    const ref = useTripleClick(async () => {
+    const ref = useLongPress(async () => {
         setMemoCards((prev: any) => prev.filter((card: any) => card.id !== id));
         await deleteMemoCard(id);
     })

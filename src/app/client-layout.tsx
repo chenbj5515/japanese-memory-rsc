@@ -1,6 +1,7 @@
 "use client"
 import React from "react";
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
 import LiveIsland from "react-live-island";
 import { useSession } from "next-auth/react";
 import { Provider } from "react-redux";
@@ -15,12 +16,6 @@ export default function ClientLayout({
     const [theme, setTheme] = React.useState("light");
     const pathname = usePathname();
     const { data } = useSession();
-
-    async function handleLastestClick() {
-    }
-
-    async function handleRandomClick() {
-    }
 
     function handleWordCards() {
     }
@@ -53,27 +48,27 @@ export default function ClientLayout({
                         ""
                     ) : (
                         <div className="flex space-x-2 p-4">
-                            <div
+                            <Link
+                                href="/latest"
                                 className=" w-[72px] h-[72px] text-white text-center p-2 rounded-lg text-[12px] cursor-pointer"
-                                onClick={handleLastestClick}
                             >
                                 <div>latest</div>
                                 <div className="mt-2">20</div>
-                            </div>
-                            <div
+                            </Link>
+                            <Link
+                                href="/random"
                                 className=" w-[72px] h-[72px] text-white text-center p-2 rounded-lg text-[12px] cursor-pointer"
-                                onClick={handleRandomClick}
                             >
                                 <div>random</div>
                                 <div className="mt-2">20</div>
-                            </div>
-                            <div
+                            </Link>
+                            <Link
+                                href="/word-cards"
                                 className=" w-[72px] h-[72px] text-white text-center p-2 rounded-lg text-[12px] cursor-pointer"
-                                onClick={handleWordCards}
                             >
                                 <div>Word</div>
                                 <div className="mt-2">Cards</div>
-                            </div>
+                            </Link>
                             <div
                                 className=" w-[72px] h-[72px] text-white text-center p-2 rounded-lg text-[12px] cursor-pointer"
                                 onClick={handleTranslateCLick}

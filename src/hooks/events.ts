@@ -1,34 +1,34 @@
 import { useRef } from 'react';
 
-export function useTripleClick(callback: () => void, delay: number = 500) {
-  const clickCountRef = useRef(0);
+export function useLongPress(callback: () => void, delay: number = 2000) {
   const timerRef = useRef<number | null>(null);
   const elementRef = useRef<HTMLElement | null>(null);
 
-  const handleClick = () => {
-    clickCountRef.current += 1;
+  const handleMouseDown = () => {
+    // 开始长按，启动定时器
+    timerRef.current = window.setTimeout(() => {
+      callback();  // 触发长按事件
+      timerRef.current = null;  // 重置计时器
+    }, delay);
+  };
 
-    if (clickCountRef.current === 3) {
-      callback();  // 执行传入的回调函数
-      clickCountRef.current = 0;  // 重置点击计数
-      if (timerRef.current) {
-        clearTimeout(timerRef.current);
-      }
-    }
-
-    if (!timerRef.current) {
-      timerRef.current = window.setTimeout(() => {
-        clickCountRef.current = 0;
-        timerRef.current = null;
-      }, delay);  // 超过 delay 时间后重置点击计数
+  const handleMouseUp = () => {
+    // 松开按钮，取消定时器
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
+      timerRef.current = null;
     }
   };
 
   const setRef = (element: HTMLElement | null) => {
     if (element) {
-      element.addEventListener('click', handleClick);
+      element.addEventListener('mousedown', handleMouseDown);
+      element.addEventListener('mouseup', handleMouseUp);
+      element.addEventListener('mouseleave', handleMouseUp); // 处理鼠标移出元素的情况
     } else if (elementRef.current) {
-      elementRef.current.removeEventListener('click', handleClick);
+      elementRef.current.removeEventListener('mousedown', handleMouseDown);
+      elementRef.current.removeEventListener('mouseup', handleMouseUp);
+      elementRef.current.removeEventListener('mouseleave', handleMouseUp);
     }
     elementRef.current = element;
   };
@@ -36,4 +36,4 @@ export function useTripleClick(callback: () => void, delay: number = 500) {
   return setRef;
 }
 
-export default useTripleClick;
+export default useLongPress;

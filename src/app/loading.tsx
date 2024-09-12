@@ -1,4 +1,4 @@
-export function Loading() {
+export default function Loading() {
     return (
         <div className="wrapper-center">
             <div className="spinner-loading">

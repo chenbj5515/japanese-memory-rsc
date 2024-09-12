@@ -1,11 +1,8 @@
 import React from "react"
 import { redirect } from "next/navigation"
 import { signOut, auth } from "@/auth"
-import { MemoCard } from "@/components/card"
 import { prisma } from "@/prisma"
-import { InputBox } from "@/components";
-import { LocalCards } from "./local-cards";
-import { MemoCards } from "./memo-cards";
+import { MemoCards, LocalCards, InputBox } from "@/components";
 // import { createCaller } from '@/server'
 
 export default async function Home() {
@@ -27,11 +24,6 @@ export default async function Home() {
   return (
     <>
       <div className="pb-[86px]">
-        {/* {memoCards.map(memoCard => (
-          <div key={memoCard.id}>
-            <MemoCard {...memoCard} />
-          </div>
-        ))} */}
         <MemoCards memoCardsInitial={memoCards} />
         <LocalCards />
       </div>

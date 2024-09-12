@@ -1,24 +1,17 @@
 "use client"
-import React, { useRef, useReducer } from "react";
+import React, { useRef } from "react";
 import { useDispatch } from "react-redux";
 import { addCard } from "@/store/local-cards-slice";
-import { insertPlainTextAtCursor, callChatApi } from "@/utils";
+import { insertPlainTextAtCursor } from "@/utils";
 import { useForceUpdate } from "@/hooks";
-import { allowSendStatereducer } from "./reducers";
 
 export function InputBox() {
   const editableRef = useRef<any>();
-
-  const [{ allowSendFlg }, dispath] = useReducer(allowSendStatereducer, {
-    allowSendFlg: false,
-  });
-
   const forUpdate = useForceUpdate();
   const dispatch = useDispatch();
 
   async function handleSendBtnClick(originalText: string) {
     try {
-      
       dispatch(
         addCard(originalText)
       );
@@ -28,7 +21,6 @@ export function InputBox() {
       }
     }
     catch (e) {
-      console.log(e, "e==========")
     }
   }
 
@@ -39,29 +31,26 @@ export function InputBox() {
     forUpdate();
   };
 
-  function handleInput() {
-    dispath({ type: "input" });
-  }
-
   const handleKeyDown = (event: any) => {
     const content = editableRef.current.textContent;
+    if (!content) return;
 
     if (event.key === "Enter" && content) {
       event.preventDefault();
-      if (allowSendFlg) {
-        // handleSendBtnClick(content);
-      } else {
-        dispath({ type: "enterKeyDown" });
+      dispatch(
+        addCard(content)
+      );
+      if (editableRef.current) {
+        editableRef.current.textContent = "";
+        forUpdate();
       }
     }
   };
 
   return (
     <>
-      sdsdsdsd
       <div
         ref={editableRef}
-        onInput={handleInput}
         onPaste={handlePaste}
         onKeyDown={handleKeyDown}
         className="dark:bg-bgDark dark:text-white dark:border-[1px] absolute input bg-[#fff] left-[50%] bottom-0 transhtmlForm -translate-x-1/2"
@@ -85,23 +74,6 @@ export function InputBox() {
           ></path>
         </svg>
       </div>
-      {/* <div className="flex flex-col w-full max-w-md py-24 mx-auto stretch">
-        {messages.map(m => (
-          <div key={m.id} className="whitespace-pre-wrap">
-            {m.role === 'user' ? 'User: ' : 'AI: '}
-            {m.content}
-          </div>
-        ))}
-
-        <form onSubmit={handleCustomSubmit}>
-          <input
-            className="dark:bg-bgDark dark:text-white dark:border-[1px] absolute input bg-[#fff] left-[50%] bottom-0 transhtmlForm -translate-x-1/2"
-            value={input}
-            placeholder="こちらで分からない日本語を入力してください"
-            onChange={handleInputChange}
-          />
-        </form>
-      </div> */}
     </>
   );
 }

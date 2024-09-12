@@ -6,7 +6,7 @@ import { getTimeAgo, speakText, callChatApi } from "@/utils";
 import { Dictation } from "@/components/dictation";
 import { trpc } from "@/trpc/client";
 import { ILoaclCard, deleteCard } from "@/store/local-cards-slice";
-import { useTripleClick } from "@/hooks";
+import { useLongPress } from "@/hooks";
 import { insertMemoCard, deleteMemoCard } from "./server-actions";
 import { useRecorder } from "./hooks";
 
@@ -24,7 +24,7 @@ export function LocalCard(props: ILoaclCard) {
     const recordRef = React.useRef<any>(null);
     const dispatch = useDispatch();
 
-    const ref = useTripleClick(async () => {
+    const ref = useLongPress(async () => {
         dispatch(
             deleteCard(original_text)
         );

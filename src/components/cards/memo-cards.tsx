@@ -9,7 +9,6 @@ interface IProps {
 
 export function MemoCards(props: IProps) {
     const { memoCardsInitial } = props;
-    console.log(memoCardsInitial, "memoCardsInitial===")
     const [memoCards, setMemoCards] = React.useState(memoCardsInitial);
 
     return (
