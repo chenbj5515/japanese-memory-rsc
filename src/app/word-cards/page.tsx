@@ -2,8 +2,10 @@ import { prisma } from "@/prisma";
 import { WordCards } from "./word-cards";
 
 export default async function App() {
+    const count = await prisma.word_card.count();
+
     // 按照 update_time 获取最新的10条
-    const latestCards = await prisma.word_card.findMany({
+    const latestCardsPromise = prisma.word_card.findMany({
         orderBy: {
             create_time: 'desc',
         },
@@ -14,9 +16,8 @@ export default async function App() {
     });
 
     // 随机获取10条
-    const count = await prisma.word_card.count();
     const randomSkip = Math.max(0, Math.floor(Math.random() * (count - 10)));
-    const randomCards = await prisma.word_card.findMany({
+    const randomCardsPromise = prisma.word_card.findMany({
         skip: randomSkip,
         take: 10,
         include: {
@@ -24,7 +25,9 @@ export default async function App() {
         },
     });
 
-    const wordCards = latestCards.concat(randomCards);
+    const results = await Promise.all([latestCardsPromise, randomCardsPromise])
+
+    const wordCards = results.flat(Infinity);
 
     return (
         <div className="pl-5 pb-10 pr-5">

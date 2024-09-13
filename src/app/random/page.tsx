@@ -3,7 +3,7 @@ import React from "react"
 import { redirect } from "next/navigation"
 import { auth } from "@/auth"
 import { prisma } from "@/prisma"
-import { MemoCards, LocalCards, InputBox } from "@/components";
+import { MemoCards, LocalCards, InputBox, WordCardAdder } from "@/components";
 // import { createCaller } from '@/server'
 
 export default async function Home() {
@@ -33,6 +33,7 @@ export default async function Home() {
             <div className="fixed z-[12] width-80-680 left-[50%] -translate-x-1/2 bottom-2 h-[50px] w-[100%]">
                 <InputBox />
             </div>
+            <WordCardAdder />
         </>
     )
 }

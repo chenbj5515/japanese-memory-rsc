@@ -31,9 +31,6 @@ export function LocalCard(props: ILoaclCard) {
         await deleteMemoCard(recordRef.current.id);
     })
 
-    // const cardRef = React.useRef(forwardRef);
-    //   useShareCardID(forwardRef ?? cardRef, cardID);
-
     async function handleAllDone() {
         const record = await insertMemoCard(original_text, translationTextRef.current.textContent, kanaTextRef.current.textContent);
         recordRef.current = JSON.parse(record);

@@ -1,7 +1,8 @@
 "use client"
 import React from "react";
 import { Prisma } from '@prisma/client';
-import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { setCardId } from "@/store/card-id-slice";
 import { getTimeAgo, speakText } from "@/utils";
 import { Dictation } from "@/components/dictation";
 import { trpc } from '@/trpc/client'
@@ -22,15 +23,14 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     const prevTranslationTextRef = React.useRef<any>(null);
     const kanaTextRef = React.useRef<any>(null);
     const prevKanaTextRef = React.useRef<any>(null);
-    
-    // const cardRef = React.useRef(forwardRef);
+    const dispatch = useDispatch();
+
     const updateKanaPronunciation = trpc.updateKanaPronunciation.useMutation();
     const updateTraslation = trpc.updateTraslation.useMutation();
-    const ref = useLongPress(async () => {
+    const cardRef = useLongPress(async () => {
         setMemoCards((prev: any) => prev.filter((card: any) => card.id !== id));
         await deleteMemoCard(id);
     })
-    //   useShareCardID(forwardRef ?? cardRef, cardID);
 
     function handleBlurChange(type: string) {
         setIsFocused(type === "blur" ? false : true);
@@ -61,6 +61,14 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
         const audio = document.createElement("audio");
         audio.src = record_file_path || "";
         audioRef.current = audio;
+        
+        if (cardRef.current) {
+            cardRef.current.addEventListener("mouseup", () => {
+                dispatch(
+                    setCardId(id)
+                )
+            });
+        }
     }, []);
 
     function handlePlayBtn() {
@@ -111,7 +119,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
 
     return (
         <div
-            ref={ref}
+            ref={cardRef}
             className="card rounded-[20px] dark:bg-eleDark dark:text-white dark:shadow-dark-shadow p-5 width-92-675 mx-auto mt-10 relative leading-[1.9] tracking-[1.5px]"
         >
             <div className="text-[14px] absolute -top-[30px] left-1 text-[gray]">
@@ -147,27 +155,27 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
                 原文：{original_text}
             </div>
             中文翻译：
-                <div
-                    suppressContentEditableWarning
-                    contentEditable
-                    ref={translationTextRef}
-                    onBlur={handleBlur}
-                    onFocus={handleFocus}
-                    className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
-                >
-                    {translation}
-                </div>
+            <div
+                suppressContentEditableWarning
+                contentEditable
+                ref={translationTextRef}
+                onBlur={handleBlur}
+                onFocus={handleFocus}
+                className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
+            >
+                {translation}
+            </div>
             读音标记：
-                <div
-                    suppressContentEditableWarning
-                    contentEditable
-                    ref={kanaTextRef}
-                    onFocus={hanldeKanaFocus}
-                    onBlur={handleKanaBlur}
-                    className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
-                >
-                    {kana_pronunciation}
-                </div>
+            <div
+                suppressContentEditableWarning
+                contentEditable
+                ref={kanaTextRef}
+                onFocus={hanldeKanaFocus}
+                onBlur={handleKanaBlur}
+                className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
+            >
+                {kana_pronunciation}
+            </div>
             <div className="flex justify-center mt-3 relative cursor-pointer">
                 {/* 录音按钮 */}
                 <div className="toggle w-[40px] h-[40px] mr-[30px]">

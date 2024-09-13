@@ -1,8 +1,8 @@
-import { useRef } from 'react';
+import { useRef, useEffect } from 'react';
 
 export function useLongPress(callback: () => void, delay: number = 2000) {
   const timerRef = useRef<number | null>(null);
-  const elementRef = useRef<HTMLElement | null>(null);
+  const elementRef = useRef<any>(null);
 
   const handleMouseDown = () => {
     // 开始长按，启动定时器
@@ -20,20 +20,35 @@ export function useLongPress(callback: () => void, delay: number = 2000) {
     }
   };
 
-  const setRef = (element: HTMLElement | null) => {
-    if (element) {
-      element.addEventListener('mousedown', handleMouseDown);
-      element.addEventListener('mouseup', handleMouseUp);
-      element.addEventListener('mouseleave', handleMouseUp); // 处理鼠标移出元素的情况
-    } else if (elementRef.current) {
-      elementRef.current.removeEventListener('mousedown', handleMouseDown);
-      elementRef.current.removeEventListener('mouseup', handleMouseUp);
-      elementRef.current.removeEventListener('mouseleave', handleMouseUp);
+  // const setRef = (element: HTMLElement | null) => {
+  //   if (element) {
+  //     element.addEventListener('mousedown', handleMouseDown);
+  //     element.addEventListener('mouseup', handleMouseUp);
+  //     element.addEventListener('mouseleave', handleMouseUp); // 处理鼠标移出元素的情况
+  //   } else if (elementRef.current) {
+  //     elementRef.current.removeEventListener('mousedown', handleMouseDown);
+  //     elementRef.current.removeEventListener('mouseup', handleMouseUp);
+  //     elementRef.current.removeEventListener('mouseleave', handleMouseUp);
+  //   }
+  //   elementRef.current = element;
+  // };
+  
+  useEffect(() => {
+    if (elementRef.current) {
+      elementRef.current.addEventListener('mousedown', handleMouseDown);
+      elementRef.current.addEventListener('mouseup', handleMouseUp);
+      elementRef.current.addEventListener('mouseleave', handleMouseUp);
     }
-    elementRef.current = element;
-  };
+    return () => {
+      if (elementRef.current) {
+        elementRef.current.removeEventListener('mousedown', handleMouseDown);
+        elementRef.current.removeEventListener('mouseup', handleMouseUp);
+        elementRef.current.removeEventListener('mouseleave', handleMouseUp);
+      }
+    }
+  }, [])
 
-  return setRef;
+  return elementRef;
 }
 
 export default useLongPress;

@@ -69,12 +69,12 @@ export default function ClientLayout({
                                 <div>Word</div>
                                 <div className="mt-2">Cards</div>
                             </Link>
-                            <div
+                            <Link
+                                href="/translations"
                                 className=" w-[72px] h-[72px] text-white text-center p-2 rounded-lg text-[12px] cursor-pointer"
-                                onClick={handleTranslateCLick}
                             >
                                 <div>translate</div>
-                            </div>
+                            </Link>
                             <div
                                 className=" w-[72px] h-[72px] text-white text-center p-2 rounded-lg text-[12px] cursor-pointer"
                                 onClick={handleArticleCLick}
