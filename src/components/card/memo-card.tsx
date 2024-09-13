@@ -5,9 +5,8 @@ import { useDispatch } from "react-redux";
 import { setCardId } from "@/store/card-id-slice";
 import { getTimeAgo, speakText } from "@/utils";
 import { Dictation } from "@/components/dictation";
-import { trpc } from '@/trpc/client'
 import { useLongPress } from "@/hooks";
-import { deleteMemoCard } from "./server-actions";
+import { deleteMemoCard, updateMemoCardTranslation, updatePronunciation } from "./server-actions";
 import { useRecorder } from "./hooks";
 
 export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
@@ -25,8 +24,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     const prevKanaTextRef = React.useRef<any>(null);
     const dispatch = useDispatch();
 
-    const updateKanaPronunciation = trpc.updateKanaPronunciation.useMutation();
-    const updateTraslation = trpc.updateTraslation.useMutation();
+    // const updateKanaPronunciation = trpc.updateKanaPronunciation.useMutation();
     const cardRef = useLongPress(async () => {
         setMemoCards((prev: any) => prev.filter((card: any) => card.id !== id));
         await deleteMemoCard(id);
@@ -97,10 +95,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
 
     async function handleBlur() {
         if (translationTextRef.current.textContent !== prevTranslationTextRef.current) {
-            const updatedRecord = await updateTraslation.mutateAsync({
-                id,
-                translation: translationTextRef.current.textContent
-            });
+            updateMemoCardTranslation(id, translationTextRef.current.textContent)
         }
     }
 
@@ -110,10 +105,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
 
     async function handleKanaBlur() {
         if (kanaTextRef.current.textContent !== prevKanaTextRef.current) {
-            const updatedRecord = await updateKanaPronunciation.mutateAsync({
-                id,
-                kana_pronunciation: kanaTextRef.current.textContent
-            });
+            updatePronunciation(id, kanaTextRef.current.textContent)
         }
     }
 

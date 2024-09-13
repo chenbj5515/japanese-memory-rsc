@@ -1,6 +1,5 @@
 "use client"
 import React from "react";
-import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import LiveIsland from "react-live-island";
 import { useSession } from "next-auth/react";
@@ -14,11 +13,7 @@ export default function ClientLayout({
     children: React.ReactNode;
 }>) {
     const [theme, setTheme] = React.useState("light");
-    const pathname = usePathname();
     const { data } = useSession();
-
-    function handleWordCards() {
-    }
 
     function handleToggle() {
         if (theme === "dark") {
@@ -27,9 +22,6 @@ export default function ClientLayout({
             setTheme("dark");
         }
         document.body.classList.toggle("dark");
-    }
-
-    function handleTranslateCLick() {
     }
 
     function handleArticleCLick() {

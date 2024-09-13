@@ -1,6 +1,6 @@
 import React from "react";
 import diff_match_patch from "diff-match-patch";
-import { trpc } from '@/trpc/client'
+import { updateReviewTimes } from "./server-actions";
 
 interface IProps {
   originalText: string;
@@ -14,7 +14,6 @@ export function Dictation(props: IProps) {
   // 入力内容
   const inputContentRef = React.useRef("");
   const dictationCheckInputRef = React.useRef<HTMLInputElement>(null);
-  const incrementReviewTimes = trpc.incrementReviewTimes.useMutation();
 
   function handleDictationChange() {
     inputContentRef.current = dictationRef.current?.textContent || "";
@@ -45,7 +44,7 @@ export function Dictation(props: IProps) {
       // 但是目前没有被打对号，需要标记为正确
       if (!dictationCheckInputRef.current?.checked) {
         dictationCheckInputRef.current?.click();
-        const updatedRecord = await incrementReviewTimes.mutateAsync(cardID);
+        updateReviewTimes(cardID);
       }
     }
     // 默写错误

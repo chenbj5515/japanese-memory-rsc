@@ -4,7 +4,6 @@ import { Prisma } from '@prisma/client';
 import { useDispatch } from "react-redux";
 import { getTimeAgo, speakText, callChatApi } from "@/utils";
 import { Dictation } from "@/components/dictation";
-import { trpc } from "@/trpc/client";
 import { ILoaclCard, deleteCard } from "@/store/local-cards-slice";
 import { useLongPress } from "@/hooks";
 import { insertMemoCard, deleteMemoCard } from "./server-actions";
