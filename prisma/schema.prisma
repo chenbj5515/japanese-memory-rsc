@@ -17,7 +17,7 @@ model memo_card {
   review_times       Int?        @default(0)
   user_id            String      @default("chenbj")
   kana_pronunciation String?
-  word_card          word_card[]
+  word_card          word_card[] @relation("MemoToWord")
 }
 
 model articles {
@@ -47,5 +47,5 @@ model word_card {
   user_id      String
   review_times Int       @default(0)
   memo_card_id String    @db.Uuid
-  memo_card    memo_card @relation(fields: [memo_card_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_memo_card")
+  memo_card    memo_card @relation("MemoToWord", fields: [memo_card_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_memo_card")
 }

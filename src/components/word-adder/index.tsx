@@ -1,36 +1,46 @@
 "use client"
 import React from "react";
+import { readStreamableValue } from 'ai/rsc';
 import { useSelector, TypedUseSelectorHook } from "react-redux";
-import { callChatApi } from "@/utils";
-import { useRefState, useForceUpdate } from "@/hooks";
+import { useRefState } from "@/hooks";
 import { RootState } from "@/store";
+import { askAI } from "@/server-actions";
 import { insertWordCard } from "./server-actions";
 
 const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 export function WordCardAdder() {
-    const [selectedText, setSelectedText] = useRefState<string>("");
+    const [selectedTextRef, setSelectedText] = useRefState<string>("");
     const [{ left, top }, setPosition] = React.useState({
         left: 0,
         top: 0,
     });
-    const forceUpdate = useForceUpdate();
     const meaningTextRef = React.useRef<HTMLDivElement>(null);
     const containerRef = React.useRef<HTMLDivElement>(null);
     const { cardId } = useTypedSelector((state: RootState) => state.cardIdSlice);
 
-    function handleSelectEvent() {
+    async function handleSelectEvent() {
         const selection = document.getSelection();
         if (selection && selection.rangeCount > 0) {
             const selectedText = selection.toString().trim();
             const range = selection.getRangeAt(0);
             const rect = range.getBoundingClientRect();
             if (selectedText.length) {
-                setSelectedText(selectedText);
+                selectedTextRef.current = selectedText;
                 setPosition({
                     left: rect.right,
                     top: rect.bottom,
                 });
+                try {
+                    const { output } = await askAI(`这是一个日语单词或者短语：${selectedText}，注意不要说多余的废话，只需要按照这个格式输出：意味：这个单词或者短语的翻译结果`);
+                    for await (const delta of readStreamableValue(output)) {
+                        if (meaningTextRef.current && delta) {
+                            meaningTextRef.current.textContent += delta;
+                        }
+                    }
+                }
+                catch (e) {
+                }
             }
         }
     }
@@ -40,11 +50,10 @@ export function WordCardAdder() {
             const inContainer =
                 event.target === containerRef.current
                 || containerRef.current?.contains(event.target);
-            if (selectedText.current && inContainer === false) {
+            if (selectedTextRef.current && inContainer === false) {
                 setSelectedText("");
             }
         }
-
     }
 
     React.useEffect(() => {
@@ -54,43 +63,21 @@ export function WordCardAdder() {
         });
     }, []);
 
-    React.useEffect(() => {
-        if (meaningTextRef.current) {
-            meaningTextRef.current.textContent = "意味：";
-        }
-        if (selectedText.current.length) {
-            callChatApi(selectedText.current, {
-                onmessage(res: string) {
-                    if (meaningTextRef.current) {
-                        meaningTextRef.current.textContent += res;
-                    }
-                },
-                async onclose() {
-                    if (meaningTextRef.current) {
-                        forceUpdate();
-                    }
-                },
-                onerror() { },
-                prompt:
-                    "我会给你输入一个日文单词或者短语，请给出它的中文翻译结果。格式要求是仅输出翻译结果",
-            });
-        }
-    }, [selectedText.current]);
-
     function handleAddWord() {
         if (meaningTextRef.current?.textContent) {
-            insertWordCard(selectedText.current, meaningTextRef.current.textContent, cardId);
+            insertWordCard(selectedTextRef.current, meaningTextRef.current.textContent, cardId);
             setSelectedText("");
         }
+        window.getSelection()?.removeAllRanges();
     }
 
-    return selectedText.current ? (
+    return selectedTextRef.current ? (
         <div
             ref={containerRef}
             className="card max-w-[240px] z-[15] rounded-[6px] text-[15px] dark:bg-eleDark dark:text-white dark:shadow-dark-shadow p-3 mx-auto fixed"
             style={{ top, left }}
         >
-            <div>单词・短语：{selectedText.current}</div>
+            <div>单词・短语：{selectedTextRef.current}</div>
             <div
                 contentEditable
                 ref={meaningTextRef}

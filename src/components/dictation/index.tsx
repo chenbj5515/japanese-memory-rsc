@@ -36,19 +36,22 @@ export function Dictation(props: IProps) {
           : ""
       }">${text}</span>`;
     }).join("");
-    if (dictationRef.current) {
-      dictationRef.current.innerHTML = htmlString;
-    }
     // 默写正确
     if (diff.length === 1 && diff[0][0] === 0) {
       // 但是目前没有被打对号，需要标记为正确
       if (!dictationCheckInputRef.current?.checked) {
         dictationCheckInputRef.current?.click();
         updateReviewTimes(cardID);
+        if (dictationRef.current) {
+          dictationRef.current.innerHTML = originalText;
+        }
       }
     }
     // 默写错误
     else {
+      if (dictationRef.current) {
+        dictationRef.current.innerHTML = htmlString;
+      }
       // 但是现在已经被打了对号，需要把标记清空
       if (dictationCheckInputRef.current?.checked) {
         dictationCheckInputRef.current?.click();

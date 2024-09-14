@@ -37,9 +37,6 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     }
 
     React.useEffect(() => {
-        // const audio = document.createElement("audio");
-        // audioRef.current = audio;
-
         if (cardRef.current) {
             cardRef.current.addEventListener("mouseup", () => {
                 dispatch(

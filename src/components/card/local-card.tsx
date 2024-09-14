@@ -1,12 +1,14 @@
 "use client"
 import React from "react";
 import { useDispatch } from "react-redux";
-import { speakText, callChatApi } from "@/utils";
+import { Prisma } from "@prisma/client";
+import { speakText } from "@/utils";
 import { Dictation } from "@/components/dictation";
 import { ILoaclCard, deleteCard } from "@/store/local-cards-slice";
-import { useLongPress, useForceUpdate, useAudioRecorder } from "@/hooks";
+import { setCardId } from "@/store/card-id-slice";
+import { useRefState, useLongPress, useAudioRecorder } from "@/hooks";
 import { insertMemoCard, deleteMemoCard, updateMemoCardTranslation, updatePronunciation } from "./server-actions";
-import { Prisma } from "@prisma/client";
+import { useAIGenerate } from "./hooks";
 
 export function LocalCard(props: ILoaclCard) {
     const { original_text } = props;
@@ -21,8 +23,11 @@ export function LocalCard(props: ILoaclCard) {
     const kanaTextRef = React.useRef<HTMLDivElement>(null);
     const prevKanaTextRef = React.useRef<string>("");
 
-    const [cardInfo, setCardInfo] = React.useState<Prisma.memo_cardGetPayload<{}> | null>(null);
+    const [cardInfoRef, setCardInfo] = useRefState<Prisma.memo_cardGetPayload<{}> | null>(null);
     const dispatch = useDispatch();
+
+    let translateDoneRef = React.useRef(false)
+    let kanaDoneRef = React.useRef(false);
 
     const { startRecording, stopRecording, playRecording } = useAudioRecorder();
 
@@ -30,10 +35,33 @@ export function LocalCard(props: ILoaclCard) {
         dispatch(
             deleteCard(original_text)
         );
-        if (cardInfo?.id) {
-            await deleteMemoCard(cardInfo.id);
+        if (cardInfoRef.current?.id) {
+            await deleteMemoCard(cardInfoRef.current.id);
         }
     })
+
+    useAIGenerate({
+        prompt: `这是我的原文：${original_text}，给出它的中文翻译。注意，不要说多余的废话，只给你觉得最有可能的翻译结果就行。`,
+        onmessage: handleTranslationUpdate,
+        onclose: handleTranslationDone
+    })
+
+    useAIGenerate({
+        prompt: `这是我的原文：${original_text}，给出它的平假名的读音。注意，不要说多余的废话，只给平假名的读音就行。`,
+        onmessage: handleKanaUpdate,
+        onclose: handleKanaDone
+    })
+
+    React.useEffect(() => {
+        if (ref.current) {
+            ref.current.addEventListener("mouseup", () => {
+                dispatch(
+                    setCardId(cardInfoRef.current?.id)
+                )
+                console.log("setCardId", cardInfoRef.current?.id)
+            });
+        }
+    }, []);
 
     async function handleAllDone() {
         if (translationTextRef.current?.textContent && kanaTextRef.current?.textContent) {
@@ -46,39 +74,31 @@ export function LocalCard(props: ILoaclCard) {
         setIsFocused(type === "blur" ? false : true);
     }
 
-    React.useEffect(() => {
-        let translateDone = false, kanaDone = false;
-        callChatApi(original_text, {
-            onmessage: (res: string) => {
-                if (translationTextRef.current) {
-                    translationTextRef.current.textContent += res;
-                }
-            },
-            onerror: () => {},
-            onclose: () => {
-                translateDone = true
-                if (translateDone && kanaDone) {
-                    handleAllDone();
-                }
-            },
-            prompt: '对我给出的日文，给出中文翻译。注意，不要说多余的废话，只给你觉得最有可能的翻译结果就行。'
-        })
-        callChatApi(original_text, {
-            onmessage: (res: string) => {
-                if (kanaTextRef.current) {
-                    kanaTextRef.current.textContent += res;
-                }
-            },
-            onerror: () => { },
-            onclose: () => {
-                kanaDone = true
-                if (translateDone && kanaDone) {
-                    handleAllDone();
-                }
-            },
-            prompt: '对我给出的日文，给出平假名的读音。注意，不要说多余的废话，只给平假名的读音就行。'
-        })
-    }, []);
+    function handleTranslationUpdate(res: string) {
+        if (translationTextRef.current && translationTextRef.current?.textContent !== null) {
+            translationTextRef.current.textContent += res;
+        }
+    }
+
+    function handleTranslationDone() {
+        translateDoneRef.current = true;
+        if (translateDoneRef.current && kanaDoneRef.current) {
+            handleAllDone();
+        }
+    }
+
+    function handleKanaUpdate(res: string) {
+        if (kanaTextRef.current && kanaTextRef.current?.textContent !== null) {
+            kanaTextRef.current.textContent += res;
+        }
+    }
+
+    function handleKanaDone() {
+        kanaDoneRef.current = true;
+        if (translateDoneRef.current && kanaDoneRef.current) {
+            handleAllDone();
+        }
+    }
 
     function handlePlayBtn() {
         original_text && speakText(original_text, {
@@ -105,8 +125,8 @@ export function LocalCard(props: ILoaclCard) {
     }
 
     async function handleBlur() {
-        if (cardInfo?.id && translationTextRef.current?.textContent && translationTextRef.current?.textContent !== prevTranslationTextRef.current) {
-            updateMemoCardTranslation(cardInfo?.id, translationTextRef.current.textContent)
+        if (cardInfoRef.current?.id && translationTextRef.current?.textContent && translationTextRef.current?.textContent !== prevTranslationTextRef.current) {
+            updateMemoCardTranslation(cardInfoRef.current?.id, translationTextRef.current.textContent)
         }
     }
 
@@ -115,8 +135,8 @@ export function LocalCard(props: ILoaclCard) {
     }
 
     async function handleKanaBlur() {
-        if (cardInfo?.id && kanaTextRef.current?.textContent && kanaTextRef.current?.textContent !== prevKanaTextRef.current) {
-            updatePronunciation(cardInfo?.id, kanaTextRef.current.textContent)
+        if (cardInfoRef.current?.id && kanaTextRef.current?.textContent && kanaTextRef.current?.textContent !== prevKanaTextRef.current) {
+            updatePronunciation(cardInfoRef.current?.id, kanaTextRef.current.textContent)
         }
     }
 
@@ -203,10 +223,10 @@ export function LocalCard(props: ILoaclCard) {
             </div>
             <div className="relative flex flex-col mt-2">
                 {
-                    cardInfo?.id ? (
+                    cardInfoRef.current?.id ? (
                         <Dictation
                             originalText={original_text}
-                            cardID={cardInfo?.id}
+                            cardID={cardInfoRef.current?.id}
                             onBlurChange={handleBlurChange}
                         />
                     ) : null
