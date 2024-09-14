@@ -1,9 +1,8 @@
 export * from "./time";
 export * from "./speak-text";
 export * from "./chat-api";
-export * from "./array";
 
-export const insertPlainTextAtCursor = (plainText: any) => {
+export const insertPlainTextAtCursor = (plainText: string) => {
   const range = window.getSelection()?.getRangeAt(0);
   range?.deleteContents();
   const textNode = document.createTextNode(plainText);

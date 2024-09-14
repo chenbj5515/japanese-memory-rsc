@@ -6,7 +6,7 @@ import { insertPlainTextAtCursor } from "@/utils";
 import { useForceUpdate } from "@/hooks";
 
 export function InputBox() {
-  const editableRef = useRef<any>();
+  const editableRef = useRef<HTMLDivElement>(null);
   const forUpdate = useForceUpdate();
   const dispatch = useDispatch();
 
@@ -24,15 +24,15 @@ export function InputBox() {
     }
   }
 
-  const handlePaste = (event: any) => {
+  const handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
     event.preventDefault();
     const plainText = event.clipboardData.getData("text/plain");
     insertPlainTextAtCursor(plainText);
     forUpdate();
   };
 
-  const handleKeyDown = (event: any) => {
-    const content = editableRef.current.textContent;
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    const content = editableRef.current?.textContent;
     if (!content) return;
 
     if (event.key === "Enter" && content) {
@@ -59,7 +59,7 @@ export function InputBox() {
       <div
         className={`w-[32px] h-[32px] ${editableRef.current?.textContent ? "bg-[#d329d3] hover:bg-dark" : ""
           } rounded-[0.375rem] absolute top-[50%] -translate-y-1/2 right-4`}
-        onClick={() => handleSendBtnClick(editableRef.current.textContent)}
+        onClick={() => handleSendBtnClick(editableRef.current?.textContent || "")}
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

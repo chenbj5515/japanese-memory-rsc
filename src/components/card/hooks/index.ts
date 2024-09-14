@@ -1,46 +1,61 @@
-import { useEffect, useRef } from "react";
+import { useState, useRef, useEffect } from 'react';
 
-interface IParams {
-  onEnd: (recordedChunks: BlobPart[]) => void;
-}
+function useAudioRecorder() {
+  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
+  const audioChunks = useRef<Blob[]>([]);
+  const audioURL = useRef<string | null>(null);
+  const audio = useRef<HTMLAudioElement | null>(null);
 
-// 录音的自定义Hook
-// 输入是一个onEnd函数，参数是录制的BlobPart数组，这个数组代表录音数据，在onEnd函数中可以进行上传等逻辑。
-// 输出是mediaRecorderRef，也就是录制的音频的MediaRecorder实例，这个实例可以用来触发开发录音和结束录音。
-export function useRecorder({ onEnd }: IParams) {
-  const mediaRecorderRef = useRef<MediaRecorder>();
+  const startRecording = async () => {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      console.error('您的浏览器不支持音频录制功能');
+      return;
+    }
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+
+      recorder.ondataavailable = (event: BlobEvent) => {
+        audioChunks.current.push(event.data);
+      };
+
+      recorder.onstop = () => {
+        const blob = new Blob(audioChunks.current, { type: 'audio/mp3' });
+        audioURL.current = window.URL.createObjectURL(blob);
+        audio.current = new Audio(audioURL.current!);
+        audioChunks.current = [];
+      };
+
+      recorder.start();
+      setMediaRecorder(recorder);
+    } catch (err) {
+      console.error('无法访问麦克风', err);
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorder) {
+      mediaRecorder.stop();
+      setMediaRecorder(null);
+    }
+  };
+
+  const playRecording = () => {
+    if (audio.current) {
+      audio.current.play();
+    }
+  };
 
   useEffect(() => {
-    let recordedChunks: BlobPart[] = [];
-    navigator.mediaDevices
-      .getUserMedia({ audio: true })
-      .then((stream) => {
-        let mediaRecorder = new MediaRecorder(stream);
-        mediaRecorderRef.current = mediaRecorder;
-        console.log("获取到录音权限")
-
-        mediaRecorder.addEventListener("dataavailable", (event: any) => {
-          if (event.data.size > 0) {
-            recordedChunks.push(event.data);
-          }
-        });
-
-        mediaRecorder.addEventListener("stop", async () => {
-          console.log(
-            "stop事件触发，执行回调，当前的recordedChunks为：",
-            recordedChunks
-          );
-          await onEnd(recordedChunks);
-          // 清空录音数据
-          recordedChunks = [];
-        });
-      })
-      .catch((error) => {
-        console.error("无法访问音频设备:", error);
-      });
+    return () => {
+      if (audioURL.current) {
+        window.URL.revokeObjectURL(audioURL.current);
+      }
+    };
   }, []);
 
-  return {
-    mediaRecorderRef,
-  };
+  return { startRecording, stopRecording, playRecording };
 }
+
+export default useAudioRecorder;

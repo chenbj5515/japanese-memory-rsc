@@ -5,12 +5,12 @@ export function useForceUpdate() {
     return () => setState(prev => !prev);
 }
 
-export function useRefState(intialState: any) {
+export function useRefState<T>(intialState: T) {
     const forceUpdate = useForceUpdate();
     const stateRef = React.useRef(intialState);
 
-    return [stateRef, (newState: any) => {
+    return [stateRef, (newState: T) => {
         stateRef.current = newState;
         forceUpdate();
-    }] as [React.MutableRefObject<any>, (newState: any) => void]
+    }] as [React.MutableRefObject<T>, (newState: T) => void]
 }

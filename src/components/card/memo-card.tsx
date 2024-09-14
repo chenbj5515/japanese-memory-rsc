@@ -9,26 +9,26 @@ import { useLongPress, useAudioRecorder } from "@/hooks";
 import { deleteMemoCard, updateMemoCardTranslation, updatePronunciation } from "./server-actions";
 
 export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
-    setMemoCards: any
+    onDelete?: (id: string) => void
 }) {
-    const { translation, kana_pronunciation, original_text, create_time, id, setMemoCards } = props;
+    const { translation, kana_pronunciation, original_text, create_time, id, onDelete } = props;
     
     const [recorderPressed, setRecorderPressedState] = React.useState(false);
     const [recordPlayBtnPressed, setRecordPlayBtnPressed] = React.useState(false);
 
     const [isFocused, setIsFocused] = React.useState(false);
 
-    const translationTextRef = React.useRef<any>(null);
-    const prevTranslationTextRef = React.useRef<any>(null);
-    const kanaTextRef = React.useRef<any>(null);
-    const prevKanaTextRef = React.useRef<any>(null);
+    const translationTextRef = React.useRef<HTMLDivElement>(null);
+    const prevTranslationTextRef = React.useRef<string>("");
+    const kanaTextRef = React.useRef<HTMLDivElement>(null);
+    const prevKanaTextRef = React.useRef<string>("");
 
     const dispatch = useDispatch();
 
     const { startRecording, stopRecording, playRecording } = useAudioRecorder();
 
     const cardRef = useLongPress(async () => {
-        setMemoCards((prev: any) => prev.filter((card: any) => card.id !== id));
+        onDelete?.(id);
         await deleteMemoCard(id);
     })
 
@@ -70,22 +70,22 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     }
 
     function handleFocus() {
-        prevTranslationTextRef.current = translationTextRef.current.textContent;
+        prevTranslationTextRef.current = translationTextRef.current?.textContent || "";
     }
 
     async function handleBlur() {
-        if (translationTextRef.current.textContent !== prevTranslationTextRef.current) {
-            updateMemoCardTranslation(id, translationTextRef.current.textContent)
+        if (translationTextRef.current?.textContent && translationTextRef.current?.textContent !== prevTranslationTextRef.current) {
+            updateMemoCardTranslation(id, translationTextRef.current?.textContent)
         }
     }
 
     function hanldeKanaFocus() {
-        prevKanaTextRef.current = kanaTextRef.current.textContent;
+        prevKanaTextRef.current = kanaTextRef.current?.textContent || "";
     }
 
     async function handleKanaBlur() {
-        if (kanaTextRef.current.textContent !== prevKanaTextRef.current) {
-            updatePronunciation(id, kanaTextRef.current.textContent)
+        if (kanaTextRef.current?.textContent && kanaTextRef.current?.textContent !== prevKanaTextRef.current) {
+            updatePronunciation(id, kanaTextRef.current?.textContent)
         }
     }
 

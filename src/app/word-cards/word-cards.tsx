@@ -1,17 +1,26 @@
 "use client"
 import React from "react";
 import { speakText } from "@/utils";
+import { Prisma } from '@prisma/client';
 import { MemoCard } from "@/components";
 import { updateReviewTimes } from "./server-actions";
 
-export function WordCards(props: any) {
-    const [wordList, setWordList] = React.useState<any[]>(props.wordCards);
+type IWordCard = Prisma.word_cardGetPayload<{}> & {
+    memo_card: Prisma.memo_cardGetPayload<{}>
+};
 
-    const [cardInfo, setCardInfo] = React.useState<any>({});
+interface IProps {
+    wordCards: IWordCard[]
+}
+
+export function WordCards(props: IProps) {
+    const [wordList, setWordList] = React.useState(props.wordCards);
+
+    const [cardInfo, setCardInfo] = React.useState<Prisma.memo_cardGetPayload<{}> | null>(null);
 
     const [showGlass, setShowGlass] = React.useState(false);
 
-    const containerRef = React.useRef<any>();
+    const containerRef = React.useRef<HTMLDivElement>(null);
 
     async function handleRecognizeClick(id: string) {
         await updateReviewTimes(id);
@@ -20,16 +29,19 @@ export function WordCards(props: any) {
 
     React.useEffect(() => {
         document.addEventListener("mouseup", (event) => {
-            const inContainer =
-                event.target === containerRef.current ||
-                containerRef.current?.contains(event.target as any);
-            if (inContainer === false) {
-                setShowGlass(false);
+            const target = event.target;
+            if (target instanceof Node) {  // 使用类型守卫确保 target 是 Node 类型
+                const inContainer =
+                    target === containerRef.current
+                    || containerRef.current?.contains(target);
+                if (inContainer === false) {
+                    setShowGlass(false);
+                }
             }
         });
     }, []);
 
-    function handleUnRecognizeClick(item: any) {
+    function handleUnRecognizeClick(item: IWordCard) {
         setShowGlass(true);
         setCardInfo(item.memo_card);
     }
@@ -42,7 +54,7 @@ export function WordCards(props: any) {
 
     return (
         <>
-            {showGlass && cardInfo.id ? (
+            {showGlass && cardInfo ? (
                 <div className="fixed w-[100vw] h-[100vh] left-[0] top-[0] glass overflow-scroll z-[10000]">
                     <div ref={containerRef} className="absolute w-[750px] left-[50%] top-[50%] center">
                         <MemoCard {...cardInfo} />

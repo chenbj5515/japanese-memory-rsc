@@ -2,7 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 
 export function useLongPress(callback: () => void, delay: number = 2000) {
   const timerRef = useRef<number | null>(null);
-  const elementRef = useRef<any>(null);
+  const elementRef = useRef<HTMLDivElement>(null);
 
   const handleMouseDown = () => {
     // 开始长按，启动定时器

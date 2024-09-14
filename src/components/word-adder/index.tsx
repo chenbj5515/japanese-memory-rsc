@@ -9,13 +9,13 @@ import { insertWordCard } from "./server-actions";
 const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 export function WordCardAdder() {
-    const [selectedText, setSelectedText] = useRefState("");
+    const [selectedText, setSelectedText] = useRefState<string>("");
     const [{ left, top }, setPosition] = React.useState({
         left: 0,
         top: 0,
     });
     const forceUpdate = useForceUpdate();
-    const meaningTextRef = React.useRef<any>(null);
+    const meaningTextRef = React.useRef<HTMLDivElement>(null);
     const containerRef = React.useRef<HTMLDivElement>(null);
     const { cardId } = useTypedSelector((state: RootState) => state.cardIdSlice);
 
@@ -35,12 +35,16 @@ export function WordCardAdder() {
         }
     }
 
-    function handleCloseContainer(event: any) {
-        const inContainer = event.target === containerRef.current ||
-            containerRef.current?.contains(event.target as any);
-        if (selectedText.current && inContainer === false) {
-            setSelectedText("");
+    function handleCloseContainer(event: MouseEvent) {
+        if (event.target instanceof Node) {
+            const inContainer =
+                event.target === containerRef.current
+                || containerRef.current?.contains(event.target);
+            if (selectedText.current && inContainer === false) {
+                setSelectedText("");
+            }
         }
+
     }
 
     React.useEffect(() => {
@@ -74,8 +78,10 @@ export function WordCardAdder() {
     }, [selectedText.current]);
 
     function handleAddWord() {
-        insertWordCard(selectedText.current, meaningTextRef.current.textContent, cardId);
-        setSelectedText("");
+        if (meaningTextRef.current?.textContent) {
+            insertWordCard(selectedText.current, meaningTextRef.current.textContent, cardId);
+            setSelectedText("");
+        }
     }
 
     return selectedText.current ? (

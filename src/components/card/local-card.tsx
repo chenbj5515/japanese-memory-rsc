@@ -6,6 +6,7 @@ import { Dictation } from "@/components/dictation";
 import { ILoaclCard, deleteCard } from "@/store/local-cards-slice";
 import { useLongPress, useForceUpdate, useAudioRecorder } from "@/hooks";
 import { insertMemoCard, deleteMemoCard, updateMemoCardTranslation, updatePronunciation } from "./server-actions";
+import { Prisma } from "@prisma/client";
 
 export function LocalCard(props: ILoaclCard) {
     const { original_text } = props;
@@ -15,14 +16,13 @@ export function LocalCard(props: ILoaclCard) {
 
     const [isFocused, setIsFocused] = React.useState(false);
 
-    const translationTextRef = React.useRef<any>(null);
-    const prevTranslationTextRef = React.useRef<any>(null);
-    const kanaTextRef = React.useRef<any>(null);
-    const prevKanaTextRef = React.useRef<any>(null);
+    const translationTextRef = React.useRef<HTMLDivElement>(null);
+    const prevTranslationTextRef = React.useRef<string>("");
+    const kanaTextRef = React.useRef<HTMLDivElement>(null);
+    const prevKanaTextRef = React.useRef<string>("");
 
-    const recordRef = React.useRef<any>(null);
+    const [cardInfo, setCardInfo] = React.useState<Prisma.memo_cardGetPayload<{}> | null>(null);
     const dispatch = useDispatch();
-    const forceUpdate = useForceUpdate();
 
     const { startRecording, stopRecording, playRecording } = useAudioRecorder();
 
@@ -30,13 +30,16 @@ export function LocalCard(props: ILoaclCard) {
         dispatch(
             deleteCard(original_text)
         );
-        await deleteMemoCard(recordRef.current.id);
+        if (cardInfo?.id) {
+            await deleteMemoCard(cardInfo.id);
+        }
     })
 
     async function handleAllDone() {
-        const record = await insertMemoCard(original_text, translationTextRef.current.textContent, kanaTextRef.current.textContent);
-        recordRef.current = JSON.parse(record);
-        forceUpdate();
+        if (translationTextRef.current?.textContent && kanaTextRef.current?.textContent) {
+            const record = await insertMemoCard(original_text, translationTextRef.current?.textContent, kanaTextRef.current?.textContent);
+            setCardInfo(JSON.parse(record))
+        }
     }
 
     function handleBlurChange(type: string) {
@@ -51,8 +54,7 @@ export function LocalCard(props: ILoaclCard) {
                     translationTextRef.current.textContent += res;
                 }
             },
-            onerror: (e: any) => {
-            },
+            onerror: () => {},
             onclose: () => {
                 translateDone = true
                 if (translateDone && kanaDone) {
@@ -67,7 +69,7 @@ export function LocalCard(props: ILoaclCard) {
                     kanaTextRef.current.textContent += res;
                 }
             },
-            onerror: (e: any) => { },
+            onerror: () => { },
             onclose: () => {
                 kanaDone = true
                 if (translateDone && kanaDone) {
@@ -99,22 +101,22 @@ export function LocalCard(props: ILoaclCard) {
     }
 
     function handleFocus() {
-        prevTranslationTextRef.current = translationTextRef.current.textContent;
+        prevTranslationTextRef.current = translationTextRef.current?.textContent || "";
     }
 
     async function handleBlur() {
-        if (translationTextRef.current.textContent !== prevTranslationTextRef.current) {
-            updateMemoCardTranslation(recordRef.current.id, translationTextRef.current.textContent)
+        if (cardInfo?.id && translationTextRef.current?.textContent && translationTextRef.current?.textContent !== prevTranslationTextRef.current) {
+            updateMemoCardTranslation(cardInfo?.id, translationTextRef.current.textContent)
         }
     }
 
     function hanldeKanaFocus() {
-        prevKanaTextRef.current = kanaTextRef.current.textContent;
+        prevKanaTextRef.current = kanaTextRef.current?.textContent || "";
     }
 
     async function handleKanaBlur() {
-        if (kanaTextRef.current.textContent !== prevKanaTextRef.current) {
-            updatePronunciation(recordRef.current.id, kanaTextRef.current.textContent)
+        if (cardInfo?.id && kanaTextRef.current?.textContent && kanaTextRef.current?.textContent !== prevKanaTextRef.current) {
+            updatePronunciation(cardInfo?.id, kanaTextRef.current.textContent)
         }
     }
 
@@ -201,10 +203,10 @@ export function LocalCard(props: ILoaclCard) {
             </div>
             <div className="relative flex flex-col mt-2">
                 {
-                    recordRef.current?.id ? (
+                    cardInfo?.id ? (
                         <Dictation
                             originalText={original_text}
-                            cardID={recordRef.current.id}
+                            cardID={cardInfo?.id}
                             onBlurChange={handleBlurChange}
                         />
                     ) : null

@@ -2,13 +2,16 @@
 import React from "react";
 import { Dictation } from "@/components";
 import { updateMemoCardTranslation } from "./server-actions";
+import { Prisma } from "@prisma/client";
 
-export function Translation(props: any) {
+export function Translation(props: Pick<Prisma.memo_cardGetPayload<{}>, 'id' | 'original_text' | 'translation'>) {
   const { id, original_text, translation } = props;
-  const translationTextRef = React.useRef<any>(null);
+  const translationTextRef = React.useRef<HTMLDivElement>(null);
 
   function handleBlur() {
-    updateMemoCardTranslation(id, translationTextRef.current?.textContent)
+    if (translationTextRef.current?.textContent) {
+      updateMemoCardTranslation(id, translationTextRef.current?.textContent)
+    }
   }
 
   return (
@@ -23,7 +26,9 @@ export function Translation(props: any) {
         >
           {translation}
         </div>
-        <Dictation originalText={original_text} cardID={id} />
+        {
+          original_text ? <Dictation originalText={original_text} cardID={id} /> : null
+        }
       </div>
     </>
   );

@@ -1,10 +1,18 @@
+interface IOpions {
+  onopen?: () => void;
+  onmessage: (str: string) => void;
+  onclose: () => void;
+  onerror: (err?: Error) => void;
+  prompt: string
+}
+
 export async function callChatApi(content: string, {
   onopen,
   onmessage,
   onclose,
   onerror,
   prompt
-}: any) {
+}: IOpions) {
   try {
     const response = await fetch('/api/chat', {
       method: 'POST',
@@ -22,6 +30,7 @@ export async function callChatApi(content: string, {
     if (!response.ok) {
       throw new Error('Failed to fetch chat data');
     }
+    onopen?.();
 
     const reader = response.body!.getReader();
     const decoder = new TextDecoder();
