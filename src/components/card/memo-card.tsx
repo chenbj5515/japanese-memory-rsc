@@ -5,26 +5,28 @@ import { useDispatch } from "react-redux";
 import { setCardId } from "@/store/card-id-slice";
 import { getTimeAgo, speakText } from "@/utils";
 import { Dictation } from "@/components/dictation";
-import { useLongPress } from "@/hooks";
+import { useLongPress, useAudioRecorder } from "@/hooks";
 import { deleteMemoCard, updateMemoCardTranslation, updatePronunciation } from "./server-actions";
-import { useRecorder } from "./hooks";
 
 export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     setMemoCards: any
 }) {
-    const { translation, kana_pronunciation, original_text, record_file_path, create_time, id, setMemoCards } = props;
+    const { translation, kana_pronunciation, original_text, create_time, id, setMemoCards } = props;
+    
     const [recorderPressed, setRecorderPressedState] = React.useState(false);
     const [recordPlayBtnPressed, setRecordPlayBtnPressed] = React.useState(false);
-    const audioRef = React.useRef<any>();
-    const [recorderLoading, setRecordedLoading] = React.useState(false);
+
     const [isFocused, setIsFocused] = React.useState(false);
+
     const translationTextRef = React.useRef<any>(null);
     const prevTranslationTextRef = React.useRef<any>(null);
     const kanaTextRef = React.useRef<any>(null);
     const prevKanaTextRef = React.useRef<any>(null);
+
     const dispatch = useDispatch();
 
-    // const updateKanaPronunciation = trpc.updateKanaPronunciation.useMutation();
+    const { startRecording, stopRecording, playRecording } = useAudioRecorder();
+
     const cardRef = useLongPress(async () => {
         setMemoCards((prev: any) => prev.filter((card: any) => card.id !== id));
         await deleteMemoCard(id);
@@ -34,32 +36,10 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
         setIsFocused(type === "blur" ? false : true);
     }
 
-    const { mediaRecorderRef } = useRecorder({
-        async onEnd(recordedChunks) {
-            setRecordedLoading(true);
-            const audioBlob = new Blob(recordedChunks, { type: "audio/acc" });
-            const formData = new FormData();
-            const timeStamp = new Date().getTime();
-            const recordFileName = `${id}${timeStamp}.mp3`;
-            // const recordFileName = `${cardID}${timeStamp}.acc`;
-            formData.append("audio", audioBlob, recordFileName);
-            await fetch("/api/upload", {
-                method: "POST",
-                body: formData,
-            });
-            const audio = document.createElement("audio");
-            audio.src = `http://localhost:8080/uploads/${recordFileName}`;
-            // audio.src = `https://storage.googleapis.com/${process.env.NEXT_PUBLIC_GOOGLE_CLOUD_BUKET}/${cardID}${timeStamp}.acc`;
-            audioRef.current = audio;
-            setRecordedLoading(false);
-        },
-    });
-
     React.useEffect(() => {
-        const audio = document.createElement("audio");
-        audio.src = record_file_path || "";
-        audioRef.current = audio;
-        
+        // const audio = document.createElement("audio");
+        // audioRef.current = audio;
+
         if (cardRef.current) {
             cardRef.current.addEventListener("mouseup", () => {
                 dispatch(
@@ -78,15 +58,15 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     function handleRecordBtnClick() {
         setRecorderPressedState((prev) => !prev);
         if (recorderPressed) {
-            mediaRecorderRef.current?.stop();
+            stopRecording();
         } else {
-            mediaRecorderRef.current?.start();
+            startRecording();
         }
     }
 
     function handleRecordPlayBtnClick() {
         setRecordPlayBtnPressed((prev) => !prev);
-        audioRef.current?.play();
+        playRecording();
     }
 
     function handleFocus() {
@@ -151,8 +131,8 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
                 suppressContentEditableWarning
                 contentEditable
                 ref={translationTextRef}
-                onBlur={handleBlur}
                 onFocus={handleFocus}
+                onBlur={handleBlur}
                 className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
             >
                 {translation}
@@ -182,23 +162,14 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
                 </div>
                 {/* 录音播放按钮 */}
                 <div className="toggle w-[40px] h-[40px]">
-                    {/* 录音按钮更新中的loading */}
-                    {recorderLoading ? (
-                        <div className="spinner w-[40px] h-[40px]">
-                            <div className="spinnerin"></div>
-                        </div>
-                    ) : (
-                        <>
-                            <i className="text-[22px] ri-play-circle-fill z-[10] absolute left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2"></i>
-                            <input
-                                checked={recordPlayBtnPressed}
-                                onChange={handleRecordPlayBtnClick}
-                                type="checkbox"
-                                className="absolute z-[11]"
-                            />
-                            <span className="button dark:shadow-none dark:bg-bgDark w-[50px] h-[50px] -translate-x-1/2 -translate-y-1/2"></span>
-                        </>
-                    )}
+                    <i className="text-[22px] ri-play-circle-fill z-[10] absolute left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2"></i>
+                    <input
+                        checked={recordPlayBtnPressed}
+                        onChange={handleRecordPlayBtnClick}
+                        type="checkbox"
+                        className="absolute z-[11]"
+                    />
+                    <span className="button dark:shadow-none dark:bg-bgDark w-[50px] h-[50px] -translate-x-1/2 -translate-y-1/2"></span>
                 </div>
             </div>
             <div className="relative flex flex-col mt-2">

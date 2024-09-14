@@ -1,27 +1,30 @@
 "use client"
 import React from "react";
-import { Prisma } from '@prisma/client';
 import { useDispatch } from "react-redux";
-import { getTimeAgo, speakText, callChatApi } from "@/utils";
+import { speakText, callChatApi } from "@/utils";
 import { Dictation } from "@/components/dictation";
 import { ILoaclCard, deleteCard } from "@/store/local-cards-slice";
-import { useLongPress } from "@/hooks";
-import { insertMemoCard, deleteMemoCard } from "./server-actions";
-import { useRecorder } from "./hooks";
-
-
+import { useLongPress, useForceUpdate, useAudioRecorder } from "@/hooks";
+import { insertMemoCard, deleteMemoCard, updateMemoCardTranslation, updatePronunciation } from "./server-actions";
 
 export function LocalCard(props: ILoaclCard) {
     const { original_text } = props;
+
     const [recorderPressed, setRecorderPressedState] = React.useState(false);
     const [recordPlayBtnPressed, setRecordPlayBtnPressed] = React.useState(false);
-    const audioRef = React.useRef<any>();
-    const [recorderLoading, setRecordedLoading] = React.useState(false);
+
     const [isFocused, setIsFocused] = React.useState(false);
+
     const translationTextRef = React.useRef<any>(null);
+    const prevTranslationTextRef = React.useRef<any>(null);
     const kanaTextRef = React.useRef<any>(null);
+    const prevKanaTextRef = React.useRef<any>(null);
+
     const recordRef = React.useRef<any>(null);
     const dispatch = useDispatch();
+    const forceUpdate = useForceUpdate();
+
+    const { startRecording, stopRecording, playRecording } = useAudioRecorder();
 
     const ref = useLongPress(async () => {
         dispatch(
@@ -33,6 +36,11 @@ export function LocalCard(props: ILoaclCard) {
     async function handleAllDone() {
         const record = await insertMemoCard(original_text, translationTextRef.current.textContent, kanaTextRef.current.textContent);
         recordRef.current = JSON.parse(record);
+        forceUpdate();
+    }
+
+    function handleBlurChange(type: string) {
+        setIsFocused(type === "blur" ? false : true);
     }
 
     React.useEffect(() => {
@@ -70,32 +78,6 @@ export function LocalCard(props: ILoaclCard) {
         })
     }, []);
 
-    // const { mediaRecorderRef } = useRecorder({
-    //     async onEnd(recordedChunks) {
-    //         setRecordedLoading(true);
-    //         const audioBlob = new Blob(recordedChunks, { type: "audio/acc" });
-    //         const formData = new FormData();
-    //         const timeStamp = new Date().getTime();
-    //         const recordFileName = `${id}${timeStamp}.mp3`;
-    //         formData.append("audio", audioBlob, recordFileName);
-    //         await fetch("/api/upload", {
-    //             method: "POST",
-    //             body: formData,
-    //         });
-    //         const audio = document.createElement("audio");
-    //         audio.src = `http://localhost:8080/uploads/${recordFileName}`;
-    //         // audio.src = `https://storage.googleapis.com/${process.env.NEXT_PUBLIC_GOOGLE_CLOUD_BUKET}/${cardID}${timeStamp}.acc`;
-    //         audioRef.current = audio;
-    //         setRecordedLoading(false);
-    //     },
-    // });
-
-    React.useEffect(() => {
-        const audio = document.createElement("audio");
-        // audio.src = record_file_path || "";
-        audioRef.current = audio;
-    }, []);
-
     function handlePlayBtn() {
         original_text && speakText(original_text, {
             voicerName: "ja-JP-NanamiNeural",
@@ -104,30 +86,36 @@ export function LocalCard(props: ILoaclCard) {
 
     function handleRecordBtnClick() {
         setRecorderPressedState((prev) => !prev);
-        // if (recorderPressed) {
-        //     mediaRecorderRef.current?.stop();
-        // } else {
-        //     mediaRecorderRef.current?.start();
-        // }
+        if (recorderPressed) {
+            stopRecording();
+        } else {
+            startRecording()
+        }
     }
 
     function handleRecordPlayBtnClick() {
         setRecordPlayBtnPressed((prev) => !prev);
-        audioRef.current?.play();
+        playRecording();
+    }
+
+    function handleFocus() {
+        prevTranslationTextRef.current = translationTextRef.current.textContent;
     }
 
     async function handleBlur() {
-        // const updatedRecord = await updateTraslation.mutateAsync({
-        //     id,
-        //     translation: translationTextRef.current.textContent
-        // });
+        if (translationTextRef.current.textContent !== prevTranslationTextRef.current) {
+            updateMemoCardTranslation(recordRef.current.id, translationTextRef.current.textContent)
+        }
+    }
+
+    function hanldeKanaFocus() {
+        prevKanaTextRef.current = kanaTextRef.current.textContent;
     }
 
     async function handleKanaBlur() {
-        // const updatedRecord = await updateKanaPronunciation.mutateAsync({
-        //     id,
-        //     kana_pronunciation: kanaTextRef.current.textContent
-        // });
+        if (kanaTextRef.current.textContent !== prevKanaTextRef.current) {
+            updatePronunciation(recordRef.current.id, kanaTextRef.current.textContent)
+        }
     }
 
     return (
@@ -172,20 +160,20 @@ export function LocalCard(props: ILoaclCard) {
                 suppressContentEditableWarning
                 contentEditable
                 ref={translationTextRef}
+                onFocus={handleFocus}
                 onBlur={handleBlur}
                 className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
             >
-                {/* {translation} */}
             </div>
             读音标记：
             <div
                 suppressContentEditableWarning
                 contentEditable
                 ref={kanaTextRef}
+                onFocus={hanldeKanaFocus}
                 onBlur={handleKanaBlur}
                 className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
             >
-                {/* {kanaPronunciation} */}
             </div>
             <div className="flex justify-center mt-3 relative cursor-pointer">
                 {/* 录音按钮 */}
@@ -201,36 +189,27 @@ export function LocalCard(props: ILoaclCard) {
                 </div>
                 {/* 录音播放按钮 */}
                 <div className="toggle w-[40px] h-[40px]">
-                    {/* 录音按钮更新中的loading */}
-                    {recorderLoading ? (
-                        <div className="spinner w-[40px] h-[40px]">
-                            <div className="spinnerin"></div>
-                        </div>
-                    ) : (
-                        <>
-                            <i className="text-[22px] ri-play-circle-fill z-[10] absolute left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2"></i>
-                            <input
-                                checked={recordPlayBtnPressed}
-                                onChange={handleRecordPlayBtnClick}
-                                type="checkbox"
-                                className="absolute z-[11]"
-                            />
-                            <span className="button dark:shadow-none dark:bg-bgDark w-[50px] h-[50px] -translate-x-1/2 -translate-y-1/2"></span>
-                        </>
-                    )}
+                    <i className="text-[22px] ri-play-circle-fill z-[10] absolute left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2"></i>
+                    <input
+                        checked={recordPlayBtnPressed}
+                        onChange={handleRecordPlayBtnClick}
+                        type="checkbox"
+                        className="absolute z-[11]"
+                    />
+                    <span className="button dark:shadow-none dark:bg-bgDark w-[50px] h-[50px] -translate-x-1/2 -translate-y-1/2"></span>
                 </div>
             </div>
-            {/* <div className="relative flex flex-col mt-2">
+            <div className="relative flex flex-col mt-2">
                 {
-                    original_text ? (
+                    recordRef.current?.id ? (
                         <Dictation
                             originalText={original_text}
-                            cardID={id}
+                            cardID={recordRef.current.id}
                             onBlurChange={handleBlurChange}
                         />
                     ) : null
                 }
-            </div> */}
+            </div>
         </div>
     );
 }

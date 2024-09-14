@@ -80,7 +80,9 @@ export default function ClientLayout({
             <header className="p-[12px] justify-between items-center top-0 flex">
                 {
                     data?.user?.image ? (
-                        <img className="w-[36px] h-[36px] rounded-full" src={data?.user?.image} alt="" />
+                        <Link href="/latest">
+                            <img className="w-[36px] h-[36px] rounded-full" src={data?.user?.image} alt="/profile" />
+                        </Link>
                     ) : null
                 }
                 <label className="text-base relative inline-block w-[56px] h-[28px]">
