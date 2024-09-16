@@ -16,7 +16,7 @@ export const speakText = (text: string, options: IOptions) => {
   );
   const {voicerName} = options;
 
-  speechConfig.speechSynthesisVoiceName = voicerName; // 使用Nanami Online (Natural) - Japanese (Japan)语音
+  speechConfig.speechSynthesisVoiceName = voicerName;
   speechConfig.speechSynthesisOutputFormat = 8;
   const complete_cb = function () {
     synthesizer?.close();

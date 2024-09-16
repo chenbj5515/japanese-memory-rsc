@@ -25,7 +25,7 @@ export function WordCard(props: IProps) {
     }
 
     return (
-        <div ref={cardRef} className="word-card w-[240px] h-[150px] rounded-[8px] dark:bg-eleDark dark:text-white dark:shadow-dark-shadow p-5 mx-auto mt-10 relative">
+        <div ref={cardRef} className="word-card w-[228px] h-[150px] rounded-[8px] dark:bg-eleDark dark:text-white dark:shadow-dark-shadow p-5 mt-10 relative">
             <div
                 className="play-button-bg dark:bg-bgDark dark:shadow-none rounded-[50%] w-8 h-8 absolute top-2 right-2 cursor-pointer"
                 onClick={() => handlePlayBtn(word)}
@@ -52,18 +52,18 @@ export function WordCard(props: IProps) {
                 ></section>
                 {meaning}
             </div>
-            <div className="flex justify-between w-[175px] absolute bottom-4">
+            <div className="flex justify-between w-[195px] absolute bottom-4">
                 <button
                     onClick={() => onRecognize(id)}
-                    className="btn2 shadow-little-button dark:shadow-[#353232] dark:bg-bgDark"
+                    className="btn2 whitespace-nowrap shadow-little-button dark:shadow-[#353232] dark:bg-bgDark"
                 >
-                    认识
+                    わかる
                 </button>
                 <button
                     onClick={() => onUnRecognize(wordCardInfo)}
-                    className="btn2 shadow-little-button dark:shadow-[#353232] dark:bg-bgDark"
+                    className="btn2 whitespace-nowrap shadow-little-button dark:shadow-[#353232] dark:bg-bgDark"
                 >
-                    不认识
+                    分からない
                 </button>
             </div>
         </div>

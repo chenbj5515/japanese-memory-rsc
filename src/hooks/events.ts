@@ -5,15 +5,13 @@ export function useLongPress(callback: () => void, delay: number = 2000) {
   const elementRef = useRef<HTMLDivElement>(null);
 
   const handleMouseDown = () => {
-    // 开始长按，启动定时器
     timerRef.current = window.setTimeout(() => {
-      callback();  // 触发长按事件
-      timerRef.current = null;  // 重置计时器
+      callback();
+      timerRef.current = null;
     }, delay);
   };
 
   const handleMouseUp = () => {
-    // 松开按钮，取消定时器
     if (timerRef.current) {
       clearTimeout(timerRef.current);
       timerRef.current = null;
@@ -46,7 +44,7 @@ export function useAudioRecorder() {
 
   const startRecording = async () => {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      console.error('您的浏览器不支持音频录制功能');
+      console.error('ブラウザーは録音をサポートしていません。');
       return;
     }
 
@@ -68,7 +66,7 @@ export function useAudioRecorder() {
       recorder.start();
       setMediaRecorder(recorder);
     } catch (err) {
-      console.error('无法访问麦克风', err);
+      console.error('マイクにアクセスできません', err);
     }
   };
 

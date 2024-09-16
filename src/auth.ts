@@ -40,21 +40,19 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (!user_mail || !github_id) return false;
       const dbUser = await findUserByPlatformID(github_id);
       if (!dbUser) {
-        // 如果用户未注册，注册用户
+        // 未登録の場合、登録する
         await createUserInDatabase(user_mail, github_id, user.name, user.image);
       }
-      return true; // 允许登录
+      return true; // 登録を許せる
     },
     async jwt({ token, account, profile }) {
       const github_id = profile?.id?.toString();
 
-      // 在首次登录时，将 user_id 传递到 token
+      //　user_idをtokenに追加する
       if (github_id) {
 
-        // 查找数据库中的用户（这里可以重新查找，或优化缓存逻辑）
         const dbUser = await findUserByPlatformID(github_id);
 
-        // 将 user_id 添加到 token 中
         token.user_id = dbUser?.user_id;
       }
 
@@ -66,7 +64,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (typeof userId === "string") {
         session.userId = userId;
       }
-      // 将 user_id 从 token 中传递到 session
+      // user_idをトークンからセッションに追加する
       return session;
     },
   }

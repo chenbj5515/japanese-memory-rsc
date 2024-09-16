@@ -3,7 +3,6 @@ import { redirect } from "next/navigation"
 import { signOut, auth } from "@/auth"
 import { prisma } from "@/prisma"
 import { MemoCards, LocalCards, InputBox, WordCardAdder } from "@/components";
-// import { createCaller } from '@/server'
 
 export default async function Home() {
   const session = await auth()
@@ -13,12 +12,12 @@ export default async function Home() {
 
   const memoCards = await prisma.memo_card.findMany({
     where: {
-      user_id: session.userId,  // 根据 session 中的 user_id 进行过滤
+      user_id: session.userId,
     },
     orderBy: {
-      create_time: 'desc',  // 假设使用 create_time 字段排序
+      create_time: 'desc',
     },
-    take: 20,  // 获取最新的20条数据
+    take: 20,
   });
 
   return (

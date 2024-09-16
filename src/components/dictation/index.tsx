@@ -36,9 +36,9 @@ export function Dictation(props: IProps) {
           : ""
       }">${text}</span>`;
     }).join("");
-    // 默写正确
+    // ユーザー入力内容が正しい
     if (diff.length === 1 && diff[0][0] === 0) {
-      // 但是目前没有被打对号，需要标记为正确
+      // チェックが入っていない場合、チェックマークを入れる
       if (!dictationCheckInputRef.current?.checked) {
         dictationCheckInputRef.current?.click();
         updateReviewTimes(cardID);
@@ -47,12 +47,12 @@ export function Dictation(props: IProps) {
         }
       }
     }
-    // 默写错误
+    // ユーザー入力内容が違ってる
     else {
       if (dictationRef.current) {
         dictationRef.current.innerHTML = htmlString;
       }
-      // 但是现在已经被打了对号，需要把标记清空
+      // チェックが入っているの場合、チェックを外れる
       if (dictationCheckInputRef.current?.checked) {
         dictationCheckInputRef.current?.click();
       }
@@ -89,7 +89,7 @@ export function Dictation(props: IProps) {
           ></path>
         </svg>
         <div className="absolute top-[50%] -translate-y-1/2 left-7 whitespace-nowrap text-gray text-[14px]">
-          请在下面默写原文
+          原文を書いてください
         </div>
       </div>
       <div

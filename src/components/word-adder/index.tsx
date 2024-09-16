@@ -2,7 +2,7 @@
 import React from "react";
 import { readStreamableValue } from 'ai/rsc';
 import { useSelector, TypedUseSelectorHook } from "react-redux";
-import { useRefState } from "@/hooks";
+import { useForceUpdate, useRefState } from "@/hooks";
 import { RootState } from "@/store";
 import { askAI } from "@/server-actions";
 import { insertWordCard } from "./server-actions";
@@ -18,6 +18,7 @@ export function WordCardAdder() {
     const meaningTextRef = React.useRef<HTMLDivElement>(null);
     const containerRef = React.useRef<HTMLDivElement>(null);
     const { cardId } = useTypedSelector((state: RootState) => state.cardIdSlice);
+    const forceUpdate = useForceUpdate();
 
     async function handleSelectEvent() {
         const selection = document.getSelection();
@@ -26,16 +27,20 @@ export function WordCardAdder() {
             const range = selection.getRangeAt(0);
             const rect = range.getBoundingClientRect();
             if (selectedText.length) {
-                selectedTextRef.current = selectedText;
+                setSelectedText(selectedText);
                 setPosition({
                     left: rect.right,
                     top: rect.bottom,
                 });
+
                 try {
-                    const { output } = await askAI(`这是一个日语单词或者短语：${selectedText}，注意不要说多余的废话，只需要按照这个格式输出：意味：这个单词或者短语的翻译结果`);
-                    for await (const delta of readStreamableValue(output)) {
-                        if (meaningTextRef.current && delta) {
-                            meaningTextRef.current.textContent += delta;
+                    if (meaningTextRef.current) {
+                        meaningTextRef.current.textContent += "意味："
+                        const { output } = await askAI(`これは日本語の単語またはフレーズです：${selectedText}、それを中国語に翻訳してください、気をつけて原文とか余分な言葉を出さないで、翻訳結果だけを出してください。`);
+                        for await (const delta of readStreamableValue(output)) {
+                            if (meaningTextRef.current && delta) {
+                                meaningTextRef.current.textContent += delta;
+                            }
                         }
                     }
                 }
@@ -71,13 +76,13 @@ export function WordCardAdder() {
         window.getSelection()?.removeAllRanges();
     }
 
-    return selectedTextRef.current ? (
+    return (
         <div
             ref={containerRef}
             className="card max-w-[240px] z-[15] rounded-[6px] text-[15px] dark:bg-eleDark dark:text-white dark:shadow-dark-shadow p-3 mx-auto fixed"
-            style={{ top, left }}
+            style={{ top, left, visibility: selectedTextRef.current ? "visible" : "hidden" }}
         >
-            <div>单词・短语：{selectedTextRef.current}</div>
+            <div>単語・フレーズ：{selectedTextRef.current}</div>
             <div
                 contentEditable
                 ref={meaningTextRef}
@@ -89,9 +94,9 @@ export function WordCardAdder() {
                     className="bg-white text-black rounded-[10px] text-sm font-semibold py-2 px-4 cursor-pointer transition-all ease-in-out duration-300 border border-black shadow-none hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[1px_3px_0_0_black] active:translate-y-1 active:translate-x-0.5 active:shadow-none"
                     onClick={handleAddWord}
                 >
-                    加入到单词本
+                    単語帳に追加
                 </button>
             </div>{" "}
         </div>
-    ) : null;
+    )
 }

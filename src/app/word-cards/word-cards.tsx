@@ -9,8 +9,27 @@ interface IProps {
     wordCards: TWordCard[]
 }
 
+function calculateElementsPerRow(parentWidth: number, childWidth = 228) {
+    let n = Math.floor(parentWidth / childWidth);
+    let space = (parentWidth - (n * childWidth)) / (n - 1);
+
+    if (space < 10) {
+        return n - 1;
+    }
+
+    return n;
+}
+
+function splitIntoRows<T>(wordList: T[], n: number) {
+    const rows = [];
+    for (let i = 0; i < wordList.length; i += n) {
+        rows.push(wordList.slice(i, i + n));
+    }
+    return rows;
+}
+
 export function WordCards(props: IProps) {
-    const [wordList, setWordList] = React.useState(props.wordCards);
+    const [rows, setRows] = React.useState<TWordCard[][]>([]);
 
     const [cardInfo, setCardInfo] = React.useState<Prisma.memo_cardGetPayload<{}> | null>(null);
 
@@ -18,10 +37,14 @@ export function WordCards(props: IProps) {
 
     const containerRef = React.useRef<HTMLDivElement>(null);
 
+    const intervalRef = React.useRef(10);
+
+    const ref = React.useRef<HTMLDivElement>(null);
+
     React.useEffect(() => {
         document.addEventListener("mouseup", (event) => {
             const target = event.target;
-            if (target instanceof Node) {  // 使用类型守卫确保 target 是 Node 类型
+            if (target instanceof Node) {
                 const inContainer =
                     target === containerRef.current
                     || containerRef.current?.contains(target);
@@ -32,9 +55,43 @@ export function WordCards(props: IProps) {
         });
     }, []);
 
+    React.useEffect(() => {
+        const handleResize = () => {
+            // 1. 現在のウィンドウサイズに応じて、1行に表示できるカードの数を取得します
+            // 2. すべてのカードを二次元配列で表現し、各サブ配列が1行を表します。
+            if (ref.current) {
+                const containerWidth = ref.current.clientWidth;
+                const elementNumPerRow = calculateElementsPerRow(containerWidth);
+                intervalRef.current = Math.floor((containerWidth - elementNumPerRow * 228) / (elementNumPerRow - 1));
+                const wordList = splitIntoRows<TWordCard>(props.wordCards, elementNumPerRow)
+                setRows(wordList);
+            }
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
     async function handleRecognizeClick(id: string) {
+        // 1. 対応する要素を見つけて削除します。
+        // 2. 要素が含まれる部分配列およびその後の部分配列を再配置する。
+        setRows(prev => {
+            if (prev.length === 1) {
+                const updatedRow = prev[0].filter(item => item.id !== id);
+                return [updatedRow];
+            }
+            const n = prev[0].length;
+            const flattened = prev.flat();
+            const updated = flattened.filter(item => item.id !== id);
+            const next = [];
+            for (let i = 0; i < updated.length; i += n) {
+                next.push(updated.slice(i, i + n));
+            }
+            return next;
+        });
         await updateReviewTimes(id);
-        setWordList(prev => prev.filter(item => item.id !== id));
     }
 
     function handleUnRecognizeClick(item: TWordCard) {
@@ -51,14 +108,24 @@ export function WordCards(props: IProps) {
                     </div>
                 </div>
             ) : null}
-            <div className="grid grid-cols-[repeat(auto-fill,_minmax(210px,_1fr))] gap-4">
-                {wordList.map(item => (
-                    <WordCard
-                        key={item.id}
-                        wordCardInfo={item}
-                        onRecognize={handleRecognizeClick}
-                        onUnRecognize={handleUnRecognizeClick}
-                    />
+            <div ref={ref} className="w-full">
+                {rows.map((row, idx) => (
+                    <div key={idx} className={`flex ${idx === rows.length - 1 ? "" : "justify-between"}`}>
+                        {
+                            row.map(cardInfo => (
+                                <div
+                                    key={cardInfo.id}
+                                    style={{ marginRight: `${idx === rows.length - 1 ? `${intervalRef.current}px` : "0"}` }}
+                                >
+                                    <WordCard
+                                        wordCardInfo={cardInfo}
+                                        onRecognize={handleRecognizeClick}
+                                        onUnRecognize={handleUnRecognizeClick}
+                                    />
+                                </div>
+                            ))
+                        }
+                    </div>
                 ))}
             </div>
         </>

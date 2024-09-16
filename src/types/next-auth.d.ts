@@ -3,6 +3,6 @@ import NextAuth from "next-auth";
 
 declare module "next-auth" {
   interface Session {
-    userId: string; // 为 session 添加 userId 字段
+    userId: string;
   }
 }

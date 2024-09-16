@@ -1,4 +1,4 @@
-// 避免带有格式的粘贴
+// 格式を持つ貼り付けを避ける
 export const insertPlainTextAtCursor = (plainText: string) => {
     const range = window.getSelection()?.getRangeAt(0);
     range?.deleteContents();

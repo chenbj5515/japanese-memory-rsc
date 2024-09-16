@@ -4,7 +4,6 @@ import { redirect } from "next/navigation"
 import { auth } from "@/auth"
 import { prisma } from "@/prisma"
 import { MemoCards, LocalCards, InputBox, WordCardAdder } from "@/components";
-// import { createCaller } from '@/server'
 
 export default async function Home() {
     const session = await auth()
@@ -14,10 +13,8 @@ export default async function Home() {
 
     const count = await prisma.memo_card.count();
 
-    // 生成随机偏移量，确保偏移不会超过数据的总数 - 20
     const randomOffset = Math.floor(Math.random() * (count - 20));
 
-    // 查询带有 OFFSET 的 20 条记录
     const memoCards = await prisma.memo_card.findMany({
         skip: randomOffset,
         take: 20,

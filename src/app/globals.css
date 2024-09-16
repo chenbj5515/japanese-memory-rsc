@@ -45,7 +45,6 @@ main,
 }
 
 .word-card {
-  width: 210px;
   font-family: "Arial";
   padding: 1rem;
   background: #f1f1f3;
@@ -55,7 +54,7 @@ main,
 
 .btn2 {
   margin-top: 10px;
-  width: 80px;
+  width: 90px;
   font-family: inherit;
   padding: 0.3em 0.7em;
   font-weight: 900;

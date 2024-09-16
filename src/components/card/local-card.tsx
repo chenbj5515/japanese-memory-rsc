@@ -41,13 +41,13 @@ export function LocalCard(props: ILoaclCard) {
     })
 
     useAIGenerate({
-        prompt: `这是我的原文：${original_text}，给出它的中文翻译。注意，不要说多余的废话，只给你觉得最有可能的翻译结果就行。`,
+        prompt: `これは原文：${original_text}，中国語の翻訳結果を出してください。気をつけて，余計な話は要らん，翻訳結果だけを出してください。`,
         onmessage: handleTranslationUpdate,
         onclose: handleTranslationDone
     })
 
     useAIGenerate({
-        prompt: `这是我的原文：${original_text}，给出它的平假名的读音。注意，不要说多余的废话，只给平假名的读音就行。`,
+        prompt: `これは原文：${original_text}，その平仮名読みを示してください。気をつけて，余計な話は要らん，平仮名読みだけを出してください。`,
         onmessage: handleKanaUpdate,
         onclose: handleKanaDone
     })
@@ -148,7 +148,7 @@ export function LocalCard(props: ILoaclCard) {
             <div className="text-[14px] absolute -top-[30px] left-1 text-[gray]">
                 {/* {create_time ? getTimeAgo(create_time.toString()) : ""} */}
             </div>
-            {/* 朗读播放按钮 */}
+            {/* 朗読ボタン */}
             <div
                 className="play-button-bg dark:bg-bgDark dark:shadow-none rounded-[50%] w-12 h-12 absolute top-2 right-2 cursor-pointer"
                 onClick={handlePlayBtn}
@@ -177,7 +177,7 @@ export function LocalCard(props: ILoaclCard) {
                 ) : null}
                 原文：{original_text}
             </div>
-            中文翻译：
+            翻訳結果：
             <div
                 suppressContentEditableWarning
                 contentEditable
@@ -187,7 +187,7 @@ export function LocalCard(props: ILoaclCard) {
                 className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
             >
             </div>
-            读音标记：
+            平仮名読み：
             <div
                 suppressContentEditableWarning
                 contentEditable
@@ -198,7 +198,7 @@ export function LocalCard(props: ILoaclCard) {
             >
             </div>
             <div className="flex justify-center mt-3 relative cursor-pointer">
-                {/* 录音按钮 */}
+                {/* 录音ボタン */}
                 <div className="toggle w-[40px] h-[40px] mr-[30px]">
                     <i className="ri-mic-fill z-[10] absolute left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2"></i>
                     <input
@@ -209,7 +209,7 @@ export function LocalCard(props: ILoaclCard) {
                     />
                     <span className="button dark:shadow-none dark:bg-bgDark w-[50px] h-[50px] -translate-x-1/2 -translate-y-1/2"></span>
                 </div>
-                {/* 录音播放按钮 */}
+                {/* 录音プレーボタン */}
                 <div className="toggle w-[40px] h-[40px]">
                     <i className="text-[22px] ri-play-circle-fill z-[10] absolute left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2"></i>
                     <input
