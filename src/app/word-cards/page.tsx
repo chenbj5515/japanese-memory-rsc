@@ -33,7 +33,7 @@ export default async function App() {
     const wordCards = results.flat(Infinity) as TWordCard[];
 
     return (
-        <div className="pl-5 pb-10 pr-5">
+        <div className="w-full pl-[20px] pb-10 pr-[20px]">
             <WordCards wordCards={wordCards} />
         </div>
     );

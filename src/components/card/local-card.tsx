@@ -41,13 +41,13 @@ export function LocalCard(props: ILoaclCard) {
     })
 
     useAIGenerate({
-        prompt: `これは原文：${original_text}，中国語の翻訳結果を出してください。気をつけて，余計な話は要らん，翻訳結果だけを出してください。`,
+        prompt: `これは原文：${original_text}，中国語の翻訳を出してください。気をつけて，余計な話は要らん，翻訳だけを出してください。`,
         onmessage: handleTranslationUpdate,
         onclose: handleTranslationDone
     })
 
     useAIGenerate({
-        prompt: `これは原文：${original_text}，その平仮名読みを示してください。気をつけて，余計な話は要らん，平仮名読みだけを出してください。`,
+        prompt: `これは原文：${original_text}，その読みを示してください。気をつけて，余計な話は要らん，読みだけを出してください。`,
         onmessage: handleKanaUpdate,
         onclose: handleKanaDone
     })
@@ -177,7 +177,7 @@ export function LocalCard(props: ILoaclCard) {
                 ) : null}
                 原文：{original_text}
             </div>
-            翻訳結果：
+            翻訳：
             <div
                 suppressContentEditableWarning
                 contentEditable
@@ -187,7 +187,7 @@ export function LocalCard(props: ILoaclCard) {
                 className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
             >
             </div>
-            平仮名読み：
+            読み：
             <div
                 suppressContentEditableWarning
                 contentEditable

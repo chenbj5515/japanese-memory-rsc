@@ -123,7 +123,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
                 ) : null}
                 原文：{original_text}
             </div>
-            翻訳結果：
+            翻訳：
             <div
                 suppressContentEditableWarning
                 contentEditable
@@ -134,7 +134,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
             >
                 {translation}
             </div>
-            平仮名読み：
+            読み：
             <div
                 suppressContentEditableWarning
                 contentEditable

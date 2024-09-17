@@ -11,6 +11,9 @@ interface IProps {
 
 function calculateElementsPerRow(parentWidth: number, childWidth = 228) {
     let n = Math.floor(parentWidth / childWidth);
+    if (n <= 1) {
+        return 1;
+    }
     let space = (parentWidth - (n * childWidth)) / (n - 1);
 
     if (space < 10) {
@@ -56,21 +59,21 @@ export function WordCards(props: IProps) {
     }, []);
 
     React.useEffect(() => {
-        const handleResize = () => {
+        const observer = new ResizeObserver(() => {
             // 1. 現在のウィンドウサイズに応じて、1行に表示できるカードの数を取得します
             // 2. すべてのカードを二次元配列で表現し、各サブ配列が1行を表します。
             if (ref.current) {
                 const containerWidth = ref.current.clientWidth;
                 const elementNumPerRow = calculateElementsPerRow(containerWidth);
-                intervalRef.current = Math.floor((containerWidth - elementNumPerRow * 228) / (elementNumPerRow - 1));
+                intervalRef.current = (containerWidth - elementNumPerRow * 228) / (elementNumPerRow - 1);
                 const wordList = splitIntoRows<TWordCard>(props.wordCards, elementNumPerRow)
                 setRows(wordList);
             }
-        };
-        handleResize();
-        window.addEventListener('resize', handleResize);
+        });
+        observer.observe(document.documentElement);
+
         return () => {
-            window.removeEventListener('resize', handleResize);
+            observer.disconnect();
         };
     }, []);
 

@@ -34,7 +34,7 @@ main,
 .card {
   background: #fff;
   box-shadow: 5px 5px 6px #dadada, -5px -5px 6px #f6f6f6;
-  transition: 0.4s;
+  /* transition: 0.4s; */
 }
 
 .wrapper-center {
@@ -48,7 +48,7 @@ main,
   font-family: "Arial";
   padding: 1rem;
   background: #f1f1f3;
-  box-shadow: 5px 5px 6px #dadada, -5px -5px 6px #f6f6f6;
+  box-shadow: 5px 5px 6px #dadada, -2px -2px 3px #f6f6f6;
   position: relative;
 }
 
