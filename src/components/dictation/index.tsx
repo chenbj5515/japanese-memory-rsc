@@ -89,7 +89,7 @@ export function Dictation(props: IProps) {
           ></path>
         </svg>
         <div className="absolute top-[50%] -translate-y-1/2 left-7 whitespace-nowrap text-gray text-[14px]">
-          原文を書いてください
+          日本語原文を書いてください
         </div>
       </div>
       <div
