@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { setCardId } from "@/store/card-id-slice";
 import { getTimeAgo, speakText } from "@/utils";
 import { Dictation } from "@/components/dictation";
-import { useLongPress, useAudioRecorder } from "@/hooks";
+import { useTripleRightClick, useAudioRecorder } from "@/hooks";
 import { deleteMemoCard, updateMemoCardTranslation, updatePronunciation } from "./server-actions";
 
 export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
@@ -27,7 +27,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
 
     const { startRecording, stopRecording, playRecording } = useAudioRecorder();
 
-    const cardRef = useLongPress(async () => {
+    const cardRef = useTripleRightClick(async () => {
         onDelete?.(id);
         await deleteMemoCard(id);
     })

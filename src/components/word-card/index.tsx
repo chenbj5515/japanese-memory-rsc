@@ -1,7 +1,7 @@
 "use client"
 import { speakText } from "@/utils";
 import { TWordCard } from "@/app/word-cards/page";
-import { useLongPress } from "@/hooks";
+import { useTripleRightClick } from "@/hooks";
 import { deleteWordCard } from "./server-actions";
 
 interface IProps {
@@ -13,7 +13,7 @@ interface IProps {
 export function WordCard(props: IProps) {
     const { wordCardInfo, wordCardInfo: { id, word, meaning }, onRecognize, onUnRecognize } = props;
 
-    const cardRef = useLongPress(async () => {
+    const cardRef = useTripleRightClick(async () => {
         onRecognize?.(id);
         await deleteWordCard(id);
     })

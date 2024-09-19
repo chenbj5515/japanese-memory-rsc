@@ -6,7 +6,7 @@ import { speakText } from "@/utils";
 import { Dictation } from "@/components/dictation";
 import { ILoaclCard, deleteCard } from "@/store/local-cards-slice";
 import { setCardId } from "@/store/card-id-slice";
-import { useRefState, useLongPress, useAudioRecorder } from "@/hooks";
+import { useRefState, useTripleRightClick, useAudioRecorder } from "@/hooks";
 import { insertMemoCard, deleteMemoCard, updateMemoCardTranslation, updatePronunciation } from "./server-actions";
 import { useAIGenerate } from "./hooks";
 
@@ -31,7 +31,7 @@ export function LocalCard(props: ILoaclCard) {
 
     const { startRecording, stopRecording, playRecording } = useAudioRecorder();
 
-    const ref = useLongPress(async () => {
+    const ref = useTripleRightClick(async () => {
         dispatch(
             deleteCard(original_text)
         );

@@ -8,6 +8,63 @@ import { insertWordCard } from "./server-actions";
 
 const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
+type StateType = {
+    state: 'initial' | 'selected' | 'edited' | 'added' | 'closed';
+    left: number;
+    top: number;
+    selectedText: string;
+};
+
+type Action =
+    | { type: 'select'; payload: { left: number; top: number; selectedText: string } }
+    | { type: 'edit'; payload: { selectedText: string } }
+    | { type: 'addToWordCards' }
+    | { type: 'close' };
+
+const initialState: StateType = {
+    state: 'initial',
+    left: 0,
+    top: 0,
+    selectedText: '',
+};
+
+function reducer(state: StateType, action: Action): StateType {
+    switch (action.type) {
+        case 'select':
+            return {
+                ...state,
+                state: 'selected',
+                left: action.payload.left,
+                top: action.payload.top,
+                selectedText: action.payload.selectedText,
+            };
+        case 'edit':
+            return {
+                ...state,
+                state: 'edited',
+                selectedText: action.payload.selectedText,
+            };
+        case 'addToWordCards':
+            return {
+                ...state,
+                state: 'added',
+                left: -100,
+                top: -100,
+                selectedText: '',
+            };
+        case 'close':
+            return {
+                ...state,
+                state: 'closed',
+                left: -100,
+                top: -100,
+                selectedText: '',
+            };
+        default:
+            return state;
+    }
+}
+
 // 1 知りたい単語を選択する
 // 2 語句の翻訳結果を編集する（オプション）
 // 3 追加ボタンを押して、単語帳に追加する
@@ -16,39 +73,27 @@ export function WordCardAdder() {
     const containerRef = React.useRef<HTMLDivElement>(null);
     const { cardId } = useTypedSelector((state: RootState) => state.cardIdSlice);
 
+    const meaningTextRef = React.useRef<HTMLDivElement>(null);
     const [{
+        state,
         left,
         top,
         selectedText,
-        meaningTextRef
-    }, setState] = React.useState({
-        left: 0,
-        top: 0,
-        selectedText: '',
-        meaningTextRef: React.useRef<HTMLDivElement>(null),
-    });
+    }, dispatch] = React.useReducer(reducer, initialState);
 
-    function closeAction() {
+    function effectCleanMeaningTextContent() {
         if (meaningTextRef.current) {
             meaningTextRef.current.textContent = "";
         }
-        setState(prev => ({
-            ...prev,
-            top: -100,
-            left: -100,
-            selectedText: "",
-        }))
     }
 
-    async function selectTextAction(left: number, top: number, selected: string) {
-        setState(prev => ({
-            ...prev,
-            left,
-            top,
-            selectedText: selected
-        }))
+    function effectCleanElementSelected() {
+        window.getSelection()?.removeAllRanges();
+    }
+
+    async function effectGetMeaning() {
         if (meaningTextRef.current) {
-            const { output } = await askAI(`これは日本語の単語またはフレーズです：${selected}、それを中国語に翻訳してください、気をつけて原文とか余分な言葉を出さないで、翻訳結果だけを出してください。`);
+            const { output } = await askAI(`これは日本語の単語またはフレーズです：${selectedText}、それを中国語に翻訳してください、気をつけて原文とか余分な言葉を出さないで、翻訳結果だけを出してください。`);
             for await (const delta of readStreamableValue(output)) {
                 if (meaningTextRef.current && delta) {
                     meaningTextRef.current.textContent += delta;
@@ -57,6 +102,27 @@ export function WordCardAdder() {
         }
     }
 
+    async function effectInsertWordCard() {
+        if (meaningTextRef.current?.textContent) {
+            insertWordCard(selectedText, meaningTextRef.current.textContent, cardId);
+        }
+    }
+
+    React.useEffect(() => {
+        if (state === "selected") {
+            effectGetMeaning();
+        }
+        if (state === "added") {
+            effectInsertWordCard();
+            effectCleanMeaningTextContent();
+            effectCleanElementSelected();
+        }
+        if (state === "closed") {
+            effectCleanMeaningTextContent();
+            effectCleanElementSelected();
+        }
+    }, [state]);
+
     async function handleSelectEvent() {
         const selection = document.getSelection();
         if (selection && selection.rangeCount > 0) {
@@ -64,7 +130,14 @@ export function WordCardAdder() {
             const range = selection.getRangeAt(0);
             const rect = range.getBoundingClientRect();
             if (selected.length) {
-                selectTextAction(rect.right, rect.bottom, selected);
+                dispatch({
+                    type: "select",
+                    payload: {
+                        left: rect.right,
+                        top: rect.bottom,
+                        selectedText: selected
+                    }
+                })
             }
         }
     }
@@ -75,10 +148,17 @@ export function WordCardAdder() {
                 const inContainer =
                     event.target === containerRef.current
                     || containerRef.current?.contains(event.target);
+                // ポップアップ内でマウスがクリックした場合、何もしない
                 if (!inContainer) {
-                    handleSelectEvent();
                     if (selectedText) {
-                        closeAction();
+                        // もし現在ポップアップが表示されている場合、これを「close」イベントとして扱います
+                        dispatch({
+                            type: "close",
+                        })
+                    }
+                    if (!selectedText && document.getSelection()) {
+                        // 現在ポップアップが表示されておらず、かつ文字が選択されている場合は、これを「select」イベントとして扱います
+                        handleSelectEvent();
                     }
                 }
             }
@@ -90,19 +170,9 @@ export function WordCardAdder() {
     }, [selectedText]);
 
     function handleAddWord() {
-        setState(prev => ({
-            ...prev,
-            top: -100,
-            left: -100,
-            selectedText: "",
-        }))
-        if (meaningTextRef.current?.textContent) {
-            insertWordCard(selectedText, meaningTextRef.current.textContent, cardId);
-        }
-        if (meaningTextRef.current) {
-            meaningTextRef.current.textContent = "";
-        }
-        window.getSelection()?.removeAllRanges();
+        dispatch({
+            type: "addToWordCards"
+        })
     }
 
     return (
