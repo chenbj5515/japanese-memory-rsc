@@ -68,6 +68,9 @@ export function useAudioRecorder() {
       };
 
       recorder.onstop = () => {
+        if (audioURL.current) {
+          window.URL.revokeObjectURL(audioURL.current);
+        }
         const blob = new Blob(audioChunks.current, { type: 'audio/mp3' });
         audioURL.current = window.URL.createObjectURL(blob);
         audio.current = new Audio(audioURL.current!);
