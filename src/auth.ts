@@ -1,6 +1,7 @@
 
 import NextAuth from "next-auth"
 import GitHub from "next-auth/providers/github"
+import GoogleProvider from "next-auth/providers/google"
 import { prisma } from "@/prisma"
 
 export const findUserByPlatformID = async (platform_id: string) => {
@@ -32,26 +33,30 @@ export const createUserInDatabase = async (
 };
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers: [GitHub],
+  providers: [GitHub, GoogleProvider({
+    clientId: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+  })],
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
       const user_mail = user.email;
-      const github_id = profile?.id?.toString();
-      if (!user_mail || !github_id) return false;
-      const dbUser = await findUserByPlatformID(github_id);
+      const platform_id = profile?.id?.toString() || profile?.sub?.toString();
+      if (!user_mail || !platform_id) return false;
+
+      const dbUser = await findUserByPlatformID(platform_id);
       if (!dbUser) {
-        // 未登録の場合、登録する
-        await createUserInDatabase(user_mail, github_id, user.name, user.image);
+        // 如果用户不存在，创建新用户
+        await createUserInDatabase(user_mail, platform_id, user.name, user.image);
       }
       return true; // 登録を許せる
     },
     async jwt({ token, account, profile }) {
-      const github_id = profile?.id?.toString();
+      const platform_id = profile?.id?.toString() || profile?.sub?.toString();
 
       //　user_idをtokenに追加する
-      if (github_id) {
+      if (platform_id) {
 
-        const dbUser = await findUserByPlatformID(github_id);
+        const dbUser = await findUserByPlatformID(platform_id);
 
         token.user_id = dbUser?.user_id;
       }

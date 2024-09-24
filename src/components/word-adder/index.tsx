@@ -17,7 +17,6 @@ type StateType = {
 
 type Action =
     | { type: 'select'; payload: { left: number; top: number; selectedText: string } }
-    | { type: 'edit'; payload: { selectedText: string } }
     | { type: 'addToWordCards' }
     | { type: 'close' };
 
@@ -36,12 +35,6 @@ function reducer(state: StateType, action: Action): StateType {
                 state: 'selected',
                 left: action.payload.left,
                 top: action.payload.top,
-                selectedText: action.payload.selectedText,
-            };
-        case 'edit':
-            return {
-                ...state,
-                state: 'edited',
                 selectedText: action.payload.selectedText,
             };
         case 'addToWordCards':
