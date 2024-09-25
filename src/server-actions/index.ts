@@ -12,6 +12,7 @@ export async function askAI(input: string) {
         const { textStream } = await streamText({
             model: openai('gpt-4-turbo'),
             prompt: input,
+            temperature: 0.9
         });
 
         for await (const delta of textStream) {
@@ -24,7 +25,7 @@ export async function askAI(input: string) {
     return { output: stream.value };
 }
 
-export async function actionSignOut() {
+export async function Logout() {
     return signOut({
         redirectTo: "/"
     });

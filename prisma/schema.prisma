@@ -37,6 +37,7 @@ model user {
   create_time DateTime? @default(now()) @db.Timestamptz(6)
   update_time DateTime? @default(now()) @db.Timestamptz(6)
   github_id   String?   @db.VarChar(255)
+  profile     String?   @db.VarChar(100)
 }
 
 model word_card {

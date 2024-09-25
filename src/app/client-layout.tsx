@@ -9,7 +9,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { actionSignOut } from "@/server-actions";
+import { Logout } from "@/server-actions";
 import "remixicon/fonts/remixicon.css";
 
 export default function ClientLayout({
@@ -30,11 +30,8 @@ export default function ClientLayout({
         document.body.classList.toggle("dark");
     }
 
-    function handleArticleCLick() {
-    }
-
     async function handleLogout() {
-        await actionSignOut();
+        await Logout();
         router.push('/');
     }
 
@@ -44,7 +41,7 @@ export default function ClientLayout({
                 <Popover>
                     <PopoverTrigger asChild>
                         <Avatar className="h-10 w-10 cursor-pointer">
-                            <AvatarImage src={data?.user?.image || ""} alt="profile" />
+                            <AvatarImage src={data?.profile} alt="profile" />
                             <AvatarFallback>user</AvatarFallback>
                         </Avatar>
                     </PopoverTrigger>

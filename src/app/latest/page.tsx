@@ -27,13 +27,13 @@ export default async function Home() {
         <LocalCards />
         {
           memoCards.length === 0 ? (
-            <div className="flex mt-[10px] items-center justify-center bg-gradient-to-b from-blue-50 to-white dark:from-blue-900 dark:to-blue-800">
+            <div className="flex mt-[80px] items-center justify-center bg-gradient-to-b from-blue-50 to-white dark:from-blue-900 dark:to-blue-800">
               <div className="px-4 mx-auto text-center lg:px-8 sm:py-24 lg:py-32">
                 <h1 className="text-3xl font-bold tracking-tight text-black dark:text-white sm:text-5xl">
                   データが見つかりません
                 </h1>
                 <p className="mt-6 text-base leading-7 text-black dark:text-white">
-                  申し訳ありませんが、気になる日本語を入力してください
+                  気になる日本語を入力してください
                 </p>
               </div>
             </div>

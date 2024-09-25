@@ -61,7 +61,6 @@ export function LocalCard(props: ILoaclCard) {
                 dispatch(
                     setCardId(cardInfoRef.current?.id)
                 )
-                console.log("setCardId", cardInfoRef.current?.id)
             });
         }
     }, []);
@@ -153,7 +152,7 @@ export function LocalCard(props: ILoaclCard) {
             </div>
             {/* 朗読ボタン */}
             <div
-                className="play-button-bg dark:bg-bgDark dark:shadow-none rounded-[50%] w-12 h-12 absolute top-2 right-2 cursor-pointer"
+                className="border-solid border-[1px] border-[hsl(var(--input))] rounded-[50%] w-12 h-12 absolute top-2 right-2 cursor-pointer"
                 onClick={handlePlayBtn}
             >
                 <svg

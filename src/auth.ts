@@ -4,6 +4,10 @@ import GitHub from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
 import { prisma } from "@/prisma"
 
+function getRandomNumber() {
+  return Math.floor(Math.random() * 5) + 1;
+}
+
 export const findUserByPlatformID = async (platform_id: string) => {
   const user = await prisma.user.findFirst({
     where: {
@@ -27,6 +31,7 @@ export const createUserInDatabase = async (
       create_time: new Date(),
       update_time: new Date(),
       github_id: platform_id,
+      profile: `/assets/profiles/0${getRandomNumber()}.png`
     },
   });
   return newUser;
@@ -59,6 +64,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         const dbUser = await findUserByPlatformID(platform_id);
 
         token.user_id = dbUser?.user_id;
+        token.profile = dbUser?.profile;
       }
 
       return token;
@@ -66,8 +72,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
     async session({ session, token }) {
       const userId = token.user_id;
-      if (typeof userId === "string") {
+      const profile = token.profile;
+      if (typeof userId === "string" && typeof profile === "string") {
         session.userId = userId;
+        session.profile = profile;
       }
       // user_idをトークンからセッションに追加する
       return session;

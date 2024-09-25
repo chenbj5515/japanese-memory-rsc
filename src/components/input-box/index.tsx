@@ -1,10 +1,19 @@
 "use client"
 import React, { useRef } from "react";
 import { useDispatch } from "react-redux";
+import { Plus } from "lucide-react";
+import { readStreamableValue } from 'ai/rsc';
 import { addCard } from "@/store/local-cards-slice";
 import { insertPlainTextAtCursor } from "@/utils";
 import { useForceUpdate } from "@/hooks";
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import { askAI } from "@/server-actions";
 
 export function InputBox() {
   const editableRef = useRef<HTMLDivElement>(null);
@@ -48,11 +57,37 @@ export function InputBox() {
     }
   };
 
+  async function handleClick() {
+    if (editableRef.current) {
+      const { output } = await askAI("春夏秋冬、愛憎情仇、ランダムにテーマを選んで俳句を生成します。句読点は完全である必要がありますが、引用符は使用しないでください。まだ、その俳句だけを出してください、説明など全部要らないです。");
+      for await (const delta of readStreamableValue(output)) {
+        if (editableRef.current && delta) {
+          editableRef.current.textContent += delta;
+        }
+      }
+      forUpdate();
+    }
+  }
+
   return (
     <>
-      <Button className="absolute top-[-60px]">
-        ランダム日本語をあげてください
-      </Button>
+      <TooltipProvider>
+        <Tooltip delayDuration={350}>
+          <TooltipTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              className="w-10 h-10 p-0 absolute left-[-60px] top-[4px]"
+              onClick={handleClick}
+            >
+              <Plus className="h-6 w-6" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent className="bg-primary text-primary-foreground">
+            <p className="text-sm">ランダムに日本語の文が生成します。</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <div
         ref={editableRef}
         onPaste={handlePaste}
@@ -61,7 +96,7 @@ export function InputBox() {
         contentEditable
       />
       <div
-        className={`w-[32px] h-[32px] ${editableRef.current?.textContent ? "bg-[#d329d3] hover:bg-dark" : ""
+        className={`w-[32px] h-[32px] ${editableRef.current?.textContent ? "bg-[#000] hover:bg-dark" : ""
           } rounded-[0.375rem] absolute top-[50%] -translate-y-1/2 right-4`}
         onClick={() => handleSendBtnClick(editableRef.current?.textContent || "")}
       >
