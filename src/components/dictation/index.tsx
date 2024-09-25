@@ -68,7 +68,7 @@ export function Dictation(props: IProps) {
   }
 
   return (
-    <>
+    <div>
       <div className="dictation-check-container dark:shadow-dark-shadow w-[18px] h-[18px] mt-2 relative">
         <input
           ref={dictationCheckInputRef}
@@ -101,6 +101,6 @@ export function Dictation(props: IProps) {
           onFocus={handleFocus}
           onBlur={handleBlur}
         />
-    </>
+    </div>
   );
 }

@@ -1,8 +1,11 @@
 "use client"
 import React from "react";
 import { Dictation } from "@/components";
-import { updateMemoCardTranslation } from "./server-actions";
 import { Prisma } from "@prisma/client";
+import {
+  Card,
+} from "@/components/ui/card";
+import { updateMemoCardTranslation } from "./server-actions";
 
 export function Translation(props: Pick<Prisma.memo_cardGetPayload<{}>, 'id' | 'original_text' | 'translation'>) {
   const { id, original_text, translation } = props;
@@ -16,7 +19,7 @@ export function Translation(props: Pick<Prisma.memo_cardGetPayload<{}>, 'id' | '
 
   return (
     <>
-      <div className="card rounded-[20px] dark:bg-eleDark dark:text-white dark:shadow-dark-shadow p-5 w-[675px] width-92-675 mx-auto mt-10 relative">
+      <Card className="rounded-[20px] p-5 w-[675px] width-92-675 mx-auto mt-10 relative">
         <div
           suppressContentEditableWarning
           ref={translationTextRef}
@@ -29,7 +32,7 @@ export function Translation(props: Pick<Prisma.memo_cardGetPayload<{}>, 'id' | '
         {
           original_text ? <Dictation originalText={original_text} cardID={id} /> : null
         }
-      </div>
+      </Card>
     </>
   );
 }

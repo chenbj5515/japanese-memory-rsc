@@ -1,10 +1,15 @@
 "use client"
 import React from "react";
-import Link from 'next/link';
-import LiveIsland from "react-live-island";
+import { useRouter } from 'next/navigation';
+// import LiveIsland from "react-live-island";
 import { useSession } from "next-auth/react";
 import { Provider } from "react-redux";
 import store from "@/store";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { actionSignOut } from "@/server-actions";
 import "remixicon/fonts/remixicon.css";
 
 export default function ClientLayout({
@@ -14,6 +19,7 @@ export default function ClientLayout({
 }>) {
     const [theme, setTheme] = React.useState("light");
     const { data } = useSession();
+    const router = useRouter();
 
     function handleToggle() {
         if (theme === "dark") {
@@ -27,64 +33,48 @@ export default function ClientLayout({
     function handleArticleCLick() {
     }
 
+    async function handleLogout() {
+        await actionSignOut();
+        router.push('/');
+    }
+
     return (
         <>
-            <LiveIsland
-                className="flex justify-center items-center uppercase"
-                smallClassName="text-xs"
-                largeClassName="text-7xl"
-                initialAnimation
-            >
-                {(isSmall) =>
-                    isSmall ? (
-                        ""
-                    ) : (
-                        <div className="flex space-x-2 p-4">
-                            <Link
-                                href="/latest"
-                                className=" w-[72px] h-[72px] text-white text-center p-2 rounded-lg text-[12px] cursor-pointer"
-                            >
-                                <div>latest</div>
-                                <div className="mt-2">20</div>
-                            </Link>
-                            <Link
-                                href="/random"
-                                className=" w-[72px] h-[72px] text-white text-center p-2 rounded-lg text-[12px] cursor-pointer"
-                            >
-                                <div>random</div>
-                                <div className="mt-2">20</div>
-                            </Link>
-                            <Link
-                                href="/word-cards"
-                                className=" w-[72px] h-[72px] text-white text-center p-2 rounded-lg text-[12px] cursor-pointer"
-                            >
-                                <div>Word</div>
-                                <div className="mt-2">Cards</div>
-                            </Link>
-                            <Link
-                                href="/translations"
-                                className=" w-[72px] h-[72px] text-white text-center p-2 rounded-lg text-[12px] cursor-pointer"
-                            >
-                                <div>translate</div>
-                            </Link>
-                            <div
-                                className=" w-[72px] h-[72px] text-white text-center p-2 rounded-lg text-[12px] cursor-pointer"
-                                onClick={handleArticleCLick}
-                            >
-                                <div>articles</div>
-                            </div>
-                        </div>
-                    )
-                }
-            </LiveIsland>
-            <header className="p-[12px] justify-between items-center top-0 flex">
-                {
-                    data?.user?.image ? (
-                        <Link href="/latest">
-                            <img className="w-[36px] h-[36px] rounded-full" src={data?.user?.image} alt="/profile" />
-                        </Link>
-                    ) : null
-                }
+            <header className="p-[12px] justify-between items-center w-full fixed z-[200] top-0 flex">
+                <Popover>
+                    <PopoverTrigger asChild>
+                        <Avatar className="h-10 w-10 cursor-pointer">
+                            <AvatarImage src={data?.user?.image || ""} alt="profile" />
+                            <AvatarFallback>user</AvatarFallback>
+                        </Avatar>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-48 p-2">
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="w-full justify-start text-sm"
+                            onClick={handleLogout}
+                        >
+                            ログアウト
+                        </Button>
+                    </PopoverContent>
+                </Popover>
+                <Tabs defaultValue="latest" className="w-[400px]">
+                    <TabsList className="grid w-full grid-cols-4">
+                        <TabsTrigger value="latest" onClick={() => router.push('/latest')}>
+                            latest
+                        </TabsTrigger>
+                        <TabsTrigger value="random" onClick={() => router.push('/random')}>
+                            random
+                        </TabsTrigger>
+                        <TabsTrigger value="word cards" onClick={() => router.push('/word-cards')}>
+                            word cards
+                        </TabsTrigger>
+                        <TabsTrigger value="translation" onClick={() => router.push('/translation')}>
+                            translation
+                        </TabsTrigger>
+                    </TabsList>
+                </Tabs >
                 <label className="text-base relative inline-block w-[56px] h-[28px]">
                     <input
                         onChange={handleToggle}
@@ -97,7 +87,9 @@ export default function ClientLayout({
                 </label>
             </header>
             <Provider store={store}>
-                {children}
+                <main className="mt-[64px]">
+                    {children}
+                </main>
             </Provider>
         </>
     )

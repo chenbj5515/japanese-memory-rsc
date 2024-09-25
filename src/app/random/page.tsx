@@ -15,6 +15,9 @@ export default async function Home() {
     const randomOffset = Math.floor(Math.random() * (count - 20));
 
     const memoCards = await prisma.memo_card.findMany({
+        where: {
+            user_id: session.userId,
+        },
         skip: randomOffset,
         take: 20,
     });

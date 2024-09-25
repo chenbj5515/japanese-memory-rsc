@@ -3,6 +3,7 @@
 import { streamText } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { createStreamableValue } from 'ai/rsc';
+import { signOut } from "@/auth";
 
 export async function askAI(input: string) {
     const stream = createStreamableValue('');
@@ -21,4 +22,10 @@ export async function askAI(input: string) {
     })();
 
     return { output: stream.value };
+}
+
+export async function actionSignOut() {
+    return signOut({
+        redirectTo: "/"
+    });
 }

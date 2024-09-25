@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { addCard } from "@/store/local-cards-slice";
 import { insertPlainTextAtCursor } from "@/utils";
 import { useForceUpdate } from "@/hooks";
+import { Button } from "@/components/ui/button";
 
 export function InputBox() {
   const editableRef = useRef<HTMLDivElement>(null);
@@ -49,6 +50,9 @@ export function InputBox() {
 
   return (
     <>
+      <Button className="absolute top-[-60px]">
+        ランダム日本語をあげてください
+      </Button>
       <div
         ref={editableRef}
         onPaste={handlePaste}

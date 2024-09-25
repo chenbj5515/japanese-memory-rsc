@@ -6,6 +6,9 @@ import { setCardId } from "@/store/card-id-slice";
 import { getTimeAgo, speakText } from "@/utils";
 import { Dictation } from "@/components/dictation";
 import { useTripleRightClick, useAudioRecorder } from "@/hooks";
+import {
+    Card,
+} from "@/components/ui/card";
 import { deleteMemoCard, updateMemoCardTranslation, updatePronunciation } from "./server-actions";
 
 export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
@@ -87,16 +90,16 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     }
 
     return (
-        <div
+        <Card
             ref={cardRef}
-            className="card rounded-[20px] dark:bg-eleDark dark:text-white dark:shadow-dark-shadow p-5 width-92-675 mx-auto mt-10 relative leading-[1.9] tracking-[1.5px]"
+            className="p-5 width-92-675 mx-auto mt-14 relative leading-[1.9] tracking-[1.5px]"
         >
             <div className="text-[14px] absolute -top-[30px] left-1 text-[gray]">
                 {create_time ? getTimeAgo(create_time.toString()) : ""}
             </div>
             {/* 朗読ボタン */}
             <div
-                className="play-button-bg dark:bg-bgDark dark:shadow-none rounded-[50%] w-12 h-12 absolute top-2 right-2 cursor-pointer"
+                className="border-solid border-[1px] border-[hsl(var(--input))] play-button-bg dark:bg-bgDark dark:shadow-none rounded-[50%] w-12 h-12 absolute top-2 right-2 cursor-pointer"
                 onClick={handlePlayBtn}
             >
                 <svg
@@ -180,6 +183,6 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
                     ) : null
                 }
             </div>
-        </div>
+        </Card>
     );
 }

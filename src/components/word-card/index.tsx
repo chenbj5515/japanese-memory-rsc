@@ -2,6 +2,10 @@
 import { speakText } from "@/utils";
 import { TWordCard } from "@/app/word-cards/page";
 import { useTripleRightClick } from "@/hooks";
+import {
+    Card,
+} from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { deleteWordCard } from "./server-actions";
 
 interface IProps {
@@ -25,9 +29,9 @@ export function WordCard(props: IProps) {
     }
 
     return (
-        <div ref={cardRef} className="word-card w-[228px] h-[150px] rounded-[8px] dark:bg-eleDark dark:text-white dark:shadow-dark-shadow p-5 mt-10 relative">
+        <Card ref={cardRef} className="word-card w-[228px] h-[150px] rounded-[8px] dark:bg-eleDark dark:text-white p-5 mt-10 relative">
             <div
-                className="play-button-bg dark:bg-bgDark dark:shadow-none rounded-[50%] w-8 h-8 absolute top-2 right-2 cursor-pointer"
+                className="play-button-bg rounded-[50%] w-8 h-8 absolute top-2 right-2 cursor-pointer"
                 onClick={() => handlePlayBtn(word)}
             >
                 <svg
@@ -53,19 +57,21 @@ export function WordCard(props: IProps) {
                 {meaning}
             </div>
             <div className="flex justify-between w-[195px] absolute bottom-4">
-                <button
+                <Button
                     onClick={() => onRecognize(id)}
-                    className="btn2 whitespace-nowrap shadow-little-button dark:shadow-[#353232] dark:bg-bgDark"
+                    variant="outline"
+                    // className="btn2 whitespace-nowrap shadow-little-button dark:shadow-[#353232] dark:bg-bgDark"
                 >
                     わかる
-                </button>
-                <button
+                </Button>
+                <Button
                     onClick={() => onUnRecognize(wordCardInfo)}
-                    className="btn2 whitespace-nowrap shadow-little-button dark:shadow-[#353232] dark:bg-bgDark"
+                    variant="outline"
+                    // className="btn2 whitespace-nowrap shadow-little-button dark:shadow-[#353232] dark:bg-bgDark"
                 >
                     分からない
-                </button>
+                </Button>
             </div>
-        </div>
+        </Card>
     )
 }

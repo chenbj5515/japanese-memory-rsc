@@ -7,6 +7,9 @@ import { Dictation } from "@/components/dictation";
 import { ILoaclCard, deleteCard } from "@/store/local-cards-slice";
 import { setCardId } from "@/store/card-id-slice";
 import { useRefState, useTripleRightClick, useAudioRecorder } from "@/hooks";
+import {
+    Card,
+} from "@/components/ui/card";
 import { insertMemoCard, deleteMemoCard, updateMemoCardTranslation, updatePronunciation } from "./server-actions";
 import { useAIGenerate } from "./hooks";
 
@@ -141,9 +144,9 @@ export function LocalCard(props: ILoaclCard) {
     }
 
     return (
-        <div
+        <Card
             ref={ref}
-            className="card rounded-[20px] dark:bg-eleDark dark:text-white dark:shadow-dark-shadow p-5 width-92-675 mx-auto mt-10 relative leading-[1.9] tracking-[1.5px]"
+            className="rounded-[20px] p-5 width-92-675 mx-auto mt-10 relative leading-[1.9] tracking-[1.5px]"
         >
             <div className="text-[14px] absolute -top-[30px] left-1 text-[gray]">
                 {/* {create_time ? getTimeAgo(create_time.toString()) : ""} */}
@@ -232,6 +235,6 @@ export function LocalCard(props: ILoaclCard) {
                     ) : null
                 }
             </div>
-        </div>
+        </Card>
     );
 }
