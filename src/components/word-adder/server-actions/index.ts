@@ -7,7 +7,7 @@ export async function insertWordCard(word: string, meaning: string, memoCardId: 
     let newWordCard = {}
 
     if (session?.userId) {
-         newWordCard = await prisma.word_card.create({
+        newWordCard = await prisma.word_card.create({
             data: {
                 word: word,
                 meaning: meaning,
