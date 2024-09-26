@@ -59,7 +59,7 @@ export function InputBox() {
 
   async function handleClick() {
     if (editableRef.current) {
-      const { output } = await askAI("春夏秋冬、愛憎情仇、ランダムにテーマを選んで俳句を生成します。句読点は完全である必要がありますが、引用符は使用しないでください。まだ、その俳句だけを出してください、説明など全部要らないです。");
+      const { output } = await askAI("春夏秋冬、愛憎情仇、ランダムにテーマを選んで俳句を生成します。句読点は完全である必要がありますが、引用符は使用しないでください。まだ、その俳句だけを出してください、説明など全部要らないです。", 0.9);
       for await (const delta of readStreamableValue(output)) {
         if (editableRef.current && delta) {
           editableRef.current.textContent += delta;

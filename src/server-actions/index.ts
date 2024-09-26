@@ -5,14 +5,14 @@ import { openai } from '@ai-sdk/openai';
 import { createStreamableValue } from 'ai/rsc';
 import { signOut } from "@/auth";
 
-export async function askAI(input: string) {
+export async function askAI(input: string, temperature?: number) {
     const stream = createStreamableValue('');
 
     (async () => {
         const { textStream } = await streamText({
             model: openai('gpt-4-turbo'),
             prompt: input,
-            temperature: 0.9
+            temperature: temperature || 0
         });
 
         for await (const delta of textStream) {

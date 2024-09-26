@@ -3,8 +3,8 @@ import React from "react";
 import { useRouter } from 'next/navigation';
 // import LiveIsland from "react-live-island";
 import { useSession } from "next-auth/react";
-import { Provider } from "react-redux";
-import store from "@/store";
+import { useDispatch } from "react-redux";
+import { clearLocalCards } from "@/store/local-cards-slice";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
@@ -20,6 +20,7 @@ export default function ClientLayout({
     const [theme, setTheme] = React.useState("light");
     const { data } = useSession();
     const router = useRouter();
+    const dispatch = useDispatch();
 
     function handleToggle() {
         if (theme === "dark") {
@@ -33,6 +34,13 @@ export default function ClientLayout({
     async function handleLogout() {
         await Logout();
         router.push('/');
+    }
+
+    function handleRouteChange(nextRoute: string) {
+        dispatch(
+            clearLocalCards()
+        );
+        router.push(nextRoute)
     }
 
     return (
@@ -58,16 +66,16 @@ export default function ClientLayout({
                 </Popover>
                 <Tabs defaultValue="latest" className="w-[400px]">
                     <TabsList className="grid w-full grid-cols-4">
-                        <TabsTrigger value="latest" onClick={() => router.push('/latest')}>
+                        <TabsTrigger value="latest" onClick={() => handleRouteChange("latest")}>
                             latest
                         </TabsTrigger>
-                        <TabsTrigger value="random" onClick={() => router.push('/random')}>
+                        <TabsTrigger value="random" onClick={() => handleRouteChange("random")}>
                             random
                         </TabsTrigger>
-                        <TabsTrigger value="word cards" onClick={() => router.push('/word-cards')}>
+                        <TabsTrigger value="word cards" onClick={() => handleRouteChange("word-cards")}>
                             word cards
                         </TabsTrigger>
-                        <TabsTrigger value="translation" onClick={() => router.push('/translation')}>
+                        <TabsTrigger value="translation" onClick={() => handleRouteChange("translation")}>
                             translation
                         </TabsTrigger>
                     </TabsList>
@@ -83,11 +91,9 @@ export default function ClientLayout({
                     <span className="peer-checked:bg-blue absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-black transition duration-500 rounded-3xl"></span>
                 </label>
             </header>
-            <Provider store={store}>
-                <main className="mt-[64px]">
-                    {children}
-                </main>
-            </Provider>
+            <main className="mt-[64px]">
+                {children}
+            </main>
         </>
     )
 }
