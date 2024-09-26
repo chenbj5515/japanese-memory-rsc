@@ -2,8 +2,8 @@
 import React from "react";
 import { Prisma } from '@prisma/client';
 import { MemoCard, WordCard } from "@/components";
-import { updateReviewTimes } from "./server-actions";
-import { TWordCard } from "./page";
+import { updateReviewTimes } from "../_server-actions";
+import { TWordCard } from "../page";
 
 interface IProps {
     wordCards: TWordCard[]
