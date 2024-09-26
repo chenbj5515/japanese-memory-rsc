@@ -5,6 +5,8 @@ import { useSelector, TypedUseSelectorHook } from "react-redux";
 import { RootState } from "@/store";
 import { askAI } from "@/server-actions";
 import { insertWordCard } from "./server-actions";
+import { Card } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
@@ -43,7 +45,6 @@ function reducer(state: StateType, action: Action): StateType {
                 state: 'added',
                 left: -100,
                 top: -100,
-                selectedText: '',
             };
         case 'close':
             return {
@@ -169,10 +170,10 @@ export function WordCardAdder() {
     }
 
     return (
-        <div
+        <Card
             ref={containerRef}
-            className="card max-w-[240px] z-[15] rounded-[6px] text-[15px] dark:bg-eleDark dark:text-white dark:shadow-dark-shadow p-3 mx-auto fixed"
-            style={{ top, left, visibility: selectedText ? "visible" : "hidden" }}
+            className="max-w-[240px] z-[15] rounded-[6px] text-[15px] p-3 mx-auto fixed"
+            style={{ top, left, visibility: state === "selected" ? "visible" : "hidden" }}
         >
             <div>語句：{selectedText}</div>
             <div className="flex">
@@ -185,13 +186,14 @@ export function WordCardAdder() {
             </div>
 
             <div className="flex justify-center mt-2">
-                <button
-                    className="bg-white text-black rounded-[10px] text-sm font-semibold py-2 px-4 cursor-pointer border border-black shadow-none hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[1px_3px_0_0_black] active:translate-y-1 active:translate-x-0.5 active:shadow-none"
+                <Button
+                    variant="outline"
+                    // className="bg-white text-black rounded-[10px] text-sm font-semibold py-2 px-4 cursor-pointer border border-black shadow-none hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[1px_3px_0_0_black] active:translate-y-1 active:translate-x-0.5 active:shadow-none"
                     onClick={handleAddWord}
                 >
                     単語帳に追加
-                </button>
+                </Button>
             </div>
-        </div>
+        </Card>
     )
 }

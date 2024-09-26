@@ -60,14 +60,12 @@ export function WordCard(props: IProps) {
                 <Button
                     onClick={() => onRecognize(id)}
                     variant="outline"
-                    // className="btn2 whitespace-nowrap shadow-little-button dark:shadow-[#353232] dark:bg-bgDark"
                 >
                     わかる
                 </Button>
                 <Button
                     onClick={() => onUnRecognize(wordCardInfo)}
                     variant="outline"
-                    // className="btn2 whitespace-nowrap shadow-little-button dark:shadow-[#353232] dark:bg-bgDark"
                 >
                     分からない
                 </Button>

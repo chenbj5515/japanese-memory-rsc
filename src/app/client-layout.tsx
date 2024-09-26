@@ -1,6 +1,6 @@
 "use client"
 import React from "react";
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 // import LiveIsland from "react-live-island";
 import { useSession } from "next-auth/react";
 import { useDispatch } from "react-redux";
@@ -21,6 +21,7 @@ export default function ClientLayout({
     const { data } = useSession();
     const router = useRouter();
     const dispatch = useDispatch();
+    const pathName = usePathname();
 
     function handleToggle() {
         if (theme === "dark") {
@@ -64,7 +65,7 @@ export default function ClientLayout({
                         </Button>
                     </PopoverContent>
                 </Popover>
-                <Tabs defaultValue="latest" className="w-[400px]">
+                <Tabs defaultValue={pathName.replace(/\//g, '').replace(/-/g, ' ')} className="w-[400px]">
                     <TabsList className="grid w-full grid-cols-4">
                         <TabsTrigger value="latest" onClick={() => handleRouteChange("latest")}>
                             latest

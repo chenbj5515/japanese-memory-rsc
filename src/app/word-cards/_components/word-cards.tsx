@@ -112,24 +112,26 @@ export function WordCards(props: IProps) {
                 </div>
             ) : null}
             <div ref={ref} className="w-full">
-                {rows.map((row, idx) => (
-                    <div key={idx} className={`flex ${idx === rows.length - 1 ? "" : "justify-between"}`}>
-                        {
-                            row.map(cardInfo => (
-                                <div
-                                    key={cardInfo.id}
-                                    style={{ marginRight: `${idx === rows.length - 1 ? `${intervalRef.current}px` : "0"}` }}
-                                >
-                                    <WordCard
-                                        wordCardInfo={cardInfo}
-                                        onRecognize={handleRecognizeClick}
-                                        onUnRecognize={handleUnRecognizeClick}
-                                    />
-                                </div>
-                            ))
-                        }
-                    </div>
-                ))}
+                {
+                    rows.map((row, idx) => (
+                        <div key={idx} className={`flex ${idx === rows.length - 1 ? "" : "justify-between"}`}>
+                            {
+                                row.map(cardInfo => (
+                                    <div
+                                        key={cardInfo.id}
+                                        style={{ marginRight: `${idx === rows.length - 1 ? `${intervalRef.current}px` : "0"}` }}
+                                    >
+                                        <WordCard
+                                            wordCardInfo={cardInfo}
+                                            onRecognize={handleRecognizeClick}
+                                            onUnRecognize={handleUnRecognizeClick}
+                                        />
+                                    </div>
+                                ))
+                            }
+                        </div>
+                    ))
+                }
             </div>
         </>
     )
