@@ -6,9 +6,6 @@ import { Translation } from "@/components";
 
 export default async function App() {
     const session = await auth();
-    if (!session?.userId) {
-        redirect("/api/auth/signin")
-    }
 
     const countResult = await prisma.$queryRaw<{ count: bigint }[]>`
         SELECT COUNT(*) as count FROM memo_card WHERE LENGTH(original_text) < 80
@@ -17,7 +14,7 @@ export default async function App() {
 
     const latestCardsPromise = prisma.$queryRaw<Prisma.memo_cardGetPayload<{}>[]>`
         SELECT * FROM memo_card 
-        WHERE LENGTH(original_text) < 80 AND user_id = ${session.userId}
+        WHERE LENGTH(original_text) < 80 AND user_id = ${session?.userId}
         ORDER BY create_time DESC 
         LIMIT 10
     `;
@@ -26,7 +23,7 @@ export default async function App() {
 
     const randomCardsPromise = prisma.$queryRaw<Prisma.memo_cardGetPayload<{}>[]>`
         SELECT * FROM memo_card 
-        WHERE LENGTH(original_text) < 80 AND user_id = ${session.userId}
+        WHERE LENGTH(original_text) < 80 AND user_id = ${session?.userId}
         OFFSET ${randomSkip} 
         LIMIT 10
     `;

@@ -6,9 +6,6 @@ import { MemoCards, LocalCards, InputBox, WordCardAdder } from "@/components";
 
 export default async function Home() {
     const session = await auth()
-    if (!session?.userId) {
-        redirect("/api/auth/signin")
-    }
 
     const count = await prisma.memo_card.count();
 
@@ -16,7 +13,7 @@ export default async function Home() {
 
     const memoCards = await prisma.memo_card.findMany({
         where: {
-            user_id: session.userId,
+            user_id: session?.userId,
         },
         skip: randomOffset,
         take: 20,

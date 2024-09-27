@@ -11,13 +11,10 @@ export type TWordCard = Prisma.word_cardGetPayload<{}> & {
 export default async function App() {
     const count = await prisma.word_card.count();
     const session = await auth()
-    if (!session?.userId) {
-        redirect("/api/auth/signin")
-    }
 
     const latestCardsPromise = prisma.word_card.findMany({
         where: {
-            user_id: session.userId,
+            user_id: session?.userId,
         },
         orderBy: {
             create_time: 'desc',
@@ -31,7 +28,7 @@ export default async function App() {
     const randomSkip = Math.max(0, Math.floor(Math.random() * (count - 10)));
     const randomCardsPromise = prisma.word_card.findMany({
         where: {
-            user_id: session.userId,
+            user_id: session?.userId,
         },
         skip: randomSkip,
         take: 10,

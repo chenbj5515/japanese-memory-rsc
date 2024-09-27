@@ -1,18 +1,14 @@
 import React from "react"
-import { redirect } from "next/navigation"
 import { auth } from "@/auth"
 import { prisma } from "@/prisma"
 import { MemoCards, LocalCards, InputBox, WordCardAdder } from "@/components";
 
 export default async function Home() {
   const session = await auth()
-  if (!session?.userId) {
-    redirect("/api/auth/signin")
-  }
 
   const memoCards = await prisma.memo_card.findMany({
     where: {
-      user_id: session.userId,
+      user_id: session?.userId,
     },
     orderBy: {
       create_time: 'desc',
@@ -33,5 +29,3 @@ export default async function Home() {
     </>
   )
 }
-
-export const dynamic = 'force-dynamic';
