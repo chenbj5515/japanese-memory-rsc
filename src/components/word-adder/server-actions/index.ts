@@ -3,7 +3,6 @@ import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 import { revalidatePath } from 'next/cache';
 
-
 export async function insertWordCard(word: string, meaning: string, memoCardId: string) {
     const session = await auth();
     let newWordCard = {}
@@ -18,7 +17,7 @@ export async function insertWordCard(word: string, meaning: string, memoCardId: 
                 memo_card_id: memoCardId,
             },
         });
-        // revalidatePath("/word-cards")
+        revalidatePath("/word-cards")
     }
 
     return JSON.stringify(newWordCard);
