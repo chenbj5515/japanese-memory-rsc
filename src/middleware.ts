@@ -15,6 +15,7 @@ export const config = {
         '/latest',
         '/random',
         '/translation',
-        '/word-cards'
+        '/word-cards',
+        '/test',
     ],
 };
