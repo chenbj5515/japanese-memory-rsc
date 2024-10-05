@@ -2,6 +2,7 @@
 import React from "react";
 import { useRouter, usePathname } from 'next/navigation';
 // import LiveIsland from "react-live-island";
+import Link from 'next/link';
 import { useSession } from "next-auth/react";
 import { useDispatch } from "react-redux";
 import { clearLocalCards } from "@/store/local-cards-slice";
@@ -67,17 +68,17 @@ export default function ClientLayout({
                 </Popover>
                 <Tabs defaultValue={pathName.replace(/\//g, '').replace(/-/g, ' ')} className="w-[400px]">
                     <TabsList className="grid w-full grid-cols-4">
-                        <TabsTrigger value="latest" onClick={() => handleRouteChange("latest")}>
-                            latest
+                        <TabsTrigger value="latest">
+                            <Link prefetch href="/latest">latest</Link>
                         </TabsTrigger>
-                        <TabsTrigger value="random" onClick={() => handleRouteChange("random")}>
-                            random
+                        <TabsTrigger value="random">
+                            <Link prefetch href="/random">random</Link>
                         </TabsTrigger>
-                        <TabsTrigger value="word cards" onClick={() => handleRouteChange("word-cards")}>
-                            word cards
+                        <TabsTrigger value="word cards">
+                            <Link prefetch href="/word-cards">word cards</Link>
                         </TabsTrigger>
-                        <TabsTrigger value="translation" onClick={() => handleRouteChange("translation")}>
-                            translation
+                        <TabsTrigger value="translation">
+                            <Link prefetch href="/translation">translation</Link>
                         </TabsTrigger>
                     </TabsList>
                 </Tabs >

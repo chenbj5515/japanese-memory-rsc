@@ -1,5 +1,4 @@
 import React from "react"
-import { redirect } from "next/navigation"
 import { auth } from "@/auth"
 import { prisma } from "@/prisma"
 import { MemoCards, LocalCards, InputBox, WordCardAdder } from "@/components";
