@@ -66,19 +66,19 @@ export default function ClientLayout({
                         </Button>
                     </PopoverContent>
                 </Popover>
-                <Tabs defaultValue={pathName.replace(/\//g, '').replace(/-/g, ' ')} className="w-[400px]">
+                <Tabs value={pathName.replace(/\//g, '').replace(/-/g, ' ')} className="w-[400px]">
                     <TabsList className="grid w-full grid-cols-4">
-                        <TabsTrigger value="latest">
-                            <Link prefetch href="/latest">latest</Link>
+                        <TabsTrigger className="p-0 h-full" value="latest">
+                            <Link className="w-full h-full leading-[28px]" prefetch href="/latest">最新</Link>
                         </TabsTrigger>
-                        <TabsTrigger value="random">
-                            <Link prefetch href="/random">random</Link>
+                        <TabsTrigger className="p-0 h-full leading-[28px]" value="random">
+                            <Link className="w-full" prefetch href="/random">ラダム</Link>
                         </TabsTrigger>
-                        <TabsTrigger value="word cards">
-                            <Link prefetch href="/word-cards">word cards</Link>
+                        <TabsTrigger className="p-0 h-full leading-[28px]" value="word cards">
+                            <Link className="w-full" prefetch href="/word-cards">単語帳</Link>
                         </TabsTrigger>
-                        <TabsTrigger value="translation">
-                            <Link prefetch href="/translation">translation</Link>
+                        <TabsTrigger className="p-0 h-full leading-[28px]" value="translation">
+                            <Link className="w-full" prefetch href="/translation">翻訳練習</Link>
                         </TabsTrigger>
                     </TabsList>
                 </Tabs >
