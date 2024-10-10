@@ -82,7 +82,7 @@ export default function ClientLayout({
                         </TabsTrigger>
                     </TabsList>
                 </Tabs >
-                <label className="hidden md:block text-base relative inline-block w-[56px] h-[28px]">
+                <label className="hidden md:inline-block text-base relative w-[56px] h-[28px]">
                     <input
                         onChange={handleToggle}
                         checked={theme === "light"}

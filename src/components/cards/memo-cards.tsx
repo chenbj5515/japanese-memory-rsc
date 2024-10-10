@@ -23,7 +23,7 @@ export function MemoCards(props: IProps) {
     return (
         <>
             {memoCards?.map(card => (
-                <div key={card.id}>
+                <div className="mx-auto mt-14 width-92-675" key={card.id}>
                     <MemoCard {...card} onDelete={handleDelete} />
                 </div>
             ))}

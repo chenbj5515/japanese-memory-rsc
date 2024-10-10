@@ -77,7 +77,7 @@ export function InputBox() {
             <Button
               variant="outline"
               size="icon"
-              className="hidden sm:block w-10 h-10 p-0 absolute left-[-60px] top-[4px]"
+              className="hidden sm:inline-flex w-10 h-10 p-0 absolute left-[-60px] top-[4px]"
               onClick={handleClick}
             >
               <Plus className="h-6 w-6" />

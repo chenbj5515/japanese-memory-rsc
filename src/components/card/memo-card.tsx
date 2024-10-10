@@ -92,7 +92,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     return (
         <Card
             ref={cardRef}
-            className="p-5 width-92-675 mx-auto mt-14 relative leading-[1.9] tracking-[1.5px]"
+            className="p-5 relative leading-[1.9] tracking-[1.5px]"
         >
             <div className="text-[14px] absolute -top-[30px] left-1 text-[gray]">
                 {create_time ? getTimeAgo(create_time.toString()) : ""}
