@@ -17,8 +17,8 @@ export async function insertWordCard(word: string, meaning: string, memoCardId: 
                 memo_card_id: memoCardId,
             },
         });
-        // revalidatePath("/word-cards")]
-        revalidateTag("wordCards")
+        revalidatePath("/word-cards")
+        // revalidateTag("wordCards")
     }
 
     return JSON.stringify(newWordCard);
