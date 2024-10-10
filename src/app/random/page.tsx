@@ -1,34 +1,22 @@
 import React from "react"
-import { unstable_cache } from "next/cache"
 import { auth } from "@/auth"
 import { prisma } from "@/prisma"
 import { MemoCards, LocalCards, InputBox, WordCardAdder } from "@/components";
 
-const getRandomMemoCards = unstable_cache(
-    async (session) => {
-        const count = await prisma.memo_card.count();
-
-        const randomOffset = Math.floor(Math.random() * (count - 20));
-    
-        const memoCards = await prisma.memo_card.findMany({
-            where: {
-                user_id: session?.userId,
-            },
-            skip: randomOffset,
-            take: 20,
-        });
-        
-        return memoCards;
-    },
-    [],
-    {
-        tags: ["randomMemoCards"]
-    }
-)
-
 export default async function Home() {
     const session = await auth()
-    const memoCards = await getRandomMemoCards(session);
+
+    const count = await prisma.memo_card.count();
+
+    const randomOffset = Math.floor(Math.random() * (count - 20));
+
+    const memoCards = await prisma.memo_card.findMany({
+        where: {
+            user_id: session?.userId,
+        },
+        skip: randomOffset,
+        take: 20,
+    });
 
     return (
         <>
