@@ -15,6 +15,8 @@ export function Dictation(props: IProps) {
   const inputContentRef = React.useRef("");
   const dictationCheckInputRef = React.useRef<HTMLInputElement>(null);
 
+  const answerFinished = dictationCheckInputRef.current?.checked;
+
   function handleDictationChange() {
     inputContentRef.current = dictationRef.current?.textContent || "";
   }
@@ -32,7 +34,7 @@ export function Dictation(props: IProps) {
         result === -1
           ? "text-wrong w-full break-words pointer-events-none"
           : result === 0
-          ? "text-correct w-full break-words pointer-events-none"
+          ? "w-full break-words pointer-events-none"
           : ""
       }">${text}</span>`;
     }).join("");
@@ -95,7 +97,7 @@ export function Dictation(props: IProps) {
       <div
           suppressContentEditableWarning
           ref={dictationRef}
-          className="dictation-input dark:bg-bgDark dark:shadow-none w-full mt-4 text-[15px] min-h-[40px]"
+          className={`dictation-input ${answerFinished ? "text-gray" : ""} dark:bg-bgDark dark:shadow-none w-full mt-4 text-[15px] min-h-[40px]`}
           contentEditable
           onInput={handleDictationChange}
           onFocus={handleFocus}

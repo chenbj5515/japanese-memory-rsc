@@ -50,7 +50,7 @@ export default function ClientLayout({
             <header className="p-[12px] justify-between items-center w-full fixed z-[200] top-0 flex">
                 <Popover>
                     <PopoverTrigger asChild>
-                        <Avatar className="h-10 w-10 cursor-pointer">
+                        <Avatar className="hidden sm:block  h-10 w-10 cursor-pointer">
                             <AvatarImage src={data?.profile} alt="profile" />
                             <AvatarFallback>user</AvatarFallback>
                         </Avatar>
@@ -82,7 +82,7 @@ export default function ClientLayout({
                         </TabsTrigger>
                     </TabsList>
                 </Tabs >
-                <label className="text-base relative inline-block w-[56px] h-[28px]">
+                <label className="hidden md:block text-base relative inline-block w-[56px] h-[28px]">
                     <input
                         onChange={handleToggle}
                         checked={theme === "light"}

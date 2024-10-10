@@ -357,7 +357,7 @@ main,
 }
 
 .dictation-input:focus {
-  outline-color: transparent;
+  outline-color: #A9A9A9;
 }
 
 .placeholder {

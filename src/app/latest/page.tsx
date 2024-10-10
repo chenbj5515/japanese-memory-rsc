@@ -9,6 +9,7 @@ export default async function Home() {
   const memoCards = await prisma.memo_card.findMany({
     where: {
       user_id: session?.userId,
+      review_times: 0
     },
     orderBy: {
       create_time: 'desc',
