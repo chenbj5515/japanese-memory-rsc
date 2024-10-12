@@ -72,7 +72,7 @@ export default function ClientLayout({
                             <Link className="w-full h-full leading-[28px]" prefetch href="/latest">最新</Link>
                         </TabsTrigger>
                         <TabsTrigger className="p-0 h-full leading-[28px]" value="random">
-                            <Link className="w-full" prefetch href="/random">ラダム</Link>
+                            <Link className="w-full" prefetch href="/random">ランダム</Link>
                         </TabsTrigger>
                         <TabsTrigger className="p-0 h-full leading-[28px]" value="word cards">
                             <Link className="w-full" prefetch href="/word-cards">単語帳</Link>
