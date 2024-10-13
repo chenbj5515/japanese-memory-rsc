@@ -7,9 +7,7 @@ import { Dictation } from "@/components/dictation";
 import { ILoaclCard, deleteCard } from "@/store/local-cards-slice";
 import { setCardId } from "@/store/card-id-slice";
 import { useRefState, useTripleRightClick, useAudioRecorder } from "@/hooks";
-import {
-    Card,
-} from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { insertMemoCard, deleteMemoCard, updateMemoCardTranslation, updatePronunciation } from "./server-actions";
 import { useAIGenerate } from "./hooks";
 

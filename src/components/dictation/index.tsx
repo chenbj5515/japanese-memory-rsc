@@ -31,11 +31,13 @@ export function Dictation(props: IProps) {
     console.log(diff, "diff=============")
     const htmlString = diff.map(([result, text]) => {
       return `<span class="${
-        result === -1 || result === 1
+        result === -1
           ? "text-wrong w-full break-words pointer-events-none"
-          : result === 0
-          ? "w-full break-words pointer-events-none"
-          : ""
+          : result === 1
+            ? "text-correct w-full break-words pointer-events-none"
+            : result === 0
+              ? "w-full break-words pointer-events-none"
+              : ""
       }">${text}</span>`;
     }).join("");
     // ユーザー入力内容が正しい
