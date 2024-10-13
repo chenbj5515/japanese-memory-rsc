@@ -1,5 +1,6 @@
 "use client"
 import React from "react";
+import { usePathname } from 'next/navigation';
 import { readStreamableValue } from 'ai/rsc';
 import { useSelector, TypedUseSelectorHook } from "react-redux";
 import { RootState } from "@/store";
@@ -66,6 +67,7 @@ function reducer(state: StateType, action: Action): StateType {
 export function WordCardAdder() {
     const containerRef = React.useRef<HTMLDivElement>(null);
     const { cardId } = useTypedSelector((state: RootState) => state.cardIdSlice);
+    const pathName = usePathname();
 
     const meaningTextRef = React.useRef<HTMLDivElement>(null);
     const [{
@@ -98,7 +100,7 @@ export function WordCardAdder() {
 
     async function effectInsertWordCard() {
         if (meaningTextRef.current?.textContent) {
-            insertWordCard(selectedText, meaningTextRef.current.textContent, cardId);
+            insertWordCard(selectedText, meaningTextRef.current.textContent, cardId, pathName === "/random");
         }
     }
 
@@ -188,7 +190,6 @@ export function WordCardAdder() {
             <div className="flex justify-center mt-2">
                 <Button
                     variant="outline"
-                    // className="bg-white text-black rounded-[10px] text-sm font-semibold py-2 px-4 cursor-pointer border border-black shadow-none hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[1px_3px_0_0_black] active:translate-y-1 active:translate-x-0.5 active:shadow-none"
                     onClick={handleAddWord}
                 >
                     単語帳に追加

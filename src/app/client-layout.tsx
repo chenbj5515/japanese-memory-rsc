@@ -1,7 +1,6 @@
 "use client"
 import React from "react";
 import { useRouter, usePathname } from 'next/navigation';
-// import LiveIsland from "react-live-island";
 import Link from 'next/link';
 import { useSession } from "next-auth/react";
 import { useDispatch } from "react-redux";
