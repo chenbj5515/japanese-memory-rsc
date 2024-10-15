@@ -8,7 +8,7 @@ import { ILoaclCard, deleteCard } from "@/store/local-cards-slice";
 import { setCardId } from "@/store/card-id-slice";
 import { useRefState, useTripleRightClick, useAudioRecorder } from "@/hooks";
 import { Card } from "@/components/ui/card";
-import { insertMemoCard, deleteMemoCard, updateMemoCardTranslation, updatePronunciation } from "./server-actions";
+import { insertMemoCard, deleteMemoCard, updateMemoCardTranslation, updatePronunciation, updateOriginalText } from "./server-actions";
 import { useAIGenerate } from "./hooks";
 
 export function LocalCard(props: ILoaclCard) {
@@ -20,6 +20,7 @@ export function LocalCard(props: ILoaclCard) {
     const [isFocused, setIsFocused] = React.useState(false);
 
     const translationTextRef = React.useRef<HTMLDivElement>(null);
+    const originalTextRef = React.useRef<HTMLDivElement>(null);
     const prevTranslationTextRef = React.useRef<string>("");
     const kanaTextRef = React.useRef<HTMLDivElement>(null);
     const prevKanaTextRef = React.useRef<string>("");
@@ -124,6 +125,12 @@ export function LocalCard(props: ILoaclCard) {
         prevTranslationTextRef.current = translationTextRef.current?.textContent || "";
     }
 
+    function handleOriginalTextBlur() {
+        if (originalTextRef.current?.textContent && cardInfoRef.current?.id) {
+            updateOriginalText(cardInfoRef.current?.id, originalTextRef.current?.textContent)
+        }
+    }
+
     async function handleBlur() {
         if (cardInfoRef.current?.id && translationTextRef.current?.textContent && translationTextRef.current?.textContent !== prevTranslationTextRef.current) {
             updateMemoCardTranslation(cardInfoRef.current?.id, translationTextRef.current.textContent)
@@ -168,7 +175,12 @@ export function LocalCard(props: ILoaclCard) {
                     ></path>
                 </svg>
             </div>
-            <div className="mb-[28px] relative w-calc100-42">
+            <div
+                contentEditable
+                className="mb-[28px] outline-none relative w-calc100-42"
+                onBlur={handleOriginalTextBlur}
+                ref={originalTextRef}
+            >
                 {isFocused ? (
                     <section
                         className={`rounded-lg absolute ${isFocused ? "glass" : ""

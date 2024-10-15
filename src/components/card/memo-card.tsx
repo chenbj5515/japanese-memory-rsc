@@ -9,7 +9,7 @@ import { useTripleRightClick, useAudioRecorder } from "@/hooks";
 import {
     Card,
 } from "@/components/ui/card";
-import { deleteMemoCard, updateMemoCardTranslation, updatePronunciation } from "./server-actions";
+import { deleteMemoCard, updateMemoCardTranslation, updatePronunciation, updateOriginalText } from "./server-actions";
 
 export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     onDelete?: (id: string) => void
@@ -22,6 +22,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     const [isFocused, setIsFocused] = React.useState(false);
 
     const translationTextRef = React.useRef<HTMLDivElement>(null);
+    const originalTextRef = React.useRef<HTMLDivElement>(null);
     const prevTranslationTextRef = React.useRef<string>("");
     const kanaTextRef = React.useRef<HTMLDivElement>(null);
     const prevKanaTextRef = React.useRef<string>("");
@@ -79,6 +80,12 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
         }
     }
 
+    function handleOriginalTextBlur() {
+        if (originalTextRef.current?.textContent) {
+            updateOriginalText(id, originalTextRef.current?.textContent)
+        }
+    }
+
     function hanldeKanaFocus() {
         prevKanaTextRef.current = kanaTextRef.current?.textContent || "";
     }
@@ -117,7 +124,12 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
                     ></path>
                 </svg>
             </div>
-            <div className="mb-[28px] relative w-calc100-42">
+            <div
+                contentEditable
+                className="mb-[28px] relative outline-none w-calc100-42"
+                onBlur={handleOriginalTextBlur}
+                ref={originalTextRef}
+            >
                 {isFocused ? (
                     <section
                         className={`rounded-lg absolute ${isFocused ? "glass" : ""
