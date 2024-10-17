@@ -15,7 +15,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     onDelete?: (id: string) => void
 }) {
     const { translation, kana_pronunciation, original_text, create_time, id, onDelete } = props;
-    
+
     const [recorderPressed, setRecorderPressedState] = React.useState(false);
     const [recordPlayBtnPressed, setRecordPlayBtnPressed] = React.useState(false);
 
@@ -124,19 +124,22 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
                     ></path>
                 </svg>
             </div>
-            <div
-                contentEditable
-                className="mb-[28px] relative outline-none w-calc100-42"
-                onBlur={handleOriginalTextBlur}
-                ref={originalTextRef}
-            >
-                {isFocused ? (
-                    <section
-                        className={`rounded-lg absolute ${isFocused ? "glass" : ""
-                            }  w-[101%] h-[105%] -left-[4px] -top-[2px]`}
-                    ></section>
-                ) : null}
-                原文：{original_text}
+            <div className="mb-[28px] mr-[34px]">
+                原文：
+                <span
+                    contentEditable
+                    className="relative outline-none w-calc100-42"
+                    onBlur={handleOriginalTextBlur}
+                    ref={originalTextRef}
+                >
+                    {isFocused ? (
+                        <section
+                            className={`rounded-lg absolute ${isFocused ? "glass" : ""
+                                }  w-[101%] h-[105%] -left-[4px] -top-[2px]`}
+                        ></section>
+                    ) : null}
+                    {original_text}
+                </span>
             </div>
             翻訳：
             <div

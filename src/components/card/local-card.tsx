@@ -175,19 +175,22 @@ export function LocalCard(props: ILoaclCard) {
                     ></path>
                 </svg>
             </div>
-            <div
-                contentEditable
-                className="mb-[28px] outline-none relative w-calc100-42"
-                onBlur={handleOriginalTextBlur}
-                ref={originalTextRef}
-            >
-                {isFocused ? (
-                    <section
-                        className={`rounded-lg absolute ${isFocused ? "glass" : ""
-                            }  w-[101%] h-[105%] -left-[4px] -top-[2px]`}
-                    ></section>
-                ) : null}
-                原文：{original_text}
+            <div className="mb-[28px] mr-[34px]">
+                原文：
+                <span
+                    contentEditable
+                    className="relative outline-none w-calc100-42"
+                    onBlur={handleOriginalTextBlur}
+                    ref={originalTextRef}
+                >
+                    {isFocused ? (
+                        <section
+                            className={`rounded-lg absolute ${isFocused ? "glass" : ""
+                                }  w-[101%] h-[105%] -left-[4px] -top-[2px]`}
+                        ></section>
+                    ) : null}
+                    {original_text}
+                </span>
             </div>
             翻訳：
             <div
