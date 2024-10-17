@@ -5,7 +5,7 @@ import { prisma } from "@/prisma";
 export async function updateReviewTimes(id: string) {
     const session = await auth();
 
-    const updatedMemoCard = await prisma.memo_card.updateMany({
+    const updatedMemoCard = await prisma.word_card.updateMany({
         where: {
             id: id,
             user_id: session?.userId
