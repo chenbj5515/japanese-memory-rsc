@@ -181,6 +181,7 @@ export function WordCardAdder() {
             <div className="flex">
                 意味：
                 <div
+                    suppressContentEditableWarning
                     contentEditable
                     ref={meaningTextRef}
                     className="whitespace-pre-wrap outline-none"

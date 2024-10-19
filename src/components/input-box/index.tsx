@@ -95,6 +95,7 @@ export function InputBox() {
         onKeyDown={handleKeyDown}
         className="dark:bg-bgDark dark:text-white dark:border-[1px] absolute input bg-[#fff] left-[50%] bottom-0 transhtmlForm -translate-x-1/2"
         contentEditable
+        suppressContentEditableWarning
       />
       <div
         className={`w-[32px] h-[32px] ${editableRef.current?.textContent ? "bg-[#000] hover:bg-dark" : ""

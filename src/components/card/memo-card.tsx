@@ -127,6 +127,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
             <div className="mb-[28px] mr-[34px]">
                 原文：
                 <span
+                    suppressContentEditableWarning
                     contentEditable
                     className="relative outline-none w-calc100-42"
                     onBlur={handleOriginalTextBlur}
