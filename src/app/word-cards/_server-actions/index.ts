@@ -5,7 +5,7 @@ import { prisma } from "@/prisma";
 export async function updateReviewTimes(id: string) {
     const session = await auth();
 
-    const updatedMemoCard = await prisma.word_card.updateMany({
+    const updatedMemoCard = await prisma.word_card.update({
         where: {
             id: id,
             user_id: session?.userId
@@ -14,6 +14,10 @@ export async function updateReviewTimes(id: string) {
             review_times: {
                 increment: 1
             },
+        },
+        select: {
+            id: true,
+            review_times: true,
         },
     });
 
