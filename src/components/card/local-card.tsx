@@ -175,7 +175,7 @@ export function LocalCard(props: ILoaclCard) {
                     ></path>
                 </svg>
             </div>
-            <div className="mb-[28px] mr-[34px]">
+            <div className="mb-[28px]">
                 原文：
                 <span
                     suppressContentEditableWarning

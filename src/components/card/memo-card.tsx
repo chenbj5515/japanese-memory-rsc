@@ -124,7 +124,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
                     ></path>
                 </svg>
             </div>
-            <div className="flex mb-[28px] mr-[34px]">
+            <div className="flex mb-[28px]">
                 <div
                     suppressContentEditableWarning
                     contentEditable
