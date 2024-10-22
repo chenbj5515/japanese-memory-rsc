@@ -82,7 +82,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
 
     function handleOriginalTextBlur() {
         if (originalTextRef.current?.textContent) {
-            updateOriginalText(id, originalTextRef.current?.textContent)
+            updateOriginalText(id, originalTextRef.current?.textContent?.slice(3))
         }
     }
 
@@ -124,15 +124,15 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
                     ></path>
                 </svg>
             </div>
-            <div className="mb-[28px] mr-[34px]">
-                原文：
-                <span
+            <div className="flex mb-[28px] mr-[34px]">
+                <div
                     suppressContentEditableWarning
                     contentEditable
                     className="relative outline-none w-calc100-42"
                     onBlur={handleOriginalTextBlur}
                     ref={originalTextRef}
                 >
+                    原文：
                     {isFocused ? (
                         <section
                             className={`rounded-lg absolute ${isFocused ? "glass" : ""
@@ -140,7 +140,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
                         ></section>
                     ) : null}
                     {original_text}
-                </span>
+                </div>
             </div>
             翻訳：
             <div
