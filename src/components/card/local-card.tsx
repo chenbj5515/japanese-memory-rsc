@@ -49,7 +49,7 @@ export function LocalCard(props: ILoaclCard) {
     })
 
     useAIGenerate({
-        prompt: `これは原文：${original_text}，その読みを示してください。気をつけて，余計な話は要らん，読みだけを出してください。`,
+        prompt: `${original_text}，给出这句话的平假名读音，不要输出平假名和标点符号以外的任何东西。`,
         onmessage: handleKanaUpdate,
         onclose: handleKanaDone
     })
