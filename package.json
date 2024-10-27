@@ -31,7 +31,7 @@
     "lucide-react": "^0.445.0",
     "microsoft-cognitiveservices-speech-sdk": "^1.40.0",
     "multer": "^1.4.5-lts.1",
-    "next": "14.2.7",
+    "next": "^14.2.16",
     "next-auth": "^5.0.0-beta.20",
     "react": "^18",
     "react-cookie": "^7.2.0",
