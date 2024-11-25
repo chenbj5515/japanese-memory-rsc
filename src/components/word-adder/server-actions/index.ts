@@ -1,9 +1,9 @@
 "use server"
 import { auth } from "@/auth";
 import { prisma } from "@/prisma";
-import { revalidatePath, revalidateTag } from 'next/cache';
+import { revalidatePath } from 'next/cache';
 
-export async function insertWordCard(word: string, meaning: string, memoCardId: string, isRandom: boolean) {
+export async function insertWordCard(word: string, meaning: string, memoCardId: string) {
     const session = await auth();
     let newWordCard = {}
 
@@ -17,10 +17,7 @@ export async function insertWordCard(word: string, meaning: string, memoCardId: 
                 memo_card_id: memoCardId,
             },
         });
-        if (!isRandom) {
-            revalidatePath("/word-cards")
-        }
-        // revalidateTag("wordCards")
+        revalidatePath("/word-cards")
     }
 
     return JSON.stringify(newWordCard);

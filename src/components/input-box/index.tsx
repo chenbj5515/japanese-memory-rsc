@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { Plus } from "lucide-react";
 import { readStreamableValue } from 'ai/rsc';
 import { addCard } from "@/store/local-cards-slice";
-import { insertPlainTextAtCursor } from "@/utils";
+import { insertPlainTextAtCursor, transformString } from "@/utils";
 import { useForceUpdate } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,9 +19,10 @@ export function InputBox() {
   const editableRef = useRef<HTMLDivElement>(null);
   const forUpdate = useForceUpdate();
   const dispatch = useDispatch();
+  const [isComposing, setIsComposing] = React.useState(false);
 
   async function handleSendBtnClick(originalText: string) {
-    if (typeof originalText !== "string") return;
+    if (!originalText) return;
     try {
       dispatch(
         addCard(originalText.includes(":") ? originalText.split(":")[1].trim() : originalText.trim())
@@ -38,7 +39,7 @@ export function InputBox() {
   const handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
     event.preventDefault();
     const plainText = event.clipboardData.getData("text/plain");
-    insertPlainTextAtCursor(plainText);
+    insertPlainTextAtCursor(transformString(plainText));
     forUpdate();
   };
 
@@ -46,13 +47,16 @@ export function InputBox() {
     const content = editableRef.current?.textContent;
     if (!content) return;
 
-    if (event.key === "Enter" && content) {
+    if (event.key === 'Enter') {
+      if (isComposing) {
+        // 正在输入法合成，不触发发送
+        return;
+      }
+
       event.preventDefault();
-      dispatch(
-        addCard(content)
-      );
+      dispatch(addCard(content));
       if (editableRef.current) {
-        editableRef.current.textContent = "";
+        editableRef.current.textContent = '';
         forUpdate();
       }
     }
@@ -69,6 +73,16 @@ export function InputBox() {
       forUpdate();
     }
   }
+
+  const handleCompositionStart = () => {
+    setIsComposing(true);
+  };
+
+  const handleCompositionEnd = () => {
+    setTimeout(() => {
+      setIsComposing(false);
+    });
+  };
 
   return (
     <>
@@ -93,6 +107,8 @@ export function InputBox() {
         ref={editableRef}
         onPaste={handlePaste}
         onKeyDown={handleKeyDown}
+        onCompositionStart={handleCompositionStart}
+        onCompositionEnd={handleCompositionEnd}
         className="dark:bg-bgDark dark:text-white dark:border-[1px] absolute input bg-[#fff] left-[50%] bottom-0 transhtmlForm -translate-x-1/2"
         contentEditable
         suppressContentEditableWarning

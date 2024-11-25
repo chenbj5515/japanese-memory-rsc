@@ -22,13 +22,11 @@ export function Dictation(props: IProps) {
   }
 
   async function handleBlur() {
-    // @ts-ignore
     const dmp = new diff_match_patch();
     const diff = dmp.diff_main(
       originalText,
       dictationRef.current?.textContent || ""
     );
-    console.log(diff, "diff=============")
     const htmlString = diff.map(([result, text]) => {
       return `<span class="${
         result === -1
@@ -92,7 +90,7 @@ export function Dictation(props: IProps) {
             className="path"
           ></path>
         </svg>
-        <div className="absolute top-[50%] -translate-y-1/2 left-7 whitespace-nowrap text-gray text-[14px]">
+        <div className="absolute top-[50%] -translate-y-1/2 left-7 whitespace-nowrap text-gray sm:text-[14px] text-[16px]">
           日本語原文を書いてください
         </div>
       </div>

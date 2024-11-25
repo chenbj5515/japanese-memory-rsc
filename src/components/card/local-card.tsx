@@ -43,13 +43,13 @@ export function LocalCard(props: ILoaclCard) {
     })
 
     useAIGenerate({
-        prompt: `これは原文：${original_text}，中国語の翻訳を出してください。気をつけて，余計な話は要らん，翻訳だけを出してください。`,
+        prompt: `${original_text}，给出这句话的中文翻译，注意一定要中文。`,
         onmessage: handleTranslationUpdate,
         onclose: handleTranslationDone
     })
 
     useAIGenerate({
-        prompt: `${original_text}，给出这句话的平假名读音，不要输出平假名和标点符号以外的任何东西。`,
+        prompt: `${original_text}，给出这句话的平假名读音，注意只需要平假名读音和对应位置的标点符号。`,
         onmessage: handleKanaUpdate,
         onclose: handleKanaDone
     })
@@ -150,14 +150,11 @@ export function LocalCard(props: ILoaclCard) {
     return (
         <Card
             ref={ref}
-            className="rounded-[20px] p-5 width-92-675 mx-auto mt-10 relative leading-[1.9] tracking-[1.5px]"
+            className="p-5 relative leading-[1.9] tracking-[1.5px]"
         >
-            <div className="text-[14px] absolute -top-[30px] left-1 text-[gray]">
-                {/* {create_time ? getTimeAgo(create_time.toString()) : ""} */}
-            </div>
             {/* 朗読ボタン */}
             <div
-                className="border-solid border-[1px] border-[hsl(var(--input))] rounded-[50%] w-12 h-12 absolute top-2 right-2 cursor-pointer"
+                className="border-solid border-[1px] border-[hsl(var(--input))] play-button-bg dark:bg-bgDark dark:shadow-none rounded-[50%] w-12 h-12 absolute top-2 right-2 cursor-pointer"
                 onClick={handlePlayBtn}
             >
                 <svg
@@ -175,15 +172,15 @@ export function LocalCard(props: ILoaclCard) {
                     ></path>
                 </svg>
             </div>
-            <div className="mb-[28px]">
-                原文：
-                <span
+            <div className="flex mb-[28px]">
+                <div
                     suppressContentEditableWarning
                     contentEditable
                     className="relative outline-none w-calc100-42"
                     onBlur={handleOriginalTextBlur}
                     ref={originalTextRef}
                 >
+                    原文：
                     {isFocused ? (
                         <section
                             className={`rounded-lg absolute ${isFocused ? "glass" : ""
@@ -191,7 +188,7 @@ export function LocalCard(props: ILoaclCard) {
                         ></section>
                     ) : null}
                     {original_text}
-                </span>
+                </div>
             </div>
             翻訳：
             <div
@@ -200,7 +197,7 @@ export function LocalCard(props: ILoaclCard) {
                 ref={translationTextRef}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
-                className="whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
+                className="font-Default whitespace-pre-wrap pr-[42px] outline-none leading-[3]"
             >
             </div>
             読み：
