@@ -100,7 +100,9 @@ export default function ClientLayout({
                     </header>
                 ) : null
             }
-            <main className='pt-[86px]'>
+            <main style={{
+                paddingTop: pathname !== "/exam" ? "86px" : 0
+            }}>
                 {children}
             </main>
         </>
