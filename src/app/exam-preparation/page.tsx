@@ -17,15 +17,12 @@ export default function Component() {
     async function handleAgree() {
         if (isLocked) return;
         setIsLoading(true);
-        // isLocked = true;      
-        // const recordStr = await insertMemoCard();
-        // const record = JSON.parse(recordStr);
+        isLocked = true;      
+        const recordStr = await insertMemoCard();
+        const record = JSON.parse(recordStr);
 
-        // const query = new URLSearchParams({ id: record.id }).toString();
-        // dispatch(
-        //     startExam()
-        // );
-        // router.push(`/exam?${query}`);
+        const query = new URLSearchParams({ id: record.id }).toString();
+        router.push(`/exam?${query}`);
     }
 
     return (

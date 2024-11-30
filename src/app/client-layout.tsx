@@ -13,14 +13,11 @@ import { Logout } from "@/server-actions";
 import "remixicon/fonts/remixicon.css";
 import { RootState } from '@/store';
 
-const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
-
 export default function ClientLayout({
     children,
 }: Readonly<{
     children: React.ReactNode;
 }>) {
-    const { status } = useTypedSelector((state: RootState) => state.examStateSlice);
     const [theme, setTheme] = React.useState("light");
     const { data } = useSession();
     const router = useRouter();
@@ -54,7 +51,7 @@ export default function ClientLayout({
     return (
         <>
             {
-                status === "initial" ? (
+                pathname !== "/exam" ? (
                     <header className="p-[12px] justify-between items-center w-full fixed z-[200] top-0 flex">
                         <Popover>
                             <PopoverTrigger asChild>
