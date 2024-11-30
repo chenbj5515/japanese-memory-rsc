@@ -100,9 +100,7 @@ export default function ClientLayout({
                     </header>
                 ) : null
             }
-            <main style={{
-                paddingTop: status === "initial" ? "86px" : 0
-            }}>
+            <main className='pt-[86px]'>
                 {children}
             </main>
         </>
