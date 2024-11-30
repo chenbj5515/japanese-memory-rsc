@@ -1,7 +1,5 @@
 "use client"
 import LoadingButton from '@/components/ui/loading-button';
-import { startExam } from '@/store/exam-state-slice'
-import { useDispatch } from 'react-redux'
 import { useRouter } from "next/navigation"
 import { insertMemoCard } from "./_server-actions"
 import { useState } from 'react';
@@ -9,7 +7,6 @@ import { useState } from 'react';
 let isLocked = false;
 
 export default function Component() {
-    const dispatch = useDispatch();
     const [isLoading, setIsLoading] = useState(false);
     
     const router = useRouter();
