@@ -4,12 +4,11 @@ import { useRouter } from "next/navigation"
 import { insertMemoCard } from "./_server-actions"
 import { useState } from 'react';
 
-let isLocked = false;
-
 export default function Component() {
     const [isLoading, setIsLoading] = useState(false);
     
     const router = useRouter();
+    let isLocked = false;
 
     async function handleAgree() {
         if (isLocked) return;

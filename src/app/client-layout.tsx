@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { useSession } from "next-auth/react";
-import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { clearLocalCards } from '@/store/local-cards-slice';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -83,7 +83,7 @@ export default function ClientLayout({
                                     <Link prefetch className="sm:text-sm text-[16px] w-full" href="/word-cards">単語帳</Link>
                                 </TabsTrigger>
                                 <TabsTrigger className="sm:block hidden p-0 h-full leading-[28px]" value="exam preparation">
-                                    <Link prefetch className="w-full" href="/exam-preparation">試験</Link>
+                                    <Link prefetch className="inline-block sm:text-sm text-[16px] w-full" href="/exam-preparation">試験</Link>
                                 </TabsTrigger>
                             </TabsList>
                         </Tabs >
