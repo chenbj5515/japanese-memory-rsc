@@ -67,10 +67,8 @@ export default function ExamPage(props: IProps) {
     const { wordCards, randomShortCards } = props;
     const [inputValues, setInputValues] = useState<any>({});
     const [reviewResults, setReviewResults] = useState<any>({}); // Stores review results for each question
-    // const [score, setScore] = useState<number | null>(null);
     const score = Object.keys(reviewResults).reduce((acc, cur) => acc + reviewResults[cur].score, 0);
     const { timerDisplayRef } = useCountDowner();
-    // const compeleted = score !== null;
     const [compeleted, setCompeleted] = useState(false);
 
     const handleInputChange = (key: string, value: string) => {
@@ -556,7 +554,7 @@ export default function ExamPage(props: IProps) {
                 ) : null
             }
             {showGlass && cardInfo ? (
-                <div className="fixed w-[100vw] h-[100vh] left-[0] top-[0] glass overflow-scroll z-[10000]">
+                <div className="fixed w-[100vw] h-[100vh] left-[0] top-[0] backdrop-blur-[3px] backdrop-saturate-[180%] overflow-scroll z-[10000]">
                     <div ref={containerRef} className="sm:w-[auto] sm:min-w-[46vw] w-full p-[22px] absolute max-h-[92%] overflow-auto left-[50%] top-[50%] center">
                         <MemoCard {...cardInfo} />
                     </div>

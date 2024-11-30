@@ -19,7 +19,7 @@ export function Translation(props: Pick<Prisma.memo_cardGetPayload<{}>, 'id' | '
 
   return (
     <>
-      <Card className="rounded-[20px] p-5 w-[675px] width-92-675 mx-auto mt-10 relative">
+      <Card className="rounded-[20px] p-5 w-[675px] max-w-92-675 mx-auto mt-10 relative">
         <div
           suppressContentEditableWarning
           ref={translationTextRef}

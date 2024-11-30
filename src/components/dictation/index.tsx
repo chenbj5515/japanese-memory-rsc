@@ -27,6 +27,7 @@ export function Dictation(props: IProps) {
       originalText,
       dictationRef.current?.textContent || ""
     );
+    console.log(diff, "diff===")
     const htmlString = diff.map(([result, text]) => {
       return `<span class="${
         result === -1
@@ -43,6 +44,7 @@ export function Dictation(props: IProps) {
       // チェックが入っていない場合、チェックマークを入れる
       if (!dictationCheckInputRef.current?.checked) {
         dictationCheckInputRef.current?.click();
+        console.log("click===")
         updateReviewTimes(cardID);
         if (dictationRef.current) {
           dictationRef.current.innerHTML = originalText;
@@ -75,7 +77,7 @@ export function Dictation(props: IProps) {
         <input
           ref={dictationCheckInputRef}
           type="checkbox"
-          className="hidden"
+          style={{ display: "none" }}
         />
         <svg
           className="overflow-visible"
@@ -87,7 +89,17 @@ export function Dictation(props: IProps) {
             d="M 0 16 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 16 L 32 48 L 64 16 V 8 A 8 8 90 0 0 56 0 H 8 A 8 8 90 0 0 0 8 V 56 A 8 8 90 0 0 8 64 H 56 A 8 8 90 0 0 64 56 V 16"
             pathLength="575.0541381835938"
             stroke="grey"
-            className="path"
+            style={{
+              fill: "none",
+              strokeWidth: 6,
+              strokeLinecap: "round",
+              strokeLinejoin: "round",
+              strokeDasharray: dictationCheckInputRef.current?.checked
+                ? "70.5096664428711 9999999"
+                : "241 9999999",
+              strokeDashoffset: dictationCheckInputRef.current?.checked ? -262.2723388671875 : 0,
+              transition: "stroke-dasharray 0.5s ease, stroke-dashoffset 0.5s ease",
+            }}
           ></path>
         </svg>
         <div className="absolute top-[50%] -translate-y-1/2 left-7 whitespace-nowrap text-gray sm:text-[14px] text-[16px]">
@@ -97,7 +109,7 @@ export function Dictation(props: IProps) {
       <div
           suppressContentEditableWarning
           ref={dictationRef}
-          className={`dictation-input ${answerFinished ? "text-gray" : ""} dark:bg-bgDark dark:shadow-none w-full mt-4 text-[15px] min-h-[40px]`}
+          className={`rounded-[15px] p-2 bg-white border border-[hsl(var(--input))] focus:outline focus:outline-[1px] focus:outline-[#a9a9a9] ${answerFinished ? "text-gray" : ""} dark:bg-bgDark dark:shadow-none w-full mt-4 text-[15px] min-h-[40px]`}
           contentEditable
           onInput={handleDictationChange}
           onFocus={handleFocus}

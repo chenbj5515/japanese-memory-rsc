@@ -6,6 +6,7 @@ const config: Config = {
 		'./src/pages/**/*.{js,ts,jsx,tsx,mdx}',
 		'./src/components/**/*.{js,ts,jsx,tsx,mdx}',
 		'./src/app/**/*.{js,ts,jsx,tsx,mdx}',
+		'./src/app/globals.css',
 	],
 	theme: {
 		colors: {
@@ -19,6 +20,9 @@ const config: Config = {
 			white: 'white'
 		},
 		extend: {
+			transitionProperty: {
+				'stroke': 'stroke-dasharray, stroke-dashoffset',
+			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
 				'gradient-conic': 'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
@@ -28,7 +32,11 @@ const config: Config = {
 				crescent: 'inset 8px -4px 0px 0px #fff000',
 				'full-moon': 'inset 15px -4px 0px 15px #fff000',
 				'dark-shadow': '0px 0px 10px 1px #000000ee',
-				'little-button': '0.1em 0.1em'
+				'little-button': '0.1em 0.1em',
+				buttonActive:
+					"0 12px 25px -4px rgba(0, 0, 0, 0.4), inset 0 -8px 30px 1px rgba(255, 255, 255, 0.9), 0 -10px 15px -1px rgba(255, 255, 255, 0.6), inset 0 8px 25px 0 rgba(0, 0, 0, 0.4), inset 0 0 10px 1px rgba(255, 255, 255, 0.6)",
+				darkActive:
+					"0 6px 10px -4px rgba(0, 0, 0, 0.4), inset 0 -4px 10px -1px rgba(0, 0, 0, 0.2), 0 -6px 8px -1px rgba(0, 0, 0, 0.3), inset 0 4px 6px 0 rgba(0, 0, 0, 0.2), inset 0 0 2px 1px rgba(0, 0, 0, 0.3)",
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -76,8 +84,37 @@ const config: Config = {
 					'4': 'hsl(var(--chart-4))',
 					'5': 'hsl(var(--chart-5))'
 				}
-			}
+			},
+			maxWidth: {
+				'92-675': 'min(92%, 675px)',
+				'80-680': 'min(80%, 680px)',
+			},
+			filter: {
+				blurHalf: "blur(0.5px)",
+			},
+			animation: {
+				spinner: 'spinner 2s infinite ease',
+			},
+			keyframes: {
+				spinner: {
+					'0%': {
+						transform: 'rotate(45deg) rotateX(-25deg) rotateY(25deg)',
+					},
+					'50%': {
+						transform: 'rotate(45deg) rotateX(-385deg) rotateY(25deg)',
+					},
+					'100%': {
+						transform: 'rotate(45deg) rotateX(-385deg) rotateY(385deg)',
+					},
+				},
+			},
 		}
+	},
+	variants: {
+		extend: {
+			boxShadow: ["group-active"],
+			filter: ["group-active"],
+		},
 	},
 	plugins: [require("tailwindcss-animate")],
 };

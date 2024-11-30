@@ -119,8 +119,8 @@ export function WordCards(props: IProps) {
                 rows.flat().length === 0 ? <Loading /> : null
             }
             {showGlass && cardInfo ? (
-                <div className="fixed w-[100vw] h-[100vh] left-[0] top-[0] glass overflow-scroll z-[10000]">
-                    <div ref={containerRef} className="sm:w-[auto] sm:min-w-[46vw] w-full p-[22px] absolute max-h-[92%] overflow-auto left-[50%] top-[50%] center">
+                <div className="fixed w-[100vw] h-[100vh] left-[0] top-[0] backdrop-blur-[3px] backdrop-saturate-[180%] overflow-scroll z-[10000]">
+                    <div ref={containerRef} className="sm:w-[auto] sm:min-w-[46vw] w-full p-[22px] absolute max-h-[92%] overflow-auto left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2 transform">
                         <MemoCard {...cardInfo} />
                     </div>
                 </div>

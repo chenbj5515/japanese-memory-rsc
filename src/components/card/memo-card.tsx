@@ -115,7 +115,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
                     fill="currentColor"
                     height="20"
                     width="24"
-                    className="volume_button absolute left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2"
+                    className="absolute left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2"
                 >
                     <path
                         clipRule="evenodd"
@@ -128,14 +128,14 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
                 <div
                     suppressContentEditableWarning
                     contentEditable
-                    className="relative outline-none w-calc100-42"
+                    className="relative outline-none w-[calc(100%-42px)]"
                     onBlur={handleOriginalTextBlur}
                     ref={originalTextRef}
                 >
                     原文：
                     {isFocused ? (
                         <section
-                            className={`rounded-lg absolute ${isFocused ? "glass" : ""
+                            className={`rounded-lg absolute ${isFocused ? "backdrop-blur-[3px] backdrop-saturate-[180%]" : ""
                                 }  w-[101%] h-[105%] -left-[4px] -top-[2px]`}
                         ></section>
                     ) : null}
@@ -166,26 +166,26 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
             </div>
             <div className="flex justify-center mt-3 relative cursor-pointer">
                 {/* 录音ボタン */}
-                <div className="toggle w-[40px] h-[40px] mr-[30px]">
+                <div className="group inline-block relative w-[40px] h-[40px] mr-[30px]">
                     <i className="ri-mic-fill z-[10] absolute left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2"></i>
                     <input
                         checked={recorderPressed}
                         onChange={handleRecordBtnClick}
                         type="checkbox"
-                        className="double-click absolute z-[11]"
+                        className="peer opacity-0 cursor-pointer h-full w-full left-0 top-0 double-click absolute z-[11]"
                     />
-                    <span className="button dark:shadow-none dark:bg-bgDark w-[50px] h-[50px] -translate-x-1/2 -translate-y-1/2"></span>
+                    <span className="peer-checked:dark:shadow-darkActive peer-active:dark:filter-blurHalf peer-active:dark:shadow-darkActive peer-checked:filter-blurHalf peer-checked:shadow-buttonActive group-active:filter-blurHalf group-active:shadow-custom absolute left-1/2 top-1/2 bg-white border border-[hsl(var(--input))] rounded-[68.8px] block transition-all duration-300 [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] dark:shadow-none dark:bg-bgDark w-[50px] h-[50px] -translate-x-1/2 -translate-y-1/2"></span>
                 </div>
                 {/* 录音プレーボタン */}
-                <div className="toggle w-[40px] h-[40px]">
+                <div className="inline-block relative w-[40px] h-[40px] group">
                     <i className="text-[22px] ri-play-circle-fill z-[10] absolute left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2"></i>
                     <input
                         checked={recordPlayBtnPressed}
                         onChange={handleRecordPlayBtnClick}
                         type="checkbox"
-                        className="absolute z-[11]"
+                        className="peer opacity-0 cursor-pointer h-full w-full left-0 top-0 absolute z-[11]"
                     />
-                    <span className="button dark:shadow-none dark:bg-bgDark w-[50px] h-[50px] -translate-x-1/2 -translate-y-1/2"></span>
+                    <span className="peer-active:dark:shadow-darkActive group-active:filter-blurHalf group-active:shadow-buttonActive absolute left-1/2 top-1/2 bg-white border border-[hsl(var(--input))] rounded-[68.8px] block transition-all duration-300 [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] dark:shadow-none dark:bg-bgDark w-[50px] h-[50px] -translate-x-1/2 -translate-y-1/2"></span>
                 </div>
             </div>
             <div className="relative flex flex-col mt-2">

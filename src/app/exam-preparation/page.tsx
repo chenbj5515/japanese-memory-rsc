@@ -1,19 +1,31 @@
 "use client"
-import { Button } from "@/components/ui/button"
+import LoadingButton from '@/components/ui/loading-button';
 import { startExam } from '@/store/exam-state-slice'
 import { useDispatch } from 'react-redux'
 import { useRouter } from "next/navigation"
+import { insertMemoCard } from "./_server-actions"
+import { useState } from 'react';
 
-export default function Component(props: any) {
+let isLocked = false;
+
+export default function Component() {
     const dispatch = useDispatch();
+    const [isLoading, setIsLoading] = useState(false);
     
     const router = useRouter();
 
-    const handleAgree = () => {
-        dispatch(
-            startExam()
-        );
-        router.push("/exam")
+    async function handleAgree() {
+        if (isLocked) return;
+        setIsLoading(true);
+        // isLocked = true;      
+        // const recordStr = await insertMemoCard();
+        // const record = JSON.parse(recordStr);
+
+        // const query = new URLSearchParams({ id: record.id }).toString();
+        // dispatch(
+        //     startExam()
+        // );
+        // router.push(`/exam?${query}`);
     }
 
     return (
@@ -21,9 +33,9 @@ export default function Component(props: any) {
             <h1 className="text-3xl font-bold mb-8 text-gray-800 dark:text-gray-200 text-center">
                 試験を始める準備はできましたか？
             </h1>
-            <Button onClick={handleAgree} size="sm" className="w-[120px] text-md px-6 py-5">
+            <LoadingButton isLoading={isLoading} onClick={handleAgree}>
                 はい
-            </Button>
+            </LoadingButton>
         </div>
     )
 }
