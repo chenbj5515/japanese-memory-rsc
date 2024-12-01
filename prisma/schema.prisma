@@ -42,9 +42,45 @@ model word_card {
   memo_card    memo_card @relation("MemoToWord", fields: [memo_card_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_memo_card")
 }
 
-model exam {
-  id           String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  result_data  String?
-  create_time  DateTime  @db.Timestamptz(6)
-  user_id      String
+model exam_results {
+  result_id     String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  exam_id       String             @db.Uuid
+  question_type question_type_enum
+  question_ref  String             @db.Uuid
+  user_answer   String?
+  is_correct    Boolean            @default(false)
+  score         Int                @default(0)
+  create_time   DateTime?          @default(now()) @db.Timestamp(6)
+}
+
+model exams {
+  exam_id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id          String           @db.Uuid
+  exam_name        String           @db.VarChar(255)
+  total_score      Int              @default(0)
+  status           exam_status_enum @default(initial)
+  duration_seconds Int?
+  create_time      DateTime?        @default(now()) @db.Timestamp(6)
+}
+
+model articles {
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  content     String
+  create_time DateTime @db.Timestamptz(6)
+  user_id     String?
+  tags        String?
+  title       String?
+}
+
+enum question_type_enum {
+  kana_from_japanese
+  translation_from_japanese
+  japanese_from_chinese
+  transcription_from_audio
+}
+
+enum exam_status_enum {
+  initial
+  in_progress
+  completed
 }

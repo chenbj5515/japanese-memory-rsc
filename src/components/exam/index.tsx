@@ -1,42 +1,53 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import Image from 'next/image';
-import diff_match_patch from 'diff-match-patch';
-import { Search, Wrench } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { PlayCircle, CheckCircle, XCircle } from 'lucide-react'
+import { PlayCircle, CheckCircle, XCircle, Search, Wrench } from 'lucide-react'
 import { containsKanji, speakText } from '@/utils'
 import { askAI } from '@/server-actions'
 import { readStreamableValue } from 'ai/rsc';
 import { TWordCard } from '@/app/word-cards/page'
 import { Prisma } from '@prisma/client'
+import diff_match_patch from 'diff-match-patch';
 import { MemoCard } from '../card';
+import { insertExamResults } from './server-actions/insert-exam-result';
 
 interface IProps {
     wordCards: TWordCard[]
     randomShortCards: Prisma.memo_cardGetPayload<{}>[]
 }
 
-enum GradeStatus {
-    MissingInput = "MissingInput",
-    CheckAnswer = "CheckAnswer",
-    ProvideAnswer = "ProvideAnswer",
+enum QuestionType {
+    KanaFromJapanese = "kana_from_japanese",
+    TranslationFromJapanese = "translation_from_japanese",
+    JapaneseFromChinese = "japanese_from_chinese",
+    TranscriptionFromAudio = "transcription_from_audio"
 }
 
-type GradeResult = {
-    userInputValue: string;
-    word: string;
-    isCorrect: boolean;
-    feedback: string;
-    correctAnswer: string;
-    score: number;
-    totalScore: number,
-};
+interface ExamResult {
+    result_id: string | null; // UUID or null before saving
+    exam_id: string | null; // UUID or null before associating with an exam
+    question_type: QuestionType; // Type of question
+    question_ref: string; // Reference to word_card or memo_card ID
+    question: string; // The question text
+    reference_answer: string; // The correct answer
+    user_answer: string; // The user's answer
+    is_correct: boolean; // Whether the answer is correct
+    score: number; // The score for the question
+    create_time: string | null; // ISO timestamp or null before saving
+}
+interface ExamInfo extends ExamResult {
+    no: number;
+    wordCard?: TWordCard;
+    cardInfo?: Prisma.memo_cardGetPayload<{}>;
+    inputs?: ExamInfo[];
+    question_score: number;
+}
 
 function useCountDowner() {
     const timeLeftRef = useRef(25 * 60); // 25 minutes in seconds
@@ -63,207 +74,214 @@ function useCountDowner() {
     return { timeLeftRef, timerDisplayRef }
 }
 
-export default function ExamPage(props: IProps) {
-    const { wordCards, randomShortCards } = props;
-    const [inputValues, setInputValues] = useState<any>({});
-    const [reviewResults, setReviewResults] = useState<any>({}); // Stores review results for each question
-    const score = Object.keys(reviewResults).reduce((acc, cur) => acc + reviewResults[cur].score, 0);
-    const { timerDisplayRef } = useCountDowner();
-    const [compeleted, setCompeleted] = useState(false);
+function mergeResultsByQuestion(results: ExamInfo[]) {
+    const questionMap = new Map();
 
-    const handleInputChange = (key: string, value: string) => {
-        setInputValues((prev: any) => ({
-            ...prev,
-            [key]: value,
-        }));
+    results.forEach(result => {
+        const { question, wordCard } = result;
+
+        if (questionMap.has(question)) {
+            questionMap.get(question).inputs.push(result);
+        } else {
+            questionMap.set(question, {
+                question,
+                wordCard,
+                inputs: [result],
+            });
+        }
+    });
+
+    return Array.from(questionMap.values()) as ExamInfo[];
+}
+
+function handlePlay(original_text: string) {
+    original_text && speakText(original_text, {
+        voicerName: "ja-JP-NanamiNeural",
+    });
+}
+
+export default function NewExam(props: IProps) {
+    const { wordCards, randomShortCards } = props;
+    const { timerDisplayRef } = useCountDowner();
+
+    // 初始化符合 Exam_Results 表结构的状态
+    const [examResults, setExamResults] = useState<ExamInfo[]>(() => {
+        const initialResults: ExamInfo[] = [];
+        let no = 0;
+
+        // 日本語から中国語への翻訳
+        wordCards.slice(0, 10).forEach((wordCard) => {
+            if (containsKanji(wordCard.word)) {
+                initialResults.push({
+                    no: no++,
+                    result_id: null,
+                    exam_id: null,
+                    question_type: QuestionType.KanaFromJapanese,
+                    question_ref: wordCard.id,
+                    question: wordCard.word,
+                    reference_answer: '', // 可在评估时填充
+                    user_answer: '',
+                    is_correct: false,
+                    score: 0,
+                    create_time: null,
+                    wordCard,
+                    question_score: 2
+                });
+                initialResults.push({
+                    no: no++,
+                    result_id: null,
+                    exam_id: null,
+                    question_type: QuestionType.TranslationFromJapanese,
+                    question_ref: wordCard.id,
+                    question: wordCard.word,
+                    reference_answer: wordCard.meaning.replace("意味：", ""),
+                    user_answer: '',
+                    is_correct: false,
+                    score: 0,
+                    create_time: null,
+                    wordCard,
+                    question_score: 2
+                });
+            } else {
+                initialResults.push({
+                    no: no++,
+                    result_id: null,
+                    exam_id: null,
+                    question_type: QuestionType.TranslationFromJapanese,
+                    question_ref: wordCard.id,
+                    question: wordCard.word,
+                    reference_answer: wordCard.meaning.replace("意味：", ""),
+                    user_answer: '',
+                    is_correct: false,
+                    score: 0,
+                    create_time: null,
+                    wordCard,
+                    question_score: 4
+                });
+            }
+        });
+
+        // 中国語から日本語への翻訳
+        wordCards.slice(10).forEach((wordCard) => {
+            initialResults.push({
+                no: no++,
+                result_id: null,
+                exam_id: null,
+                question_type: QuestionType.JapaneseFromChinese,
+                question_ref: wordCard.id,
+                question: wordCard.meaning.replace("意味：", ""),
+                reference_answer: wordCard.word,
+                user_answer: '',
+                is_correct: false,
+                score: 0,
+                create_time: null,
+                wordCard,
+                question_score: 4
+            });
+        });
+
+        // 聴解問題
+        randomShortCards.forEach((cardInfo) => {
+            initialResults.push({
+                no: no++,
+                result_id: null,
+                exam_id: null,
+                question_type: QuestionType.TranscriptionFromAudio,
+                question_ref: cardInfo.id as string,
+                question: cardInfo.original_text || '',
+                reference_answer: cardInfo.original_text || '',
+                user_answer: '',
+                is_correct: false,
+                score: 0,
+                create_time: null,
+                cardInfo,
+                question_score: 4
+            });
+        });
+
+        return initialResults;
+    });
+
+    const [completed, setCompleted] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const [curResultNo, setResultNo] = useState<number | null>(null);
+
+    const handleInputChange = (index: number, value: string) => {
+        console.log(index, value)
+        setExamResults((prevResults) =>
+            prevResults.map((result) =>
+                result.no === index ? { ...result, user_answer: value } : result
+            )
+        );
     };
 
-    function handlePlay(original_text: string) {
-        original_text && speakText(original_text, {
-            voicerName: "ja-JP-NanamiNeural",
-        });
-    }
+    const q1List = mergeResultsByQuestion(
+        examResults
+            .filter(result => result.question_type === QuestionType.KanaFromJapanese || result.question_type === QuestionType.TranslationFromJapanese)
+    )
+    const q2List = examResults.filter(result => result.question_type === QuestionType.JapaneseFromChinese);
+    const q3List = examResults.filter(result => result.question_type === QuestionType.TranscriptionFromAudio);
+    const score = examResults.reduce((acc, cur) => acc + cur.score, 0);
 
-    async function fetchCorrectAnswer(word: string, type: string): Promise<string> {
-        const prompt = type === "hiragana"
-            ? `「${word}」这个短语的平假名读音是什么？请只给我平假名读音不要输出任何其他内容。`
-            : `「${word}」这个短语的意思是什么？请直接给出中文意思，不要输出任何其他内容。`;
-        const { output } = await askAI(prompt, 0.9);
+    console.log(q1List, examResults, "examResults===")
+    const handleCommit = async () => {
+        const updatedResults = await Promise.all(
+            examResults.map(async (result) => {
+                if (result.question_type !== QuestionType.TranscriptionFromAudio) {
+                    const isCorrect = await checkAnswer(result.question, result.user_answer, result.question_type);
+                    const score = isCorrect
+                        ? (containsKanji(result.question) ? 4 : 2)
+                        : 0;
+                    let reference_answer = result.reference_answer;
+                    if (!isCorrect && result.question_type === QuestionType.KanaFromJapanese) {
+                        const prompt = `「${result.question}」这个短语的平假名读音是什么？请只给我平假名读音不要输出任何其他内容。`
+                        const { output } = await askAI(prompt, 0.9);
+                        let aiResult = "";
+                        for await (const delta of readStreamableValue(output)) {
+                            if (delta) aiResult += delta;
+                        }
+                        reference_answer = aiResult;
+                    }
+                    return {
+                        ...result,
+                        is_correct: isCorrect,
+                        score,
+                        reference_answer
+                    };
+                }
+                const dmp = new diff_match_patch();
 
-        let correctAnswer = "";
-        for await (const delta of readStreamableValue(output)) {
-            if (delta) correctAnswer += delta;
-        }
-        return correctAnswer;
-    }
-
-    async function checkAnswer(word: string, userInputValue: string, type: string): Promise<boolean> {
-        const prompt = type === "hiragana"
-            ? `「${word}」这个短语的读法用假名表示出来是「${userInputValue}」吗？如果你觉得是就返回true，你觉得不对就返回false，不要返回其他任何东西。`
-            : `「${word}」这个短语用中文表达的话意思是「${userInputValue}」吗？如果你觉得是这个意思的话就返回true，你觉得并不是这个意思的就返回false，不要返回其他任何东西。`;
-
-        const { output } = await askAI(prompt, 0.9);
-
-        let result = "";
-        for await (const delta of readStreamableValue(output)) {
-            if (delta) result += delta;
-        }
-
-        return result === "true";
-    }
-
-    async function grade(wordCard: TWordCard, userInputValue: string, type: string, score: number): Promise<GradeResult> {
-        const { word, meaning } = wordCard;
-
-        // 确定当前状态
-        const status = !userInputValue
-            ? GradeStatus.MissingInput
-            : GradeStatus.CheckAnswer;
-
-        if (status === GradeStatus.MissingInput) {
-            const correctAnswer = type === "hiragana"
-                ? await fetchCorrectAnswer(word, type)
-                : type === "japanese"
-                    ? word
-                    : meaning.replace("意味：", "");
-
-            return {
-                userInputValue,
-                word,
-                isCorrect: false,
-                feedback: `参考答案: ${correctAnswer}`,
-                correctAnswer,
-                score: 0,
-                totalScore: score,
-            };
-        }
-
-        const isCorrect = await checkAnswer(word, userInputValue, type);
-
-        if (!isCorrect && type === "hiragana") {
-            const correctAnswer = await fetchCorrectAnswer(word, type);
-
-            return {
-                userInputValue,
-                word,
-                isCorrect: correctAnswer === userInputValue,
-                feedback: correctAnswer === userInputValue ? "正解！" : `参考答案: ${correctAnswer}`,
-                correctAnswer,
-                score: correctAnswer === userInputValue ? score : 0,
-                totalScore: score,
-            };
-        }
-
-        return {
-            userInputValue,
-            word,
-            isCorrect,
-            feedback: isCorrect ? "正解！" : `参考答案: ${type === "japanese" ? word : meaning.replace("意味：", "")}`,
-            correctAnswer: type === "japanese" ? word : meaning.replace("意味：", ""),
-            score: isCorrect ? score : 0,
-            totalScore: score,
-        };
-    }
-
-    async function handleCommit() {
-        const gradePromises: Promise<void>[] = [];
-
-        // 日本語から中国語への翻訳のグレード
-        wordCards.slice(0, 10).forEach((wordCard, index) => {
-            const keyHiragana = `q1-${index}-hiragana`;
-            const keyChinese = `q1-${index}-chinese`;
-
-            if (containsKanji(wordCard.word)) {
-                gradePromises.push(
-                    grade(wordCard, inputValues[keyHiragana] || "", "hiragana", 2)
-                        .then(hiraganaResult => {
-                            setReviewResults((prev: any) => ({
-                                ...prev,
-                                [keyHiragana]: hiraganaResult,
-                            }));
-                        })
+                const diff = dmp.diff_main(
+                    result.question || "",
+                    result.user_answer || ""
                 );
+                const htmlString = diff.map(([result, text]) => {
+                    return `<span class="${result === -1
+                        ? "text-wrong w-full break-words pointer-events-none"
+                        : result === 1
+                            ? "text-correct w-full break-words pointer-events-none"
+                            : "w-full break-words pointer-events-none"
+                        }">${text}</span>`;
+                }).join("");
 
-                gradePromises.push(
-                    grade(wordCard, inputValues[keyChinese] || "", "chinese", 2)
-                        .then(chineseResult => {
-                            setReviewResults((prev: any) => ({
-                                ...prev,
-                                [keyChinese]: chineseResult,
-                            }));
-                        })
-                );
-            } else {
-                gradePromises.push(
-                    grade(wordCard, inputValues[keyHiragana] || "", "chinese", 4)
-                        .then(chineseResult => {
-                            setReviewResults((prev: any) => ({
-                                ...prev,
-                                [keyChinese]: chineseResult,
-                            }));
-                        })
-                );
-            }
-        });
+                const rightWordsLen = diff
+                    .filter(diffInfo => diffInfo[0] === 1)
+                    .reduce((acc, cur) => acc + cur[1].length, 0);
 
-        // 中国語から日本語への翻訳のグレード
-        wordCards.slice(10).forEach((wordCard, index) => {
-            const keyJapanese = `q2-${index}-japanese`;
+                const right = rightWordsLen > 0.9 * (result.question.length ?? 0)
+                return {
+                    ...result,
+                    is_correct: right,
+                    score: right ? 4 : 0,
+                    reference_answer: htmlString
+                };
+            })
+        );
+        setExamResults(updatedResults);
 
-            gradePromises.push(
-                grade(wordCard, inputValues[keyJapanese] || "", "japanese", 4)
-                    .then(japaneseResult => {
-                        setReviewResults((prev: any) => ({
-                            ...prev,
-                            [keyJapanese]: japaneseResult,
-                        }));
-                    })
-            );
-        });
-
-        // 聴解問題のグレード
-        randomShortCards.forEach((cardInfo: Prisma.memo_cardGetPayload<{}>, index: number) => {
-            const keyListening = `q3-${index}-listening`;
-            const dmp = new diff_match_patch();
-
-            if (cardInfo.original_text) {
-                gradePromises.push(
-                    new Promise<void>((resolve) => {
-                        const diff = dmp.diff_main(
-                            cardInfo.original_text || "",
-                            inputValues[keyListening] || ""
-                        );
-                        const htmlString = diff.map(([result, text]) => {
-                            return `<span class="${result === -1
-                                ? "text-wrong w-full break-words pointer-events-none"
-                                : result === 1
-                                    ? "text-correct w-full break-words pointer-events-none"
-                                    : "w-full break-words pointer-events-none"
-                                }">${text}</span>`;
-                        }).join("");
-
-                        const rightWordsLen = diff
-                            .filter(diffInfo => diffInfo[0] === 1)
-                            .reduce((acc, cur) => acc + cur[1].length, 0);
-
-                        const right = rightWordsLen > 0.9 * (cardInfo.original_text?.length ?? 0)
-
-                        setReviewResults((prev: any) => ({
-                            ...prev,
-                            [keyListening]: {
-                                score: right ? 4 : 0,
-                                feedback: htmlString
-                            },
-                        }));
-                        resolve();
-                    })
-                );
-            }
-        });
-
-        await Promise.all(gradePromises);
-        setCompeleted(true);
-    }
+        await insertExamResults(updatedResults);
+        setCompleted(true);
+    };
 
     const [cardInfo, setCardInfo] = useState<Prisma.memo_cardGetPayload<{}> | null>(null);
     const [showGlass, setShowGlass] = useState(false);
@@ -281,43 +299,58 @@ export default function ExamPage(props: IProps) {
             }
         });
     }, []);
-
     function handleSearch(cardInfo: Prisma.memo_cardGetPayload<{}>) {
         setCardInfo(cardInfo);
         setShowGlass(true);
     }
 
-    const [curKey, setCurKey] = useState("");
-
-    function onFixClick(key: string) {
-        setCurKey(key);
+    function onFixClick(no: number) {
+        setResultNo(no);
         setIsOpen(true);
     }
 
-    const [isOpen, setIsOpen] = useState(false);
-
     const handleConfirm = () => {
+        console.log(curResultNo, examResults.map(result => result.no === curResultNo ? ({
+            ...result,
+            is_correct: true,
+            feedback: "正解！",
+            score: result.question_score,
+        }) : result))
         setIsOpen(false);
-        setReviewResults((prev: any) => ({
-            ...prev,
-            [curKey]: {
-                ...prev[curKey],
-                isCorrect: true,
+        setExamResults(
+            examResults.map(result => result.no === curResultNo ? ({
+                ...result,
+                is_correct: true,
                 feedback: "正解！",
-                score: prev[curKey].totalScore,
-            },
-        }));
+                score: result.question_score,
+            }) : result)
+        );
     };
 
     const handleCancel = () => {
         setIsOpen(false);
     };
 
+    async function checkAnswer(question: string, userAnswer: string, type: QuestionType): Promise<boolean> {
+        const prompt = type === QuestionType.KanaFromJapanese
+            ? `「${question}」的平假名读音是「${userAnswer}」吗？返回true或false。`
+            : type === QuestionType.TranslationFromJapanese
+                ? `「${question}」对应的中文如果翻译为「${userAnswer}」你觉得可以算对吗？只返回true或false。`
+                : `「${question}」对应的日文如果翻译为「${userAnswer}」你觉得可以算对吗？返回true或false。`;
+
+        const { output } = await askAI(prompt, 0.9);
+        let result = "";
+        for await (const delta of readStreamableValue(output)) {
+            if (delta) result += delta;
+        }
+        return result.trim() === "true";
+    }
+
     return (
         <div className="p-5 relative font-NewYork container w-[680px] mx-auto bg-gray-50 min-h-screen">
             <h1 className='font-bold text-[24px] text-center'>試験</h1>
             {
-                !compeleted ? (
+                !completed ? (
                     <div
                         ref={timerDisplayRef}
                         className="p-2 inset-0 flex items-center justify-center text-xl font-medium tabular-nums"
@@ -327,11 +360,11 @@ export default function ExamPage(props: IProps) {
                 ) : null
             }
             {
-                compeleted ? (
-                    <div className='absolute w-[360px] top-[6px] -right-[440px]'>
+                completed ? (
+                    <div className='absolute w-[260px] top-[6px] -right-[360px]'>
                         <div
                             style={{ marginLeft: score.toString().length === 1 ? "46px" : "16px" }}
-                            className='text-wrong h-[142px] -rotate-6 text-[112px] top'
+                            className='text-wrong w-[160px] h-[142px] -rotate-6 text-[112px] top'
                         >{score}</div>
                         <Image
                             className='absolute'
@@ -344,218 +377,219 @@ export default function ExamPage(props: IProps) {
                 ) : null
             }
             <div className="space-y-8 mt-[20px]">
-                {/* 日本語から中国語への翻訳 */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-[18px]">日本語から中国語への翻訳</CardTitle>
+                        <CardTitle className="text-[18px]">翻訳・読み</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-6">
-                        {
-                            wordCards.slice(0, 10).map((wordCard, index) => {
-                                const keyHiragana = `q1-${index}-hiragana`;
-                                const keyChinese = `q1-${index}-chinese`;
-
-                                return (
-                                    <div key={index}>
-                                        <div className='flex items-center'>
-                                            <Label htmlFor={keyHiragana} className="text-[15px]">{index + 1}.「{wordCard.word}」</Label>
-                                            {
-                                                compeleted ? (
-                                                    <Search
-                                                        className="cursor-pointer text-gray-500 hover:text-blue-500 ml-2"
-                                                        size={20}
-                                                        onClick={() => handleSearch(wordCard.memo_card)}
-                                                    />
-                                                ) : null
-                                            }
-                                        </div>
+                    {
+                        q1List.map((result, index) => (
+                            <CardContent key={index} className="space-y-6">
+                                <div>
+                                    <div className='flex items-center'>
+                                        <Label className="text-[15px]">{index + 1}.「{result.question}」</Label>
                                         {
-                                            containsKanji(wordCard.word) && (
-                                                <>
-                                                    <Input
-                                                        id={keyHiragana}
-                                                        placeholder="平假名を入力してください"
-                                                        className="mt-2"
-                                                        disabled={compeleted}
-                                                        autoComplete="off"
-                                                        value={inputValues[keyHiragana] || ""}
-                                                        onChange={(e) => handleInputChange(keyHiragana, e.target.value)}
-                                                    />
-                                                    {reviewResults[keyHiragana] && (
-                                                        <div className="mt-2 flex items-center">
-                                                            {reviewResults[keyHiragana].isCorrect ? (
-                                                                <CheckCircle color="#32CD32" className="h-5 w-5 text-green-500 mr-2" />
-                                                            ) : (
-                                                                <XCircle color="#E50914" className="h-5 w-5 text-red-500 mr-2" />
-                                                            )}
-                                                            <span className="text-sm">
-                                                                {reviewResults[keyHiragana].feedback}
-                                                            </span>
-                                                            <Wrench
-                                                                className="cursor-pointer text-gray-500 hover:text-yellow-500 ml-4"
-                                                                size={20}
-                                                                onClick={() => onFixClick(keyHiragana)}
-                                                            />
-                                                        </div>
-                                                    )}
-                                                </>
-                                            )
-                                        }
-                                        <Input
-                                            id={keyChinese}
-                                            placeholder="中国語で入力してください"
-                                            disabled={compeleted}
-                                            autoComplete="off"
-                                            className="mt-2"
-                                            value={inputValues[keyChinese] || ""}
-                                            onChange={(e) => handleInputChange(keyChinese, e.target.value)}
-                                        />
-                                        {reviewResults[keyChinese] && (
-                                            <div className="mt-2 flex items-center">
-                                                {reviewResults[keyChinese].isCorrect ? (
-                                                    <CheckCircle color="#32CD32" className="h-5 w-5 text-green-500 mr-2" />
-                                                ) : (
-                                                    <XCircle color="#E50914" className="h-5 w-5 text-red-500 mr-2" />
-                                                )}
-                                                <span className="text-sm">
-                                                    {reviewResults[keyChinese].feedback}
-                                                </span>
-                                                <Wrench
-                                                    className="cursor-pointer text-gray-500 hover:text-yellow-500 ml-4"
+                                            completed ? (
+                                                <Search
+                                                    className="cursor-pointer text-gray-500 hover:text-blue-500 ml-2"
                                                     size={20}
-                                                    onClick={() => onFixClick(keyChinese)}
+                                                    onClick={() => handleSearch(result.wordCard?.memo_card!)}
                                                 />
-                                            </div>
-                                        )}
+                                            ) : null
+                                        }
                                     </div>
-                                )
-                            })
-                        }
-                    </CardContent>
+                                    {
+                                        result.inputs?.map(inputInfo => (
+                                            <div key={inputInfo.no}>
+                                                {
+                                                    inputInfo.question_type === QuestionType.KanaFromJapanese ? (
+                                                        <>
+                                                            <Input
+                                                                id={inputInfo.no.toString()}
+                                                                placeholder="平假名を入力してください"
+                                                                className="mt-2"
+                                                                disabled={completed}
+                                                                autoComplete="off"
+                                                                value={inputInfo.user_answer || ""}
+                                                                onChange={(e) => handleInputChange(inputInfo.no, e.target.value)}
+                                                            />
+                                                            {completed ? (
+                                                                <div className="mt-2 flex items-center">
+                                                                    {inputInfo.is_correct ? (
+                                                                        <CheckCircle color="#32CD32" className="h-5 w-5 text-green-500 mr-2" />
+                                                                    ) : (
+                                                                        <XCircle color="#E50914" className="h-5 w-5 text-red-500 mr-2" />
+                                                                    )}
+                                                                    <span className="text-sm">
+                                                                        {inputInfo.is_correct ? "正解！" : `参考答案：${inputInfo.reference_answer}`}
+                                                                    </span>
+                                                                    {
+                                                                        inputInfo.user_answer ? (
+                                                                            <Wrench
+                                                                                className="cursor-pointer text-gray-500 hover:text-yellow-500 ml-4"
+                                                                                size={20}
+                                                                                onClick={() => onFixClick(inputInfo.no)}
+                                                                            />
+                                                                        ) : null
+                                                                    }
+                                                                </div>
+                                                            ) : null}
+                                                        </>
+                                                    ) : (
+                                                        <>
+                                                            <Input
+                                                                id={inputInfo.no.toString()}
+                                                                placeholder="中国語で入力してください"
+                                                                disabled={completed}
+                                                                autoComplete="off"
+                                                                className="mt-2"
+                                                                value={inputInfo.user_answer}
+                                                                onChange={(e) => handleInputChange(inputInfo.no, e.target.value)}
+                                                            />
+                                                            {completed && (
+                                                                <div className="mt-2 flex items-center">
+                                                                    {inputInfo.is_correct ? (
+                                                                        <CheckCircle color="#32CD32" className="h-5 w-5 text-green-500 mr-2" />
+                                                                    ) : (
+                                                                        <XCircle color="#E50914" className="h-5 w-5 text-red-500 mr-2" />
+                                                                    )}
+                                                                    <span className="text-sm">
+                                                                        {inputInfo.is_correct ? "正解！" : `参考答案：${inputInfo.reference_answer}`}
+                                                                    </span>
+                                                                    {
+                                                                        inputInfo.user_answer ? (
+                                                                            <Wrench
+                                                                                className="cursor-pointer text-gray-500 hover:text-yellow-500 ml-4"
+                                                                                size={20}
+                                                                                onClick={() => onFixClick(inputInfo.no)}
+                                                                            />
+                                                                        ) : null
+                                                                    }
+                                                                </div>
+                                                            )}
+                                                        </>
+                                                    )
+                                                }
+                                            </div>
+                                        ))
+                                    }
+                                </div>
+                            </CardContent>
+                        ))
+                    }
                 </Card>
-            </div>
-            <div className="space-y-8 mt-[40px]">
-                {/* 中国語から日本語への翻訳 */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-[18px]">中国語から日本語への翻訳</CardTitle>
+                        <CardTitle className="text-[18px]">日本語への翻訳</CardTitle>
                     </CardHeader>
-                    <CardContent className="space-y-6">
-                        {
-                            wordCards.slice(10).map((wordCard, index) => {
-                                const keyJapanese = `q2-${index}-japanese`;
-
-                                return (
-                                    <div key={index}>
-                                        <div className='flex items-center'>
-                                            <Label htmlFor={keyJapanese} className="text-[15px]">{index + 1}.「{wordCard.meaning.replace("意味：", "")}」</Label>
+                    {
+                        q2List.map((result, index) => (
+                            <CardContent key={index} className="space-y-6">
+                                <div>
+                                    <div className='flex items-center'>
+                                        <Label className="text-[15px]">{index + 1}.「{result.question}」</Label>
+                                        {
+                                            completed ? (
+                                                <Search
+                                                    className="cursor-pointer text-gray-500 hover:text-blue-500 ml-2"
+                                                    size={20}
+                                                    onClick={() => handleSearch(result.wordCard?.memo_card!)}
+                                                />
+                                            ) : null
+                                        }
+                                    </div>
+                                    <Input
+                                        placeholder="日本語で入力してください"
+                                        disabled={completed}
+                                        autoComplete="off"
+                                        className="mt-2"
+                                        value={result.user_answer}
+                                        onChange={(e) => handleInputChange(result.no, e.target.value)}
+                                    />
+                                    {completed && (
+                                        <div className="mt-2 flex items-center">
+                                            {result.is_correct ? (
+                                                <CheckCircle color="#32CD32" className="h-5 w-5 text-green-500 mr-2" />
+                                            ) : (
+                                                <XCircle color="#E50914" className="h-5 w-5 text-red-500 mr-2" />
+                                            )}
+                                            <span className="text-sm">
+                                                {result.is_correct ? "正解！" : `参考答案：${result.reference_answer}`}
+                                            </span>
                                             {
-                                                compeleted ? (
-                                                    <Search
-                                                        className="cursor-pointer text-gray-500 hover:text-blue-500 ml-2"
+                                                result.user_answer ? (
+                                                    <Wrench
+                                                        className="cursor-pointer text-gray-500 hover:text-yellow-500 ml-4"
                                                         size={20}
-                                                        onClick={() => handleSearch(wordCard.memo_card)}
+                                                        onClick={() => onFixClick(result.no)}
                                                     />
                                                 ) : null
                                             }
                                         </div>
-                                        <Input
-                                            id={keyJapanese}
-                                            placeholder="日本語で入力してください"
-                                            disabled={compeleted}
-                                            autoComplete="off"
-                                            className="mt-2"
-                                            value={inputValues[keyJapanese] || ""}
-                                            onChange={(e) => handleInputChange(keyJapanese, e.target.value)}
-                                        />
-                                        {reviewResults[keyJapanese] && (
-                                            <div className="mt-2 flex items-center">
-                                                {reviewResults[keyJapanese].isCorrect ? (
-                                                    <CheckCircle color="#32CD32" className="h-5 w-5 text-green-500 mr-2" />
-                                                ) : (
-                                                    <XCircle color="#E50914" className="h-5 w-5 text-red-500 mr-2" />
-                                                )}
-                                                <span className="text-sm">
-                                                    {reviewResults[keyJapanese].feedback}
-                                                </span>
-                                                <Wrench
-                                                    className="cursor-pointer text-gray-500 hover:text-yellow-500 ml-4"
-                                                    size={20}
-                                                    onClick={() => onFixClick(keyJapanese)}
-                                                />
-                                            </div>
-                                        )}
-                                    </div>
-                                )
-                            })
-                        }
-                    </CardContent>
+                                    )}
+                                </div>
+                            </CardContent>
+                        ))
+                    }
                 </Card>
-            </div>
-            {/* 聴解問題 */}
-            <div className="space-y-8 mt-[40px]">
                 <Card>
                     <CardHeader>
                         <CardTitle className="text-[18px]">聴解問題</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         {
-                            randomShortCards.map((cardInfo, index) => {
-                                const keyListening = `q3-${index}-listening`;
-                                return (
-                                    <div key={index}>
-                                        <div className="flex items-center justify-start mb-4">
-                                            <Button onClick={() => handlePlay(cardInfo.original_text ?? "")} variant="outline" size="icon">
-                                                <PlayCircle className="h-6 w-6" />
-                                                <span className="sr-only">音声を再生</span>
-                                            </Button>
-                                            <span className="ml-2 text-[15px]">問題 {index + 1}</span>
-                                            {
-                                                compeleted ? (
-                                                    <Search
-                                                        className="cursor-pointer text-gray-500 hover:text-blue-500 ml-4"
-                                                        size={20}
-                                                        onClick={() => handleSearch(cardInfo)}
-                                                    />
-                                                ) : null
-                                            }
-                                        </div>
-
-                                        {reviewResults[keyListening] ? (
-                                            <div className="ml-2 text-[15px] p-2" dangerouslySetInnerHTML={{ __html: reviewResults[keyListening].feedback }}></div>
-                                        ) : (
-                                            <>
-                                                <Label htmlFor={keyListening}>聞いた文を入力してください：</Label>
-                                                <Input
-                                                    id={keyListening}
-                                                    placeholder="日本語で入力してください"
-                                                    autoComplete="off"
-                                                    className="mt-2"
-                                                    value={inputValues[keyListening] || ""}
-                                                    onChange={(e) => handleInputChange(keyListening, e.target.value)}
+                            q3List.map((result, index) => (
+                                <div key={index}>
+                                    <div className="flex items-center justify-start mb-4">
+                                        <Button onClick={() => handlePlay(result.question)} variant="outline" size="icon">
+                                            <PlayCircle className="h-6 w-6" />
+                                            <span className="sr-only">音声を再生</span>
+                                        </Button>
+                                        <span className="ml-2 text-[15px]">問題 {index + 1}</span>
+                                        {
+                                            completed ? (
+                                                <Search
+                                                    className="cursor-pointer text-gray-500 hover:text-blue-500 ml-4"
+                                                    size={20}
+                                                    onClick={() => handleSearch(result.cardInfo!)}
                                                 />
-                                            </>
-
-                                        )}
+                                            ) : null
+                                        }
                                     </div>
-                                )
-                            })
+
+                                    {completed ? (
+                                        <div className="ml-2 text-[15px] p-2" dangerouslySetInnerHTML={{ __html: result.reference_answer }}></div>
+                                    ) : (
+                                        <>
+                                            <Label htmlFor={result.no.toString()}>聞いた文を入力してください：</Label>
+                                            <Input
+                                                id={result.no.toString()}
+                                                placeholder="日本語で入力してください"
+                                                autoComplete="off"
+                                                className="mt-2"
+                                                value={result.user_answer}
+                                                onChange={(e) => handleInputChange(result.no, e.target.value)}
+                                            />
+                                        </>
+
+                                    )}
+                                </div>
+                            ))
                         }
                     </CardContent>
                 </Card>
             </div>
             {
-                !compeleted ? (
-                    <div className='flex justify-center mt-14'>
+                !completed && (
+                    <div className='flex justify-center mt-[42px] mb-[20px]'>
                         <Button onClick={handleCommit} size="sm" className="w-[120px] text-md px-6 py-5">
                             提出
                         </Button>
                     </div>
-                ) : null
+                )
             }
             {showGlass && cardInfo ? (
                 <div className="fixed w-[100vw] h-[100vh] left-[0] top-[0] backdrop-blur-[3px] backdrop-saturate-[180%] overflow-scroll z-[10000]">
-                    <div ref={containerRef} className="sm:w-[auto] sm:min-w-[46vw] w-full p-[22px] absolute max-h-[92%] overflow-auto left-[50%] top-[50%] center">
+                    <div ref={containerRef} className="sm:w-[auto] sm:min-w-[46vw] w-full p-[22px] absolute max-h-[92%] overflow-auto left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%]">
                         <MemoCard {...cardInfo} />
                     </div>
                 </div>
@@ -575,6 +609,6 @@ export default function ExamPage(props: IProps) {
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
-        </div>
-    )
+        </div >
+    );
 }

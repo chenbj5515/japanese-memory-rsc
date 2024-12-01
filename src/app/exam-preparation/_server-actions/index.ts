@@ -10,13 +10,13 @@ export async function insertMemoCard() {
         return ""
     }
     
-    const newMemoCard = await prisma.exam.create({
+    const newExam = await prisma.exams.create({
         data: {
-            result_data: "",
+            exam_name: "",
             user_id,
             create_time: new Date(),
         },
     });
 
-    return JSON.stringify(newMemoCard);
+    return JSON.stringify(newExam);
 }

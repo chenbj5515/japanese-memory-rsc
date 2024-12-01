@@ -17,7 +17,7 @@ export default function Component() {
         const recordStr = await insertMemoCard();
         const record = JSON.parse(recordStr);
 
-        const query = new URLSearchParams({ id: record.id }).toString();
+        const query = new URLSearchParams({ id: record.exam_id }).toString();
         router.push(`/exam?${query}`);
     }
 
