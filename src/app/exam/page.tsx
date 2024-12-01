@@ -4,7 +4,7 @@ import NewExam from "@/components/exam";
 import { Prisma } from '@prisma/client';
 import CompletedExam from "@/components/exam/completed-exam";
 
-export default async function App({ searchParams }: { searchParams: { [key: string]: string } }) {
+export default async function App({ searchParams }: { searchParams: Promise<{ [key: string]: string }> }) {
     const { id } = await searchParams;
     console.log(id, "id===")
 
