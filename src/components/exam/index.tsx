@@ -16,6 +16,7 @@ import { Prisma } from '@prisma/client'
 import diff_match_patch from 'diff-match-patch';
 import { MemoCard } from '../card';
 import { insertExamResults } from './server-actions/insert-exam-result';
+import { updateExamResult } from './server-actions/update-exam-result';
 
 interface IProps {
     wordCards: TWordCard[]
@@ -225,12 +226,18 @@ export default function NewExam(props: IProps) {
 
     console.log(q1List, examResults, "examResults===")
     const handleCommit = async () => {
+        setCompleted(true);
+
         const updatedResults = await Promise.all(
             examResults.map(async (result) => {
+                let next = result;
                 if (result.question_type !== QuestionType.TranscriptionFromAudio) {
-                    const isCorrect = await checkAnswer(result.question, result.user_answer, result.question_type);
+                    let isCorrect = result.user_answer === result.reference_answer;
+                    if (!isCorrect) {
+                        isCorrect = await checkAnswer(result.question, result.user_answer, result.question_type);
+                    }
                     const score = isCorrect
-                        ? (containsKanji(result.question) ? 4 : 2)
+                        ? result.question_score
                         : 0;
                     let reference_answer = result.reference_answer;
                     if (!isCorrect && result.question_type === QuestionType.KanaFromJapanese) {
@@ -242,45 +249,54 @@ export default function NewExam(props: IProps) {
                         }
                         reference_answer = aiResult;
                     }
-                    return {
+                    next = {
                         ...result,
                         is_correct: isCorrect,
                         score,
                         reference_answer
                     };
                 }
-                const dmp = new diff_match_patch();
+                else {
+                    const dmp = new diff_match_patch();
 
-                const diff = dmp.diff_main(
-                    result.question || "",
-                    result.user_answer || ""
-                );
-                const htmlString = diff.map(([result, text]) => {
-                    return `<span class="${result === -1
-                        ? "text-wrong w-full break-words pointer-events-none"
-                        : result === 1
-                            ? "text-correct w-full break-words pointer-events-none"
-                            : "w-full break-words pointer-events-none"
-                        }">${text}</span>`;
-                }).join("");
+                    const diff = dmp.diff_main(
+                        result.question || "",
+                        result.user_answer || ""
+                    );
+                    const htmlString = diff.map(([result, text]) => {
+                        return `<span class="${result === -1
+                            ? "text-wrong w-full break-words pointer-events-none"
+                            : result === 1
+                                ? "text-correct w-full break-words pointer-events-none"
+                                : "w-full break-words pointer-events-none"
+                            }">${text}</span>`;
+                    }).join("");
 
-                const rightWordsLen = diff
-                    .filter(diffInfo => diffInfo[0] === 1)
-                    .reduce((acc, cur) => acc + cur[1].length, 0);
+                    const rightWordsLen = diff
+                        .filter(diffInfo => diffInfo[0] === 1)
+                        .reduce((acc, cur) => acc + cur[1].length, 0);
 
-                const right = rightWordsLen > 0.9 * (result.question.length ?? 0)
-                return {
-                    ...result,
-                    is_correct: right,
-                    score: right ? 4 : 0,
-                    reference_answer: htmlString
-                };
+                    const right = rightWordsLen > 0.9 * (result.question.length ?? 0)
+                    next = {
+                        ...result,
+                        is_correct: right,
+                        score: right ? 4 : 0,
+                        reference_answer: htmlString
+                    };
+                }
+                setExamResults(prev => prev.map(item => item.no === result.no ? next : item));
+                return next;
             })
-        );
-        setExamResults(updatedResults);
+        )
 
-        await insertExamResults(updatedResults);
-        setCompleted(true);
+        const { insertedResults } = await insertExamResults(updatedResults) as any;
+        console.log(insertedResults, "insertedResults=====")
+        if (insertedResults) {
+            setExamResults(updatedResults.map((item, index) => ({
+                ...item,
+                ...insertedResults[index]
+            })))
+        }
     };
 
     const [cardInfo, setCardInfo] = useState<Prisma.memo_cardGetPayload<{}> | null>(null);
@@ -310,21 +326,16 @@ export default function NewExam(props: IProps) {
     }
 
     const handleConfirm = () => {
-        console.log(curResultNo, examResults.map(result => result.no === curResultNo ? ({
+        setIsOpen(false);
+        setExamResults(examResults.map(result => result.no === curResultNo ? ({
             ...result,
             is_correct: true,
             feedback: "正解！",
             score: result.question_score,
-        }) : result))
-        setIsOpen(false);
-        setExamResults(
-            examResults.map(result => result.no === curResultNo ? ({
-                ...result,
-                is_correct: true,
-                feedback: "正解！",
-                score: result.question_score,
-            }) : result)
-        );
+        }) : result));
+
+        const updatedResult = examResults.filter(result => result.no === curResultNo)[0];
+        updateExamResult(updatedResult);
     };
 
     const handleCancel = () => {

@@ -56,11 +56,11 @@ export async function insertExamResults(results: ExamResult[]) {
     }));
 
     try {
-        const insertedResults = await prisma.exam_results.createMany({
-            data: formattedResults,
-        });
+        const insertedResults = await Promise.all(
+            formattedResults.map(result => prisma.exam_results.create({ data: result }))
+        );
 
-        return { success: true, message: "Results inserted successfully", insertedCount: insertedResults.count };
+        return { success: true, message: "Results inserted successfully", insertedResults: insertedResults };
     } catch (error) {
         console.error("Error inserting exam results:", error);
         return { success: false, message: "Failed to insert exam results" };
