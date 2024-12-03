@@ -1,5 +1,5 @@
 "use client"
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { Plus } from "lucide-react";
 import { readStreamableValue } from 'ai/rsc';
@@ -20,9 +20,11 @@ export function InputBox() {
   const forUpdate = useForceUpdate();
   const dispatch = useDispatch();
   const [isComposing, setIsComposing] = React.useState(false);
+  const defaultText = "学びたい日本語の文を入力してください";
+  const ready2Send = editableRef.current?.textContent && editableRef.current?.textContent !== defaultText;
 
   async function handleSendBtnClick(originalText: string) {
-    if (!originalText) return;
+    if (!originalText || originalText === defaultText) return;
     try {
       dispatch(
         addCard(originalText.includes(":") ? originalText.split(":")[1].trim() : originalText.trim())
@@ -48,7 +50,7 @@ export function InputBox() {
     if (!content) return;
 
     if (event.key === 'Enter') {
-      if (isComposing) {
+      if (isComposing || content === defaultText) {
         // 正在输入法合成，不触发发送
         return;
       }
@@ -88,7 +90,7 @@ export function InputBox() {
 
   function handleBlur() {
     if (editableRef.current && !editableRef.current.textContent?.trim()) {
-      editableRef.current.textContent = "学びたい日本語の文を入力してください";
+      editableRef.current.textContent = defaultText;
       editableRef.current.classList.add("text-gray");
       forUpdate();
     }
@@ -97,13 +99,21 @@ export function InputBox() {
   function handleFocus() {
     if (
       editableRef.current &&
-      editableRef.current.textContent === "学びたい日本語の文を入力してください"
+      editableRef.current.textContent === defaultText
     ) {
       editableRef.current.textContent = "";
       editableRef.current.classList.remove("text-gray");
       forUpdate();
     }
   }
+
+  useEffect(() => {
+    if (editableRef.current) {
+      editableRef.current.classList.add("text-gray");
+      editableRef.current.textContent = defaultText
+      forUpdate();
+    }
+  }, []);
 
   return (
     <>
@@ -138,7 +148,7 @@ export function InputBox() {
         onFocus={handleFocus}
       />
       <div
-        className={`w-[32px] h-[32px] ${editableRef.current?.textContent ? "bg-[#000] hover:bg-dark" : ""
+        className={`w-[32px] h-[32px] ${ready2Send ? "bg-[#000] hover:bg-dark" : ""
           } rounded-[0.375rem] absolute top-[50%] -translate-y-1/2 right-4`}
         onClick={() => handleSendBtnClick(editableRef.current?.textContent || "")}
       >
@@ -151,7 +161,7 @@ export function InputBox() {
         >
           <path
             d="M.5 1.163A1 1 0 0 1 1.97.28l12.868 6.837a1 1 0 0 1 0 1.766L1.969 15.72A1 1 0 0 1 .5 14.836V10.33a1 1 0 0 1 .816-.983L8.5 8 1.316 6.653A1 1 0 0 1 .5 5.67V1.163Z"
-            fill={editableRef.current?.textContent ? "white" : "grey"}
+            fill={ready2Send ? "white" : "grey"}
           ></path>
         </svg>
       </div>
