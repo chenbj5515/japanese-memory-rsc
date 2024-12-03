@@ -64,6 +64,8 @@ export function InputBox() {
 
   async function handleClick() {
     if (editableRef.current) {
+      editableRef.current.textContent = "";
+      editableRef.current.classList.remove("text-gray"); // 移除灰色样式
       const { output } = await askAI("春夏秋冬、愛憎情仇、ランダムにテーマを選んで俳句を生成します。句読点は完全である必要がありますが、引用符は使用しないでください。まだ、その俳句だけを出してください、説明など全部要らないです。", 0.9);
       for await (const delta of readStreamableValue(output)) {
         if (editableRef.current && delta) {
@@ -84,6 +86,25 @@ export function InputBox() {
     });
   };
 
+  function handleBlur() {
+    if (editableRef.current && !editableRef.current.textContent?.trim()) {
+      editableRef.current.textContent = "学びたい日本語の文を入力してください";
+      editableRef.current.classList.add("text-gray");
+      forUpdate();
+    }
+  }
+
+  function handleFocus() {
+    if (
+      editableRef.current &&
+      editableRef.current.textContent === "学びたい日本語の文を入力してください"
+    ) {
+      editableRef.current.textContent = "";
+      editableRef.current.classList.remove("text-gray");
+      forUpdate();
+    }
+  }
+
   return (
     <>
       <TooltipProvider>
@@ -99,7 +120,7 @@ export function InputBox() {
             </Button>
           </TooltipTrigger>
           <TooltipContent className="bg-primary text-primary-foreground">
-            <p className="text-sm">ランダムに日本語の文が生成します。</p>
+            <p className="text-sm">ランダムに日本語の文が生成します</p>
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>
@@ -110,9 +131,11 @@ export function InputBox() {
         onKeyDown={handleKeyDown}
         onCompositionStart={handleCompositionStart}
         onCompositionEnd={handleCompositionEnd}
-        className="dark:bg-bgDark dark:text-white dark:border-[1px] absolute w-full p-3 pl-3 pr-12 rounded-lg border-2 border-lightgrey outline-none transition-all duration-300 focus:border-[#808080] bg-[#fff] left-[50%] bottom-0 transhtmlForm -translate-x-1/2"
+        className="dark:bg-bgDark dark:text-white dark:border-[1px] absolute w-full p-3 pl-3 pr-12 rounded-lg border-2 border-lightgrey outline-none focus:border-[#808080] bg-[#fff] left-[50%] bottom-0 transhtmlForm -translate-x-1/2"
         contentEditable
         suppressContentEditableWarning
+        onBlur={handleBlur}
+        onFocus={handleFocus}
       />
       <div
         className={`w-[32px] h-[32px] ${editableRef.current?.textContent ? "bg-[#000] hover:bg-dark" : ""
