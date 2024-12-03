@@ -83,7 +83,7 @@ export default function ClientLayout({
                                     <Link prefetch className="sm:text-sm text-[16px] w-full" href="/word-cards">単語帳</Link>
                                 </TabsTrigger>
                                 <TabsTrigger className="sm:block hidden p-0 h-full leading-[28px]" value="exam preparation">
-                                    <Link prefetch className="inline-block sm:text-sm text-[16px] w-full" href="/exam-preparation">試験</Link>
+                                    <Link prefetch className="inline-block sm:text-sm text-[16px] w-full" href="/exam-preparation">試験（開発中）</Link>
                                 </TabsTrigger>
                             </TabsList>
                         </Tabs >
