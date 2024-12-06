@@ -127,7 +127,7 @@ export function LocalCard(props: ILoaclCard) {
 
     function handleOriginalTextBlur() {
         if (originalTextRef.current?.textContent && cardInfoRef.current?.id) {
-            updateOriginalText(cardInfoRef.current?.id, originalTextRef.current?.textContent)
+            updateOriginalText(cardInfoRef.current?.id, originalTextRef.current?.textContent.slice(3))
         }
     }
 
