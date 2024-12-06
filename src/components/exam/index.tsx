@@ -208,7 +208,6 @@ export default function NewExam(props: IProps) {
     const [curResultNo, setResultNo] = useState<number | null>(null);
 
     const handleInputChange = (index: number, value: string) => {
-        console.log(index, value)
         setExamResults((prevResults) =>
             prevResults.map((result) =>
                 result.no === index ? { ...result, user_answer: value } : result
@@ -224,7 +223,6 @@ export default function NewExam(props: IProps) {
     const q3List = examResults.filter(result => result.question_type === QuestionType.TranscriptionFromAudio);
     const score = examResults.reduce((acc, cur) => acc + cur.score, 0);
 
-    console.log(q1List, examResults, "examResults===")
     const handleCommit = async () => {
         setCompleted(true);
 
@@ -236,11 +234,8 @@ export default function NewExam(props: IProps) {
                     if (!isCorrect) {
                         isCorrect = await checkAnswer(result.question, result.user_answer, result.question_type);
                     }
-                    const score = isCorrect
-                        ? result.question_score
-                        : 0;
                     let reference_answer = result.reference_answer;
-                    if (!isCorrect && result.question_type === QuestionType.KanaFromJapanese) {
+                    if (result.question_type === QuestionType.KanaFromJapanese) {
                         const prompt = `「${result.question}」这个短语的平假名读音是什么？请只给我平假名读音不要输出任何其他内容。`
                         const { output } = await askAI(prompt, 0.9);
                         let aiResult = "";
@@ -248,7 +243,11 @@ export default function NewExam(props: IProps) {
                             if (delta) aiResult += delta;
                         }
                         reference_answer = aiResult;
+                        isCorrect = result.user_answer === aiResult;
                     }
+
+                    const score = isCorrect ? result.question_score : 0;
+
                     next = {
                         ...result,
                         is_correct: isCorrect,
@@ -290,7 +289,6 @@ export default function NewExam(props: IProps) {
         )
 
         const { insertedResults } = await insertExamResults(updatedResults) as any;
-        console.log(insertedResults, "insertedResults=====")
         if (insertedResults) {
             setExamResults(updatedResults.map((item, index) => ({
                 ...item,
