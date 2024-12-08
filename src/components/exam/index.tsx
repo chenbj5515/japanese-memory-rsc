@@ -79,6 +79,8 @@ export default function NewExam(props: IProps) {
                 result.question_type === $Enums.question_type_enum.translation_from_japanese)
     )
 
+    console.log(examResults, id, q1List)
+
     const q2List = examResults.filter(result => result.question_type === $Enums.question_type_enum.japanese_from_chinese)
 
     const q3List = examResults.filter(result => result.question_type === $Enums.question_type_enum.transcription_from_audio)

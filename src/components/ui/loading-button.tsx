@@ -13,7 +13,7 @@ export default function LoadingButton({ isLoading = false, disabled, children, .
       className="flex items-center justify-center space-x-2 min-w-[120px]"
       {...props}
     >
-      {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
+      {isLoading && <Loader2 className="h-4 w-4 mr-[6px] animate-spin" />}
       {children}
     </Button>
   )
