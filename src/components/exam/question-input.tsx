@@ -47,7 +47,7 @@ export function QuestionInput({
                         {
                             user_answer && onFixClick && (
                                 <Wrench
-                                    className="cursor-pointer text-gray-500 hover:text-yellow-500 ml-4"
+                                    className="cursor-pointer text-[#999]-500 hover:text-yellow-500 ml-4"
                                     size={20}
                                     onClick={onFixClick}
                                 />

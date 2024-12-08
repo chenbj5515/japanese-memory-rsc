@@ -51,7 +51,7 @@ model exam_results {
   user_answer    String
   is_correct     Boolean            @default(false)
   question_score Int                @default(0)
-  create_time    DateTime?          @default(now()) @db.Timestamp(6)
+  create_time    DateTime          @default(now()) @db.Timestamp(6)
 }
 
 model exams {
@@ -61,7 +61,7 @@ model exams {
   total_score      Int              @default(0)
   status           exam_status_enum @default(initial)
   duration_seconds Int?
-  create_time      DateTime?        @default(now()) @db.Timestamp(6)
+  create_time      DateTime         @default(now()) @db.Timestamp(6)
 }
 
 model articles {

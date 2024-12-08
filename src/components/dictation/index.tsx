@@ -101,14 +101,14 @@ export function Dictation(props: IProps) {
             }}
           ></path>
         </svg>
-        <div className="absolute top-[50%] -translate-y-1/2 left-7 whitespace-nowrap text-gray sm:text-[14px] text-[16px]">
+        <div className="absolute top-[50%] -translate-y-1/2 left-7 whitespace-nowrap text-[#999] sm:text-[14px] text-[16px]">
           日本語原文を書いてください
         </div>
       </div>
       <div
           suppressContentEditableWarning
           ref={dictationRef}
-          className={`rounded-[15px] p-2 bg-white border border-[hsl(var(--input))] focus:outline focus:outline-[1px] focus:outline-[#a9a9a9] ${answerFinished ? "text-gray" : ""} dark:bg-bgDark dark:shadow-none w-full mt-4 text-[15px] min-h-[40px]`}
+          className={`rounded-[15px] p-2 bg-white border border-[hsl(var(--input))] focus:outline focus:outline-[1px] focus:outline-[#a9a9a9] ${answerFinished ? "text-[#999]" : ""} dark:bg-bgDark dark:shadow-none w-full mt-4 text-[15px] min-h-[40px]`}
           contentEditable
           onInput={handleDictationChange}
           onFocus={handleFocus}

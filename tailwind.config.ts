@@ -13,7 +13,6 @@ const config: Config = {
 			black: 'rgb(26 26 26)',
 			wrong: '#E50914',
 			correct: 'limegreen',
-			gray: '#999',
 			blue: '#1e07f0',
 			white: 'white'
 		},

@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button"
 import { Loader2 } from 'lucide-react'
 
 interface LoadingButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  isLoading?: boolean
+  isLoading: boolean
 }
 
 export default function LoadingButton({ isLoading = false, disabled, children, ...props }: LoadingButtonProps) {
@@ -14,7 +14,7 @@ export default function LoadingButton({ isLoading = false, disabled, children, .
       {...props}
     >
       {isLoading && <Loader2 className="h-4 w-4 animate-spin" />}
-      <span>はい</span>
+      {children}
     </Button>
   )
 }

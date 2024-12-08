@@ -1,34 +1,64 @@
-"use client"
-import LoadingButton from '@/components/ui/loading-button';
-import { useRouter } from "next/navigation"
-import { insertMemoCard } from "./_server-actions"
-import { useState } from 'react';
+import { auth } from '@/auth';
+import ExamPreparation from '@/components/exam/exam-preparation';
+import { prisma } from '@/prisma';
 
-export default function Component() {
-    const [isLoading, setIsLoading] = useState(false);
-    
-    const router = useRouter();
-    let isLocked = false;
+interface Exam {
+    id: string
+    date: string
+    score: number
+    duration: number
+}
 
-    async function handleAgree() {
-        if (isLocked) return;
-        setIsLoading(true);
-        isLocked = true;      
-        const recordStr = await insertMemoCard();
-        const record = JSON.parse(recordStr);
+interface ExamMonth {
+    month: string
+    exams: Exam[]
+}
 
-        const query = new URLSearchParams({ id: record.exam_id }).toString();
-        router.push(`/exam?${query}`);
+export default async function App() {
+    const session = await auth()
+
+    if (!session?.userId) {
+        return null;
     }
 
-    return (
-        <div className="flex pt-[200px] flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
-            <h1 className="text-3xl font-bold mb-8 text-gray-800 dark:text-gray-200 text-center">
-                試験を始める準備はできましたか？
-            </h1>
-            <LoadingButton isLoading={isLoading} onClick={handleAgree}>
-                はい
-            </LoadingButton>
-        </div>
-    )
+    const exams = await prisma.exams.findMany({
+        orderBy: {
+            create_time: 'desc', // 根据需要排序
+        },
+    });
+
+    // 使用 Map 对结果进行分组
+    const groupedByMonth = new Map<string, Exam[]>();
+
+    for (const exam of exams) {
+        const d = new Date(exam.create_time);
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        const hours = String(d.getHours()).padStart(2, '0');
+        const minutes = String(d.getMinutes()).padStart(2, '0');
+
+        const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
+
+        const monthKey = `${year}年${Number(month)}月`;
+
+        if (!groupedByMonth.has(monthKey)) {
+            groupedByMonth.set(monthKey, []);
+        }
+
+        groupedByMonth.get(monthKey)!.push({
+            id: exam.exam_id,
+            date: formattedDate,
+            score: exam.total_score,
+            duration: Math.floor((exam.duration_seconds || 25 * 60) / 60),
+        });
+    }
+
+    // 将 Map 转换为数组
+    const examHistory: ExamMonth[] = Array.from(groupedByMonth.entries()).map(([month, exams]) => ({
+        month,
+        exams,
+    }));
+
+    return <ExamPreparation examHistory={examHistory} />
 }

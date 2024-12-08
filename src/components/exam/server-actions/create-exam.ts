@@ -2,7 +2,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/prisma"
 
-export async function insertMemoCard() {
+export async function createExam() {
     const session = await auth();
     const user_id = session?.userId;
     

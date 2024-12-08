@@ -12,7 +12,6 @@ import { readStreamableValue } from 'ai/rsc';
 import { TWordCard } from '@/app/word-cards/page'
 import { $Enums, Prisma } from '@prisma/client'
 import { Input } from "@/components/ui/input"
-import diff_match_patch from 'diff-match-patch';
 import { MemoCard } from '../card';
 import { insertExamResults } from './server-actions/insert-exam-result';
 import { updateExamResult } from './server-actions/update-exam-result';
@@ -30,7 +29,7 @@ interface IProps {
     id: string
 }
 
-type ExamResult =  Prisma.exam_resultsGetPayload<{}>
+type ExamResult = Omit<Prisma.exam_resultsGetPayload<{}>, "create_time">
 export interface ExamInfo extends ExamResult {
     no: number;
     reference_answer: string;
@@ -207,7 +206,7 @@ export default function NewExam(props: IProps) {
                                     <Label className="text-[15px]">{index + 1}.「{group.question}」</Label>
                                     {group.inputs?.every(inputInfo => inputInfo.completed) ? (
                                         <Search
-                                            className="cursor-pointer text-gray-500 hover:text-blue-500 ml-2"
+                                            className="cursor-pointer text-[#999]-500 hover:text-blue-500 ml-2"
                                             size={20}
                                             onClick={() => handleSearch(group.wordCard?.memo_card!)}
                                         />
@@ -240,7 +239,7 @@ export default function NewExam(props: IProps) {
                                     <Label className="text-[15px]">{index + 1}.「{result.question}」</Label>
                                     {result.completed ? (
                                         <Search
-                                            className="cursor-pointer text-gray-500 hover:text-blue-500 ml-2"
+                                            className="cursor-pointer text-[#999]-500 hover:text-blue-500 ml-2"
                                             size={20}
                                             onClick={() => handleSearch(result.wordCard?.memo_card!)}
                                         />
@@ -274,7 +273,7 @@ export default function NewExam(props: IProps) {
                                     <span className="ml-2 text-[15px]">問題 {index + 1}</span>
                                     {result.completed && (
                                         <Search
-                                            className="cursor-pointer text-gray-500 hover:text-blue-500 ml-4"
+                                            className="cursor-pointer text-[#999]-500 hover:text-blue-500 ml-4"
                                             size={20}
                                             onClick={() => handleSearch(result.cardInfo!)}
                                         />

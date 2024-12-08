@@ -67,7 +67,7 @@ export function InputBox() {
   async function handleClick() {
     if (editableRef.current) {
       editableRef.current.textContent = "";
-      editableRef.current.classList.remove("text-gray"); // 移除灰色样式
+      editableRef.current.classList.remove("text-[#999]"); // 移除灰色样式
       const { output } = await askAI("春夏秋冬、愛憎情仇、ランダムにテーマを選んで俳句を生成します。句読点は完全である必要がありますが、引用符は使用しないでください。まだ、その俳句だけを出してください、説明など全部要らないです。", 0.9);
       for await (const delta of readStreamableValue(output)) {
         if (editableRef.current && delta) {
@@ -91,7 +91,7 @@ export function InputBox() {
   function handleBlur() {
     if (editableRef.current && !editableRef.current.textContent?.trim()) {
       editableRef.current.textContent = defaultText;
-      editableRef.current.classList.add("text-gray");
+      editableRef.current.classList.add("text-[#999]");
       forUpdate();
     }
   }
@@ -102,14 +102,14 @@ export function InputBox() {
       editableRef.current.textContent === defaultText
     ) {
       editableRef.current.textContent = "";
-      editableRef.current.classList.remove("text-gray");
+      editableRef.current.classList.remove("text-[#999]");
       forUpdate();
     }
   }
 
   useEffect(() => {
     if (editableRef.current) {
-      editableRef.current.classList.add("text-gray");
+      editableRef.current.classList.add("text-[#999]");
       editableRef.current.textContent = defaultText
       forUpdate();
     }

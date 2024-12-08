@@ -8,6 +8,11 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
     const { id } = await searchParams;
 
     const session = await auth()
+
+    if (!session?.userId) {
+        return null;
+    }
+
     const exam = await prisma.exams.findUnique({
         where: { exam_id: id },
         select: { exam_id: true, status: true },
@@ -120,7 +125,6 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
                     reference_answer: '',
                     user_answer: '',
                     is_correct: false,
-                    create_time: null,
                     wordCard,
                     question_score: 2,
                     judging: false,
@@ -136,7 +140,6 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
                     reference_answer: wordCard.meaning.replace("意味：", ""),
                     user_answer: '',
                     is_correct: false,
-                    create_time: null,
                     wordCard,
                     question_score: 2,
                     judging: false,
@@ -153,7 +156,6 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
                     reference_answer: wordCard.meaning.replace("意味：", ""),
                     user_answer: '',
                     is_correct: false,
-                    create_time: null,
                     wordCard,
                     question_score: 4,
                     judging: false,
@@ -174,7 +176,6 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
                 reference_answer: wordCard.word,
                 user_answer: '',
                 is_correct: false,
-                create_time: null,
                 wordCard,
                 question_score: 4,
                 judging: false,
@@ -194,7 +195,6 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
                 reference_answer: cardInfo.original_text || '',
                 user_answer: '',
                 is_correct: false,
-                create_time: null,
                 cardInfo,
                 question_score: 4,
                 judging: false,
