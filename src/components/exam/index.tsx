@@ -55,9 +55,10 @@ export default function NewExam(props: IProps) {
                     : result
             ));
 
+            const score = examResultsRef.current.reduce((acc, cur) => acc + (cur.is_correct ? cur.question_score : 0), 0)
             const updatedResult = examResultsRef.current.find(result => result.no === currentQuestionNo);
             if (updatedResult?.result_id) {
-                updateExamResult(updatedResult?.result_id);
+                updateExamResult(id, updatedResult?.result_id, score);
             }
         },
     });
@@ -78,8 +79,6 @@ export default function NewExam(props: IProps) {
                 result.question_type === $Enums.question_type_enum.kana_from_japanese ||
                 result.question_type === $Enums.question_type_enum.translation_from_japanese)
     )
-
-    console.log(examResults, id, q1List)
 
     const q2List = examResults.filter(result => result.question_type === $Enums.question_type_enum.japanese_from_chinese)
 
@@ -138,7 +137,7 @@ export default function NewExam(props: IProps) {
             })
         );
         updateExamStatus(id, $Enums.exam_status_enum.completed)
-        const { insertedResults } = await insertExamResults(updatedResults) as any;
+        const { insertedResults } = await insertExamResults(updatedResults, score) as any;
         
         if (insertedResults) {
             setExamResults(updatedResults.map((item, index) => ({

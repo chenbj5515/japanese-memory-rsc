@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 import { ExamInfo } from "..";
 
-export async function updateExamResult(result_id: string) {
+export async function updateExamResult(exam_id: string, result_id: string, total_score: number) {
     // 获取用户会话
     const session = await auth();
     const user_id = session?.userId;
@@ -19,6 +19,16 @@ export async function updateExamResult(result_id: string) {
     }
 
     try {
+        console.log(exam_id, total_score, "total_score===")
+        const updatedExam = await prisma.exams.update({
+            where: { exam_id },
+            data: {
+                total_score,
+            },
+        });
+
+        console.log(updatedExam, "updatedExam===")
+
         // 更新指定的 exam_results 数据
         const updatedResult = await prisma.exam_results.update({
             where: { result_id },

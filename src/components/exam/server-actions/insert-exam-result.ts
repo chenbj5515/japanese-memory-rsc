@@ -4,7 +4,7 @@ import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 import { ExamInfo } from "..";
 
-export async function insertExamResults(results: ExamInfo[]) {
+export async function insertExamResults(results: ExamInfo[], total_score: number) {
     // 获取用户会话
     const session = await auth();
     const user_id = session?.userId;
@@ -23,6 +23,7 @@ export async function insertExamResults(results: ExamInfo[]) {
         is_correct: result.is_correct,
         question_score: result.question_score,
         create_time: new Date(),
+        total_score
     }));
 
     try {
