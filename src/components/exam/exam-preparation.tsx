@@ -40,6 +40,19 @@ export default function ExamPreparation(props: IProps) {
         router.push(`/exam?${query}`);
     }
 
+    if (examHistory.length === 0) {
+        return (
+            <div className="flex h-full justify-center">
+                <div className="p-6 bg-white text-center mt-[140px]">
+                    <h1 className="text-[2.2rem] font-bold text-gray-800 mb-4">試験を開始できません</h1>
+                    <p className="text-gray-600 text-[16px]">
+                        データが不足しています。試験を開始するには十分な日本語の文を入力してください。
+                    </p>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <TooltipProvider>
             <div className="max-w-[768px] m-auto p-4">

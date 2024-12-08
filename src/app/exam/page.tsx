@@ -14,7 +14,7 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
     }
 
     const exam = await prisma.exams.findUnique({
-        where: { exam_id: id },
+        where: { exam_id: id, user_id: session.userId },
         select: { exam_id: true, status: true },
     });
 
@@ -62,7 +62,10 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
                 };
             } else {
                 const wordCard = await prisma.word_card.findUnique({
-                    where: { id: result.question_ref },
+                    where: {
+                        id: result.question_ref,
+                        user_id: session.userId
+                    },
                     // 根据实际字段需求去选择
                     select: {
                         id: true,
@@ -88,7 +91,11 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
 
         return <NewExam initialResults={initialResults} id={id} />;
     } else {
-        const count = await prisma.word_card.count();
+        const count = await prisma.word_card.count({
+            where: {
+                user_id: session?.userId, // 添加 user_id 条件
+            },
+        });
 
         const randomSkip = Math.max(0, Math.floor(Math.random() * (count - 10)));
         const wordCards = await prisma.word_card.findMany({
@@ -106,6 +113,7 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
             SELECT *
             FROM memo_card
             WHERE LENGTH(original_text) < 50
+                AND user_id = ${session?.userId}
             ORDER BY RANDOM()
             LIMIT 5
         `;

@@ -19,19 +19,21 @@ export async function updateExamResult(exam_id: string, result_id: string, total
     }
 
     try {
-        console.log(exam_id, total_score, "total_score===")
-        const updatedExam = await prisma.exams.update({
-            where: { exam_id },
+        await prisma.exams.update({
+            where: {
+                exam_id,
+                user_id: session.userId
+            },
             data: {
                 total_score,
             },
         });
 
-        console.log(updatedExam, "updatedExam===")
-
         // 更新指定的 exam_results 数据
         const updatedResult = await prisma.exam_results.update({
-            where: { result_id },
+            where: {
+                result_id,
+            },
             data: {
                 is_correct: true,
             },

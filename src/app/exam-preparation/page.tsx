@@ -1,6 +1,7 @@
 import { auth } from '@/auth';
 import ExamPreparation from '@/components/exam/exam-preparation';
 import { prisma } from '@/prisma';
+import { Prisma } from '@prisma/client';
 
 interface Exam {
     id: string
@@ -21,7 +22,26 @@ export default async function App() {
         return null;
     }
 
+    const count = await prisma.word_card.count({
+        where: {
+            user_id: session?.userId, // 添加 user_id 条件
+        },
+    });
+    const randomShortCards = await prisma.$queryRaw<Prisma.memo_cardGetPayload<{}>[]>`
+        SELECT *
+        FROM memo_card
+        WHERE LENGTH(original_text) < 50
+                AND user_id = ${session?.userId}
+        ORDER BY RANDOM()
+        LIMIT 5
+    `;
+
+    if (count < 30 || randomShortCards.length < 5) {
+        return <ExamPreparation examHistory={[]}/> 
+    }
+
     const exams = await prisma.exams.findMany({
+        where: { user_id: session?.userId },
         orderBy: {
             create_time: 'desc', // 根据需要排序
         },
