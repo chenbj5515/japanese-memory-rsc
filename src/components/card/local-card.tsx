@@ -6,10 +6,11 @@ import { speakText } from "@/utils";
 import { Dictation } from "@/components/dictation";
 import { ILoaclCard, deleteCard } from "@/store/local-cards-slice";
 import { setCardId } from "@/store/card-id-slice";
-import { useRefState, useTripleRightClick, useAudioRecorder } from "@/hooks";
+import { useRefState, useTripleRightClick } from "@/hooks";
 import { Card } from "@/components/ui/card";
 import { insertMemoCard, deleteMemoCard, updateMemoCardTranslation, updatePronunciation, updateOriginalText } from "./server-actions";
 import { useAIGenerate } from "./hooks";
+import { useAudioRecorder } from "@/hooks/audio";
 
 export function LocalCard(props: ILoaclCard) {
     const { original_text } = props;

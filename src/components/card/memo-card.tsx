@@ -5,11 +5,12 @@ import { useDispatch } from "react-redux";
 import { setCardId } from "@/store/card-id-slice";
 import { getTimeAgo, speakText } from "@/utils";
 import { Dictation } from "@/components/dictation";
-import { useTripleRightClick, useAudioRecorder } from "@/hooks";
+import { useTripleRightClick } from "@/hooks";
 import {
     Card,
 } from "@/components/ui/card";
 import { deleteMemoCard, updateMemoCardTranslation, updatePronunciation, updateOriginalText } from "./server-actions";
+import { useAudioRecorder } from "@/hooks/audio";
 
 export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     onDelete?: (id: string) => void

@@ -1,5 +1,6 @@
 import { useRef, useEffect, useState, useCallback } from 'react';
 
+// refに対応するコンテナ内で3回連続のクリックイベントを監視する、あればcallbackを実行する
 export function useTripleRightClick(callback: () => void) {
   const ref = useRef<HTMLDivElement | null>(null);
   const clickCountRef = useRef(0);
@@ -45,65 +46,4 @@ export function useTripleRightClick(callback: () => void) {
   }, [handleClick]);
 
   return ref;
-}
-
-export function useAudioRecorder() {
-  const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
-  const audioChunks = useRef<Blob[]>([]);
-  const audioURL = useRef<string | null>(null);
-  const audio = useRef<HTMLAudioElement | null>(null);
-
-  const startRecording = async () => {
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-      console.error('ブラウザーは録音をサポートしていません。');
-      return;
-    }
-
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const recorder = new MediaRecorder(stream);
-
-      recorder.ondataavailable = (event: BlobEvent) => {
-        audioChunks.current.push(event.data);
-      };
-
-      recorder.onstop = () => {
-        if (audioURL.current) {
-          window.URL.revokeObjectURL(audioURL.current);
-        }
-        const blob = new Blob(audioChunks.current, { type: 'audio/mp3' });
-        audioURL.current = window.URL.createObjectURL(blob);
-        audio.current = new Audio(audioURL.current!);
-        audioChunks.current = [];
-      };
-
-      recorder.start();
-      setMediaRecorder(recorder);
-    } catch (err) {
-      console.error('マイクにアクセスできません', err);
-    }
-  };
-
-  const stopRecording = () => {
-    if (mediaRecorder) {
-      mediaRecorder.stop();
-      setMediaRecorder(null);
-    }
-  };
-
-  const playRecording = () => {
-    if (audio.current) {
-      audio.current.play();
-    }
-  };
-
-  useEffect(() => {
-    return () => {
-      if (audioURL.current) {
-        window.URL.revokeObjectURL(audioURL.current);
-      }
-    };
-  }, []);
-
-  return { startRecording, stopRecording, playRecording };
 }

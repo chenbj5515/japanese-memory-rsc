@@ -44,7 +44,6 @@ export function Dictation(props: IProps) {
       // チェックが入っていない場合、チェックマークを入れる
       if (!dictationCheckInputRef.current?.checked) {
         dictationCheckInputRef.current?.click();
-        console.log("click===")
         updateReviewTimes(cardID);
         if (dictationRef.current) {
           dictationRef.current.innerHTML = originalText;
