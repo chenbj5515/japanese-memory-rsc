@@ -21,10 +21,11 @@ interface ExamMonth {
 
 interface IProps {
     examHistory: ExamMonth[];
+    dataEnough: boolean;
 }
 
 export default function ExamPreparation(props: IProps) {
-    const { examHistory } = props;
+    const { examHistory, dataEnough } = props;
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
     let isLocked = false;
@@ -40,7 +41,7 @@ export default function ExamPreparation(props: IProps) {
         router.push(`/exam?${query}`);
     }
 
-    if (examHistory.length === 0) {
+    if (!dataEnough) {
         return (
             <div className="flex h-full justify-center">
                 <div className="p-6 bg-white text-center mt-[140px]">

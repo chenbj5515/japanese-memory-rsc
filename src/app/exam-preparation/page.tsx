@@ -37,7 +37,7 @@ export default async function App() {
     `;
 
     if (count < 30 || randomShortCards.length < 5) {
-        return <ExamPreparation examHistory={[]}/> 
+        return <ExamPreparation examHistory={[]} dataEnough={false} /> 
     }
 
     const exams = await prisma.exams.findMany({
@@ -80,5 +80,5 @@ export default async function App() {
         exams,
     }));
 
-    return <ExamPreparation examHistory={examHistory} />
+    return <ExamPreparation examHistory={examHistory} dataEnough />
 }

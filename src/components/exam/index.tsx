@@ -22,6 +22,8 @@ import { FixConfirmDialog } from './fix-confirm-dialog';
 import { mergeResultsByQuestion, checkAnswer } from './utils';
 import { updateExamStatus } from './server-actions/update-exam';
 import { useRefState } from '@/hooks';
+import { useState } from 'react';
+import LoadingButton from '../ui/loading-button';
 
 interface IProps {
     initialResults: ExamInfo[];
@@ -62,6 +64,8 @@ export default function NewExam(props: IProps) {
         },
     });
 
+    const [loading, setLoading] = useState(false);
+
     // 問題に対応する日本語原文など情報をカード内に表示することを制御するロジック
     const { cardInfo, containerRef, handleSearch } = useModalCard<Prisma.memo_cardGetPayload<{}>>();
 
@@ -86,6 +90,8 @@ export default function NewExam(props: IProps) {
     const score = examResults.reduce((acc, cur) => acc + (cur.is_correct ? cur.question_score : 0), 0)
 
     const handleCommit = async () => {
+        if (loading) return;
+        setLoading(true);
         const updatedResults = await Promise.all(
             examResults.map(async (result) => {
                 let next = result;
@@ -144,7 +150,6 @@ export default function NewExam(props: IProps) {
                 ...insertedResults[index],
             })));
         }
-        
     };
 
     const handleInputChange = (index: number, value: string) => {
@@ -302,9 +307,9 @@ export default function NewExam(props: IProps) {
             {
                 !allCompleted && (
                     <div className='flex justify-center mt-[42px] mb-[20px]'>
-                        <Button onClick={handleCommit} size="sm" className="w-[120px] text-md px-6 py-5">
+                        <LoadingButton isLoading={loading} onClick={handleCommit} className="w-[120px] text-md px-6 py-5">
                             提出
-                        </Button>
+                        </LoadingButton>
                     </div>
                 )
             }

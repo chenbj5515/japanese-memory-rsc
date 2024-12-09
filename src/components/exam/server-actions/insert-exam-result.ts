@@ -23,7 +23,6 @@ export async function insertExamResults(results: ExamInfo[], total_score: number
         is_correct: result.is_correct,
         question_score: result.question_score,
         create_time: new Date(),
-        total_score
     }));
 
     try {

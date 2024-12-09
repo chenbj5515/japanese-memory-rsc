@@ -24,6 +24,7 @@ export function mergeResultsByQuestion(results: ExamInfo[]) {
 }
 
 export async function checkAnswer(question: string, userAnswer: string, type: $Enums.question_type_enum): Promise<boolean> {
+    if (!userAnswer) return false;
     const prompt = type === $Enums.question_type_enum.kana_from_japanese
         ? `「${question}」的平假名读音是「${userAnswer}」吗？返回true或false。`
         : type === $Enums.question_type_enum.translation_from_japanese
