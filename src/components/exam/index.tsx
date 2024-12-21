@@ -31,6 +31,7 @@ interface IProps {
 }
 
 type ExamResult = Omit<Prisma.exam_resultsGetPayload<{}>, "create_time">
+
 export interface ExamInfo extends ExamResult {
     no: number;
     reference_answer: string;
@@ -125,10 +126,10 @@ export default function NewExam(props: IProps) {
                     const {diff, htmlString} = getDiff(result.question || "", result.user_answer || "")
 
                     const rightWordsLen = diff
-                        .filter(diffInfo => diffInfo[0] === 1)
+                        .filter(diffInfo => diffInfo[0] === 0)
                         .reduce((acc, cur) => acc + cur[1].length, 0);
 
-                    const right = rightWordsLen > 0.9 * (result.question.length ?? 0)
+                    const right = rightWordsLen > 0.8 * (result.question.length ?? 0)
                     next = {
                         ...result,
                         is_correct: right,
