@@ -1,4 +1,5 @@
-import { useRef, useEffect, useState, useCallback } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
+import { useRouter } from 'next/navigation';
 
 // refに対応するコンテナ内で3回連続のクリックイベントを監視する、あればcallbackを実行する
 export function useTripleRightClick(callback: () => void) {
@@ -47,3 +48,24 @@ export function useTripleRightClick(callback: () => void) {
 
   return ref;
 }
+
+
+/**
+ * Hook to handle Escape key press for navigating back.
+ */
+export function useEscToGoBack() {
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        router.back();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [router]);
+};

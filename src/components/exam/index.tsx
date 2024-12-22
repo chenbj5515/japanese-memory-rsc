@@ -21,7 +21,7 @@ import { QuestionInput } from './question-input';
 import { FixConfirmDialog } from './fix-confirm-dialog';
 import { mergeResultsByQuestion, checkAnswer } from './utils';
 import { updateExamStatus } from './server-actions/update-exam';
-import { useRefState } from '@/hooks';
+import { useEscToGoBack, useRefState } from '@/hooks';
 import { useState } from 'react';
 import LoadingButton from '../ui/loading-button';
 
@@ -76,6 +76,9 @@ export default function NewExam(props: IProps) {
     const examResults = examResultsRef.current;
 
     const allCompleted = examResults.every(result => result.completed);
+
+    // escキーを押して前のページに戻る
+    useEscToGoBack();
 
     const q1List = mergeResultsByQuestion(
         examResults
