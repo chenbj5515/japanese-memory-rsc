@@ -6,7 +6,7 @@ import {
     Card,
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { deleteWordCard } from "./server-actions";
+import { updateReviewTimes } from "./server-actions";
 
 interface IProps {
     wordCardInfo: TWordCard;
@@ -19,7 +19,7 @@ export function WordCard(props: IProps) {
 
     const cardRef = useTripleRightClick(async () => {
         onRecognize?.(id);
-        await deleteWordCard(id);
+        await updateReviewTimes(id);
     })
 
     function handlePlayBtn(text: string) {

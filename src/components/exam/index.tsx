@@ -24,6 +24,7 @@ import { updateExamStatus } from './server-actions/update-exam';
 import { useEscToGoBack, useRefState } from '@/hooks';
 import { useState } from 'react';
 import LoadingButton from '../ui/loading-button';
+import { insertActionLogs } from './server-actions/insert-action-logs';
 
 interface IProps {
     initialResults: ExamInfo[];
@@ -96,56 +97,8 @@ export default function NewExam(props: IProps) {
     const handleCommit = async () => {
         if (loading) return;
         setLoading(true);
-        const updatedResults = await Promise.all(
-            examResults.map(async (result) => {
-                let next = result;
-                if (result.question_type !== $Enums.question_type_enum.transcription_from_audio) {
-                    setExamResults(examResultsRef.current.map(item => item.no === result.no ? {
-                        ...item,
-                        judging: true
-                    } : item));
-                    let isCorrect = await checkAnswer(result.question, result.user_answer, result.question_type);
-
-                    let reference_answer = result.reference_answer;
-                    if (result.question_type === $Enums.question_type_enum.kana_from_japanese) {
-                        const prompt = `「${result.question}」这个短语的平假名读音是什么？请只给我平假名读音不要输出任何其他内容。`
-                        const { output } = await askAI(prompt, 0.9);
-                        let aiResult = "";
-                        for await (const delta of readStreamableValue(output)) {
-                            if (delta) aiResult += delta;
-                        }
-                        reference_answer = aiResult;
-                        isCorrect = result.user_answer === aiResult;
-                    }
-
-                    next = {
-                        ...result,
-                        is_correct: isCorrect,
-                        reference_answer,
-                        judging: false,
-                        completed: true
-                    };
-                } else {
-                    const {diff, htmlString} = getDiff(result.question || "", result.user_answer || "")
-
-                    const rightWordsLen = diff
-                        .filter(diffInfo => diffInfo[0] === 0)
-                        .reduce((acc, cur) => acc + cur[1].length, 0);
-
-                    const right = rightWordsLen > 0.8 * (result.question.length ?? 0)
-                    next = {
-                        ...result,
-                        is_correct: right,
-                        reference_answer: result.question,
-                        judge_result: htmlString,
-                        completed: true
-                    };
-                }
-                setExamResults(examResultsRef.current.map(item => item.no === result.no ? next : item));
-                return next;
-            })
-        );
-        updateExamStatus(id, $Enums.exam_status_enum.completed)
+        const updatedResults = await Promise.all(examResults.map(processExamResult));
+        await updateExamStatus(id, $Enums.exam_status_enum.completed);
         const { insertedResults } = await insertExamResults(updatedResults, score) as any;
         
         if (insertedResults) {
@@ -154,6 +107,99 @@ export default function NewExam(props: IProps) {
                 ...insertedResults[index],
             })));
         }
+    };
+
+    // 通常の問題(音声問題以外)の採点処理
+    const processNormalQuestion = async (result: ExamInfo) => {
+        setExamResults(examResultsRef.current.map(item => 
+            item.no === result.no ? { ...item, judging: true } : item
+        ));
+
+        let isCorrect = await checkAnswer(result.question, result.user_answer, result.question_type);
+        let reference_answer = result.reference_answer;
+
+        if (result.question_type === $Enums.question_type_enum.kana_from_japanese) {
+            const aiResult = await getKanaFromAI(result.question);
+            reference_answer = aiResult;
+            isCorrect = result.user_answer === aiResult;
+        }
+
+        if (!isCorrect && result.wordCard?.id) {
+            logIncorrectAnswer(result);
+        }
+
+        return {
+            ...result,
+            is_correct: isCorrect,
+            reference_answer,
+            judging: false,
+            completed: true
+        };
+    };
+
+    // 音声問題の採点処理
+    const processAudioQuestion = async (result: ExamInfo) => {
+        const {diff, htmlString} = getDiff(result.question || "", result.user_answer || "");
+        const rightWordsLen = diff
+            .filter(diffInfo => diffInfo[0] === 0)
+            .reduce((acc, cur) => acc + cur[1].length, 0);
+
+        const right = rightWordsLen > 0.8 * (result.question.length ?? 0);
+        
+        if (!right && result.cardInfo?.id) {
+            insertActionLogs(
+                result.cardInfo.id, 
+                $Enums.action_type_enum.UNABLE_TO_UNDERSTAND_AUDIO,
+                $Enums.related_type_enum.memo_card
+            );
+        }
+
+        return {
+            ...result,
+            is_correct: right,
+            reference_answer: result.question,
+            judge_result: htmlString,
+            completed: true
+        };
+    };
+
+    // AIから仮名を取得
+    const getKanaFromAI = async (question: string) => {
+        const prompt = `「${question}」这个短语的平假名读音是什么？请只给我平假名读音不要输出任何其他内容。`;
+        const { output } = await askAI(prompt, 0.9);
+        let aiResult = "";
+        for await (const delta of readStreamableValue(output)) {
+            if (delta) aiResult += delta;
+        }
+        return aiResult;
+    };
+
+    // 不正解時のアクションログ記録
+    const logIncorrectAnswer = async (result: ExamInfo) => {
+        const actionType = result.question_type === $Enums.question_type_enum.kana_from_japanese
+            ? $Enums.action_type_enum.FORGOT_WORD_PRONUNCIATION
+            : result.question_type === $Enums.question_type_enum.translation_from_japanese 
+                ? $Enums.action_type_enum.FORGOT_WORD_MEANING
+                : $Enums.action_type_enum.UNKNOWN_PHRASE_EXPRESSION;
+
+        await insertActionLogs(
+            result.wordCard!.id,
+            actionType,
+            $Enums.related_type_enum.word_card
+        );
+    };
+
+    // 各問題の採点処理
+    const processExamResult = async (result: ExamInfo) => {
+        const next = result.question_type === $Enums.question_type_enum.transcription_from_audio
+            ? await processAudioQuestion(result)
+            : await processNormalQuestion(result);
+
+        setExamResults(examResultsRef.current.map(item => 
+            item.no === result.no ? next : item
+        ));
+        
+        return next;
     };
 
     const handleInputChange = (index: number, value: string) => {

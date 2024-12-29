@@ -20,6 +20,7 @@ export async function insertExamResults(results: ExamInfo[], total_score: number
         question_type: result.question_type,
         question_ref: result.question_ref,
         user_answer: result.user_answer,
+        reference_answer: result.reference_answer,
         is_correct: result.is_correct,
         question_score: result.question_score,
         create_time: new Date(),

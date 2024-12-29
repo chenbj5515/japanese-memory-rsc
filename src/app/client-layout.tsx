@@ -71,8 +71,8 @@ export default function ClientLayout({
                                 </Button>
                             </PopoverContent>
                         </Popover>
-                        <Tabs value={pathname.replace(/\//g, '').replace(/-/g, ' ')} className="w-[400px]">
-                            <TabsList className="grid w-full sm:grid-cols-4 grid-cols-3">
+                        <Tabs value={pathname.replace(/\//g, '').replace(/-/g, ' ')} className="w-[620px]">
+                            <TabsList className="grid w-full sm:grid-cols-5 grid-cols-4">
                                 <TabsTrigger className="p-0 h-full" value="latest">
                                     <Link prefetch className="sm:text-sm text-[16px] w-full" href="/latest">最新</Link>
                                 </TabsTrigger>
@@ -84,6 +84,9 @@ export default function ClientLayout({
                                 </TabsTrigger>
                                 <TabsTrigger className="sm:block hidden p-0 h-full leading-[28px]" value="exam preparation">
                                     <Link prefetch className="inline-block sm:text-sm text-[16px] w-full" href="/exam-preparation">試験</Link>
+                                </TabsTrigger>
+                                <TabsTrigger className="sm:block hidden p-0 h-full leading-[28px]" value="daily report">
+                                    <Link prefetch className="inline-block sm:text-sm text-[16px] w-full" href="/daily-report">デイリーレポート</Link>
                                 </TabsTrigger>
                             </TabsList>
                         </Tabs >

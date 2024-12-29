@@ -2,7 +2,6 @@
 
 import { auth } from "@/auth";
 import { prisma } from "@/prisma";
-import { ExamInfo } from "..";
 
 export async function updateExamResult(exam_id: string, result_id: string, total_score: number) {
     // 获取用户会话

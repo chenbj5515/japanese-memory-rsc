@@ -28,6 +28,7 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
                 question_type: true,
                 question_ref: true,
                 user_answer: true,
+                reference_answer: true,
                 is_correct: true,
                 question_score: true,
                 create_time: true,
@@ -56,7 +57,6 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
                     ...result,
                     no: no++,
                     cardInfo: memoCard,
-                    reference_answer: memoCard?.original_text || "",
                     completed: true,
                     judge_result: getDiff(memoCard?.original_text || "", result.user_answer).htmlString
                 };
@@ -82,7 +82,6 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
                     ...result,
                     no: no++,
                     wordCard,
-                    reference_answer: result.question_type === $Enums.question_type_enum.kana_from_japanese ? "" : wordCard?.meaning?.replace("意味：", "") || "",
                     completed: true
                 }
             }

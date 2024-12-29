@@ -43,15 +43,16 @@ model word_card {
 }
 
 model exam_results {
-  result_id      String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  exam_id        String             @db.Uuid
-  question       String
-  question_type  question_type_enum
-  question_ref   String             @db.Uuid
-  user_answer    String
-  is_correct     Boolean            @default(false)
-  question_score Int                @default(0)
-  create_time    DateTime          @default(now()) @db.Timestamp(6)
+  result_id        String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  exam_id          String             @db.Uuid
+  question         String
+  question_type    question_type_enum
+  question_ref     String             @db.Uuid
+  user_answer      String
+  reference_answer String             @default("")
+  is_correct       Boolean            @default(false)
+  question_score   Int                @default(0)
+  create_time      DateTime           @default(now()) @db.Timestamp(6)
 }
 
 model exams {
@@ -71,6 +72,28 @@ model articles {
   user_id     String?
   tags        String?
   title       String?
+}
+model user_action_logs {
+  id           String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id      String              @db.Uuid
+  action_type  action_type_enum
+  related_id   String              @db.Uuid
+  related_type related_type_enum
+  create_time  DateTime            @default(now()) @db.Timestamptz(6)
+}
+
+enum action_type_enum {
+  COMPLETE_SENTENCE_REVIEW
+  COMPLETE_WORD_REVIEW
+  FORGOT_WORD_MEANING
+  FORGOT_WORD_PRONUNCIATION
+  UNKNOWN_PHRASE_EXPRESSION
+  UNABLE_TO_UNDERSTAND_AUDIO
+}
+
+enum related_type_enum {
+  word_card
+  memo_card
 }
 
 enum question_type_enum {
