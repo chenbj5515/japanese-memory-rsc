@@ -6,12 +6,10 @@ import { useSession } from "next-auth/react";
 import { useDispatch } from 'react-redux';
 import { clearLocalCards } from '@/store/local-cards-slice';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Logout } from "@/server-actions";
 import "remixicon/fonts/remixicon.css";
-import { RootState } from '@/store';
 
 export default function ClientLayout({
     children,
@@ -52,7 +50,7 @@ export default function ClientLayout({
         <>
             {
                 pathname !== "/exam" ? (
-                    <header className="p-[12px] justify-between items-center w-full fixed z-[200] top-0 flex">
+                    <header className="p-[12px] backdrop-blur-[3px] backdrop-saturate-[180%] justify-between items-center w-full fixed z-[200] top-0 flex">
                         <Popover>
                             <PopoverTrigger asChild>
                                 <Avatar className="hidden sm:block  h-10 w-10 cursor-pointer">
@@ -71,25 +69,25 @@ export default function ClientLayout({
                                 </Button>
                             </PopoverContent>
                         </Popover>
-                        <Tabs value={pathname.replace(/\//g, '').replace(/-/g, ' ')} className="w-[620px]">
-                            <TabsList className="grid w-full sm:grid-cols-5 grid-cols-4">
-                                <TabsTrigger className="p-0 h-full" value="latest">
-                                    <Link prefetch className="sm:text-sm text-[16px] w-full" href="/latest">最新</Link>
-                                </TabsTrigger>
-                                <TabsTrigger className="p-0 h-full leading-[28px]" value="random">
-                                    <Link prefetch className="sm:text-sm text-[16px] w-full" href="/random">ランダム</Link>
-                                </TabsTrigger>
-                                <TabsTrigger className="p-0 h-full leading-[28px]" value="word cards">
-                                    <Link prefetch className="sm:text-sm text-[16px] w-full" href="/word-cards">単語帳</Link>
-                                </TabsTrigger>
-                                <TabsTrigger className="sm:block hidden p-0 h-full leading-[28px]" value="exam preparation">
-                                    <Link prefetch className="inline-block sm:text-sm text-[16px] w-full" href="/exam-preparation">試験</Link>
-                                </TabsTrigger>
-                                <TabsTrigger className="sm:block hidden p-0 h-full leading-[28px]" value="daily report">
-                                    <Link prefetch className="inline-block sm:text-sm text-[16px] w-full" href="/daily-report">デイリーレポート</Link>
-                                </TabsTrigger>
-                            </TabsList>
-                        </Tabs >
+                        <nav className="w-[620px]">
+                            <ul className="flex items-center justify-between">
+                                <li>
+                                    <Link prefetch href="/latest" className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === '/latest' ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>最新</Link>
+                                </li>
+                                <li>
+                                    <Link prefetch href="/random" className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === '/random' ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>ランダム</Link>
+                                </li>
+                                <li>
+                                    <Link prefetch href="/word-cards" className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === '/word-cards' ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>単語帳</Link>
+                                </li>
+                                <li className="sm:block hidden">
+                                    <Link prefetch href="/exam-preparation" className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === '/exam-preparation' ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>試験</Link>
+                                </li>
+                                <li className="sm:block hidden">
+                                    <Link prefetch href="/daily-report" className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === '/daily-report' ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>デイリーレポート</Link>
+                                </li>
+                            </ul>
+                        </nav>
                         <label className="hidden md:inline-block text-base relative w-[56px] h-[28px]">
                             <input
                                 onChange={handleToggle}

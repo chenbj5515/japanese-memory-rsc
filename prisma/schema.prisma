@@ -73,6 +73,7 @@ model articles {
   tags        String?
   title       String?
 }
+
 model user_action_logs {
   id           String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   user_id      String              @db.Uuid
@@ -85,6 +86,7 @@ model user_action_logs {
 enum action_type_enum {
   COMPLETE_SENTENCE_REVIEW
   COMPLETE_WORD_REVIEW
+  COMPLETE_EXAM
   FORGOT_WORD_MEANING
   FORGOT_WORD_PRONUNCIATION
   UNKNOWN_PHRASE_EXPRESSION
@@ -94,6 +96,7 @@ enum action_type_enum {
 enum related_type_enum {
   word_card
   memo_card
+  exam
 }
 
 enum question_type_enum {
