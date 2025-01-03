@@ -8,15 +8,19 @@ import { signOut } from "@/auth";
 export async function askAI(input: string, temperature?: number) {
     const stream = createStreamableValue('');
 
-    const { textStream } = await streamText({
-        model: openai('gpt-4-turbo'),
-        prompt: input,
-        temperature: temperature || 0
-    });
+    (async () => {
+        const { textStream } = await streamText({
+            model: openai('gpt-4-turbo'),
+            prompt: input,
+            temperature: temperature || 0
+        });
 
-    for await (const delta of textStream) {
-        stream.update(delta);
-    }
+        for await (const delta of textStream) {
+            stream.update(delta);
+        }
+
+        stream.done();
+    })();
 
     stream.done();
 

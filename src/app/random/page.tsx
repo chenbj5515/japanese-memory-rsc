@@ -15,7 +15,7 @@ export default async function Home() {
             user_id: session?.userId,
         },
         skip: randomOffset,
-        take: 20,
+        take: 10,
     });
 
     return (

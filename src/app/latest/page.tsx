@@ -14,7 +14,7 @@ export default async function Home() {
     orderBy: {
       create_time: 'desc',
     },
-    take: 20,
+    take: 10,
   });
 
   return (
