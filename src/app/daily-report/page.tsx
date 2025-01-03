@@ -74,7 +74,7 @@ export default async function YearEndReportPage() {
         const wordCard = await prisma.word_card.findUnique({
           where: { id: log.related_id }
         })
-        const { output } = await askAIDirectly(`これは日本語の単語またはフレーズです：${wordCard?.word}、それをカタカナで表記してください、気をつけて原文とか余分な言葉を出さないで、カタカナだけを出してください。`);
+        const { output } = await askAIDirectly(`これは日本語の単語またはフレーズです：${wordCard?.word}、それをひらがなで表記してください、気をつけて原文とか余分な言葉を出さないで、ひらがなだけを出してください。`);
 
         return {
           id: id++,
