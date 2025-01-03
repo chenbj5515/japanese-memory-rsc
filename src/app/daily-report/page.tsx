@@ -2,13 +2,14 @@ import DailyReport from '@/components/daily-report'
 import { auth } from "@/auth"
 import { prisma } from "@/prisma"
 import { $Enums } from "@prisma/client"
+import { askAIDirectly } from '@/server-actions'
 
 export default async function YearEndReportPage() {
   const session = await auth()
   if (!session?.userId) return null
   let id = 0
 
-  const today = new Date()
+  const today = new Date("2025-01-01")
   today.setHours(0, 0, 0, 0)
   const tomorrow = new Date(today)
   tomorrow.setDate(tomorrow.getDate() + 1)
@@ -73,11 +74,13 @@ export default async function YearEndReportPage() {
         const wordCard = await prisma.word_card.findUnique({
           where: { id: log.related_id }
         })
+        const { output } = await askAIDirectly(`これは日本語の単語またはフレーズです：${wordCard?.word}、それをカタカナで表記してください、気をつけて原文とか余分な言葉を出さないで、カタカナだけを出してください。`);
+
         return {
           id: id++,
           type: 'pronunciation',
           question: `「${wordCard?.word}」の発音を忘れました、今覚えていますか？`,
-          answer: `()`
+          answer: `${wordCard?.word}(${output})`
         }
       })
   )
@@ -112,9 +115,8 @@ export default async function YearEndReportPage() {
         return {
           id: id++,
           type: 'listening',
-          question: 'この文を聞き取れませんでした：',
+          question: 'この文を聞き取れませんでした、もう一回聞いて分かりますか？',
           answer: memoCard?.original_text || '',
-          audioSrc: memoCard?.record_file_path
         }
       })
   )

@@ -9,7 +9,7 @@ interface IOptions {
     voicerName: string,
 }
 
-export const speakText = (text: string, options: IOptions) => {
+export const speakText = (text: string, options: IOptions, onFinish?: () => void) => {
   const speechConfig = SpeechConfig.fromSubscription(
     process.env.NEXT_PUBLIC_SUBSCRIPTION_KEY!,
     process.env.NEXT_PUBLIC_REGION!
@@ -27,6 +27,13 @@ export const speakText = (text: string, options: IOptions) => {
   };
 
   const player = new SpeakerAudioDestination();
+
+  player.onAudioEnd = () => {
+    synthesizer?.close();
+    synthesizer = undefined;
+    onFinish?.();
+  };
+
   const audioConfig = AudioConfig.fromSpeakerOutput(player);
 
   let synthesizer: SpeechSynthesizer | undefined = new SpeechSynthesizer(

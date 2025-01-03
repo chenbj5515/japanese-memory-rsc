@@ -40,8 +40,6 @@ export async function updateExamResult(exam_id: string, result_id: string, total
             },
         });
 
-        await insertActionLogs(exam_id, $Enums.action_type_enum.COMPLETE_EXAM, $Enums.related_type_enum.exam);
-
         return { success: true, message: "Result updated successfully", updatedResult };
     } catch (error) {
         console.error("Error updating exam result:", error);

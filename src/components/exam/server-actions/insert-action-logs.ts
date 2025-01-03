@@ -4,7 +4,7 @@ import { prisma } from "@/prisma";
 import { $Enums } from "@prisma/client";
 
 export async function insertActionLogs(
-    id: string,
+    related_id: string,
     action_type: $Enums.action_type_enum,
     related_type: $Enums.related_type_enum,
 ) {
@@ -18,7 +18,7 @@ export async function insertActionLogs(
         data: {
             user_id: session?.userId,
             action_type,
-            related_id: id,
+            related_id,
             related_type
         }
     });

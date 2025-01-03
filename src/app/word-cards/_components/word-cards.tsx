@@ -1,11 +1,12 @@
 "use client"
 import { useRouter } from "next/navigation";
 import React from "react";
-import { Prisma } from '@prisma/client';
+import { $Enums, Prisma } from '@prisma/client';
 import { MemoCard, WordCard } from "@/components";
 import { updateReviewTimes } from "../_server-actions";
 import { TWordCard } from "../page";
 import Loading from "@/app/loading";
+import { insertActionLogs } from "@/components/exam/server-actions/insert-action-logs";
 
 interface IProps {
     wordCards: TWordCard[]
@@ -106,11 +107,13 @@ export function WordCards(props: IProps) {
             return next;
         });
         await updateReviewTimes(id);
+        insertActionLogs(id, $Enums.action_type_enum.COMPLETE_WORD_REVIEW, $Enums.related_type_enum.word_card);
     }
 
     function handleUnRecognizeClick(item: TWordCard) {
         setShowGlass(true);
         setCardInfo(item.memo_card);
+        insertActionLogs(item.id, $Enums.action_type_enum.FORGOT_WORD_MEANING, $Enums.related_type_enum.word_card);
     }
 
     return (

@@ -8,21 +8,34 @@ import { signOut } from "@/auth";
 export async function askAI(input: string, temperature?: number) {
     const stream = createStreamableValue('');
 
-    (async () => {
-        const { textStream } = await streamText({
-            model: openai('gpt-4-turbo'),
-            prompt: input,
-            temperature: temperature || 0
-        });
+    const { textStream } = await streamText({
+        model: openai('gpt-4-turbo'),
+        prompt: input,
+        temperature: temperature || 0
+    });
 
-        for await (const delta of textStream) {
-            stream.update(delta);
-        }
+    for await (const delta of textStream) {
+        stream.update(delta);
+    }
 
-        stream.done();
-    })();
+    stream.done();
 
     return { output: stream.value };
+}
+
+export async function askAIDirectly(input: string, temperature?: number) {
+    const { textStream } = await streamText({
+        model: openai('gpt-4-turbo'),
+        prompt: input,
+        temperature: temperature || 0
+    });
+
+    let result = '';
+    for await (const delta of textStream) {
+        result += delta;
+    }
+
+    return { output: result };
 }
 
 export async function Logout() {

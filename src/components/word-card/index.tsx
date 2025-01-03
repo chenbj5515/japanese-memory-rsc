@@ -47,7 +47,7 @@ export function WordCard(props: IProps) {
                     ></path>
                 </svg>
             </div>
-            <div>{word}</div>
+            <div className="whitespace-nowrap overflow-hidden text-ellipsis" title={word}>{word}</div>
             <div className="mt-1 relative whitespace-nowrap overflow-hidden text-ellipsis" title={meaning}>
                 <section
                     className={`rounded-lg absolute hover:backdrop-filter-none hover:bg-transparent ${"backdrop-blur-[3px] backdrop-saturate-[180%]"}  w-[101%] h-[105%] -left-[4px] -top-[2px]`}

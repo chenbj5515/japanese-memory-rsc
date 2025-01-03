@@ -1,24 +1,24 @@
 'use client'
 
 import { useState } from 'react'
-import { Play, Pause } from 'lucide-react'
+import { Play, Loader2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { speakText } from '@/utils'
 
 interface AudioPlayerProps {
-  src: string
+  originalText: string
 }
 
-export function AudioPlayer({ src }: AudioPlayerProps) {
+export function AudioPlayer({ originalText }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState(false)
-  
-  const togglePlay = () => {
-    const audio = document.getElementById('audio-player') as HTMLAudioElement
-    if (isPlaying) {
-      audio.pause()
-    } else {
-      audio.play()
+
+  function handlePlayBtn() {
+    if (!isPlaying && originalText) {
+      speakText(originalText, {
+        voicerName: "ja-JP-NanamiNeural"
+      }, () => setIsPlaying(false));
+      setIsPlaying(true)
     }
-    setIsPlaying(!isPlaying)
   }
 
   return (
@@ -27,20 +27,15 @@ export function AudioPlayer({ src }: AudioPlayerProps) {
         size="sm"
         variant="outline"
         className="rounded-full w-8 h-8 p-0"
-        onClick={togglePlay}
+        onClick={handlePlayBtn}
+        disabled={isPlaying}
       >
         {isPlaying ? (
-          <Pause className="h-4 w-4" />
+          <Loader2 className="h-4 w-4 animate-spin" />
         ) : (
           <Play className="h-4 w-4" />
         )}
       </Button>
-      <audio
-        id="audio-player"
-        src={src}
-        onEnded={() => setIsPlaying(false)}
-        className="hidden"
-      />
     </div>
   )
 }

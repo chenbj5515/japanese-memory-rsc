@@ -3,6 +3,7 @@
 import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 import { $Enums } from "@prisma/client";
+import { insertActionLogs } from "./insert-action-logs";
 
 // 假定 $Enums.exam_status_enum 是从 prisma 自动生成的枚举类型
 
@@ -27,6 +28,8 @@ export async function updateExamStatus(exam_id: string, new_status: $Enums.exam_
                 status: new_status,
             },
         });
+
+        await insertActionLogs(exam_id, $Enums.action_type_enum.COMPLETE_EXAM, $Enums.related_type_enum.exam);
 
         return { success: true, message: "Exam status updated successfully", updatedExam };
     } catch (error) {

@@ -1,10 +1,12 @@
 'use client'
 
 import { AnimatePresence, motion } from 'framer-motion'
+import { useRouter } from 'next/navigation'
 import { SkeuomorphicCard } from './skeuomorphic-card'
 import { StudyCard } from './study-card'
 import { useState } from 'react'
 import { CompletionMessage } from './completion-message'
+import { Button } from '../ui/button'
 
 interface ReportData {
   date: string
@@ -18,18 +20,20 @@ interface ReportData {
     type: string
     question: string
     answer: string
-    audioSrc?: string
   }>
 }
 
 export default function DailyReport({ data }: { data: ReportData }) {
   const [activeItems, setActiveItems] = useState(data.studyItems)
+  const router = useRouter()
 
   const handleComplete = (id: number) => {
     setActiveItems(prev => prev.filter(item => item.id !== id))
   }
 
-  const isAllCompleted = activeItems.length === 0
+  const isAllCompleted = activeItems.length === 0;
+  const noStudyRecord = data.stats.flashcards === 0 && data.stats.words === 0 && data.stats.score === 0;
+
   return (
     <div className="font-NewYork pb-6">
       <motion.div
@@ -66,7 +70,16 @@ export default function DailyReport({ data }: { data: ReportData }) {
 
         <motion.div layout className="space-y-2">
           <AnimatePresence mode="sync">
-            {!isAllCompleted ? (
+            {noStudyRecord ? (
+              <div className="text-center py-12">
+                <p className="text-gray-600 mb-6">
+                  今日はまだ学習記録がありません。最近学んだ文を復習してみませんか？
+                </p>
+                <Button onClick={() => router.push('/latest')}>
+                  復習を始める
+                </Button>
+              </div>
+            ) : !isAllCompleted ? (
               activeItems.map((item) => (
                 <StudyCard
                   key={item.id}
@@ -83,4 +96,3 @@ export default function DailyReport({ data }: { data: ReportData }) {
     </div>
   )
 }
-
