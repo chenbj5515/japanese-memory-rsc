@@ -22,8 +22,6 @@ export async function askAI(input: string, temperature?: number) {
         stream.done();
     })();
 
-    stream.done();
-
     return { output: stream.value };
 }
 
