@@ -14,14 +14,27 @@ export async function insertActionLogs(
         throw new Error('ユーザー未登録');
     }
 
-    await prisma.user_action_logs.create({
-        data: {
-            user_id: session?.userId,
+    // 既存のログを確認
+    const existingLog = await prisma.user_action_logs.findFirst({
+        where: {
+            user_id: session.userId,
             action_type,
             related_id,
             related_type
         }
     });
+
+    // 既存のログがない場合のみ新規作成
+    if (!existingLog) {
+        await prisma.user_action_logs.create({
+            data: {
+                user_id: session.userId,
+                action_type,
+                related_id,
+                related_type
+            }
+        });
+    }
 
     return null;
 }
