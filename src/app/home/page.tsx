@@ -29,7 +29,7 @@ export default function LandingPage() {
 
         {/* Feature Cards */}
         <div className="font-NewYork mt-16 relative h-[420px] max-w-6xl mx-auto">
-          <div className="absolute left-1/2 transform -translate-x-1/2 flex -space-x-4 rotate-[-5deg]">
+          <div className="absolute left-1/2 transform -translate-x-1/2 flex -space-x-4 rotate-[-5deg] group">
             {[
               { 
                 title: "Memo Card", 
@@ -54,11 +54,14 @@ export default function LandingPage() {
             ].map((card, index) => (
               <div
                 key={index}
-                className={`w-[300px] h-[400px] rounded-2xl shadow-lg transform rotate-${
-                  index * 5
-                } hover:-translate-y-2 transition-transform duration-200`}
+                className={`w-[300px] h-[400px] rounded-2xl shadow-lg bg-white 
+                  transform transition-all duration-500 ease-out
+                  hover:scale-110 hover:-translate-y-4 hover:rotate-0 hover:z-10
+                  group-hover:translate-x-[${index * 40}px]
+                  hover:shadow-xl`}
                 style={{
                   transform: `rotate(${index * 5}deg)`,
+                  transformOrigin: 'center center'
                 }}
               >
                 <div className="p-6">
@@ -69,7 +72,7 @@ export default function LandingPage() {
                       alt={card.title}
                       width={260}
                       height={260}
-                      className="object-contain"
+                      className="object-contain transition-transform duration-500 hover:scale-105"
                     />
                   </div>
                   <p className="text-sm text-gray-600 mt-4 leading-snug">
