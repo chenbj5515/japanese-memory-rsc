@@ -9,7 +9,7 @@ export default async function YearEndReportPage() {
   if (!session?.userId) return null
   let id = 0
 
-  const today = new Date()
+  const today = new Date("2025-01-01")
   today.setHours(0, 0, 0, 0)
   const tomorrow = new Date(today)
   tomorrow.setDate(tomorrow.getDate() + 1)

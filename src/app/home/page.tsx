@@ -7,9 +7,9 @@ export default function LandingPage() {
       {/* Navigation */}
       <nav className="flex items-center justify-between px-4 py-4 max-w-7xl mx-auto">
         <div className="flex items-center gap-4">
-          <Button variant="default" className="bg-[#18181B] text-white hover:bg-[#27272A]">
+          {/* <Button variant="default" className="bg-[#18181B] text-white hover:bg-[#27272A]">
             Log in
-          </Button>
+          </Button> */}
         </div>
       </nav>
 
@@ -28,18 +28,33 @@ export default function LandingPage() {
         </Button>
 
         {/* Feature Cards */}
-        <div className="mt-16 relative h-[300px] max-w-4xl mx-auto">
+        <div className="font-NewYork mt-16 relative h-[420px] max-w-6xl mx-auto">
           <div className="absolute left-1/2 transform -translate-x-1/2 flex -space-x-4 rotate-[-5deg]">
             {[
-              { title: "Interactive Components", color: "bg-purple-100" },
-              { title: "Accessible Prototypes", color: "bg-yellow-100" },
-              { title: "Plugin Playground", color: "bg-pink-100" },
-              { title: "Accessible Prototypes", color: "bg-green-100" },
-              { title: "Seamless Variables", color: "bg-blue-100" },
+              { 
+                title: "Memo Card", 
+                img: "/assets/slogans/memo_card.png",
+                description: "Translation, pronunciation, shadowing, and dictation - all in one elegant card." 
+              },
+              { 
+                title: "Word Card", 
+                img: "/assets/slogans/word_card.png",
+                description: "Highlight and save key words from any sentence with a single tap."
+              },
+              { 
+                title: "Exam", 
+                img: "/assets/slogans/exam.png",
+                description: "Test your knowledge and ensure true mastery of what you've learned."
+              },
+              { 
+                title: "Daily Report", 
+                img: "/assets/slogans/daily_report.png",
+                description: "5 minutes before bed. Review what you've forgotten. Stay on track."
+              },
             ].map((card, index) => (
               <div
                 key={index}
-                className={`w-64 h-80 ${card.color} rounded-2xl shadow-lg transform rotate-${
+                className={`w-[300px] h-[400px] rounded-2xl shadow-lg transform rotate-${
                   index * 5
                 } hover:-translate-y-2 transition-transform duration-200`}
                 style={{
@@ -48,6 +63,18 @@ export default function LandingPage() {
               >
                 <div className="p-6">
                   <h3 className="text-sm font-medium">{card.title}</h3>
+                  <div className="flex justify-center mt-8">
+                    <Image 
+                      src={card.img}
+                      alt={card.title}
+                      width={260}
+                      height={260}
+                      className="object-contain"
+                    />
+                  </div>
+                  <p className="text-sm text-gray-600 mt-4 leading-snug">
+                    {card.description}
+                  </p>
                 </div>
               </div>
             ))}
