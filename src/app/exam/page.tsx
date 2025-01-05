@@ -51,6 +51,7 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
                         review_times: true,
                         user_id: true,
                         kana_pronunciation: true,
+                        source_video_url: true
                     },
                 });
                 return {
