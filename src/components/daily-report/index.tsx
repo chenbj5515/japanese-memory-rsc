@@ -42,7 +42,7 @@ export default function DailyReport({ data }: { data: ReportData }) {
         transition={{ duration: 0.5 }}
         className="max-w-4xl mx-auto space-y-6"
       >
-        <header className="text-center mb-12">
+        <header className="text-center mb-12 ">
           <p className="text-xl text-gray-600 tracking-[2px]">{data.date}</p>
         </header>
 

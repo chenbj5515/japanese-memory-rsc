@@ -2,9 +2,12 @@
 import { auth } from "@/auth";
 import { prisma } from "@/prisma"
 
-export async function insertMemoCard(originalText: string, translation: string, pronunciation: string) {
+export async function insertMemoCard(originalText: string, translation: string, pronunciation: string, url: string) {
     const session = await auth();
-    
+    if (!session?.userId) {
+        return null;
+    }
+
     const newMemoCard = await prisma.memo_card.create({
         data: {
             record_file_path: "",
@@ -14,7 +17,8 @@ export async function insertMemoCard(originalText: string, translation: string, 
             user_id: session?.userId,
             kana_pronunciation: pronunciation,
             create_time: new Date(),
-            update_time: new Date()
+            update_time: new Date(),
+            source_video_url: url
         },
     });
 

@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 export interface ILoaclCard {
   key: number;
   original_text: string;
+  url: string;
 }
 
 export const localCardsSlice = createSlice({
@@ -13,7 +14,8 @@ export const localCardsSlice = createSlice({
     addCard: (state, action) => {
       state.localCards.push({
         key: Math.random(),
-        original_text: action.payload,
+        original_text: action.payload.originalText,
+        url: action.payload.url,
       })
     },
     deleteCard: (state, action) => {

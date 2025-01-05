@@ -22,6 +22,8 @@ export default function ClientLayout({
     const pathname = usePathname();
     const dispatch = useDispatch();
 
+    const noNav = pathname === "/home" || pathname === "/exam";
+
     function handleToggle() {
         if (theme === "dark") {
             setTheme("light");
@@ -46,10 +48,11 @@ export default function ClientLayout({
         router.prefetch("/exam");
     }, [router]);
 
+
     return (
         <>
             {
-                pathname !== "/exam" ? (
+                !noNav ? (
                     <header className="p-[12px] backdrop-blur-[3px] backdrop-saturate-[180%] justify-between items-center w-full fixed z-[200] top-0 flex">
                         <Popover>
                             <PopoverTrigger asChild>
@@ -102,7 +105,7 @@ export default function ClientLayout({
                 ) : null
             }
             <main style={{
-                paddingTop: pathname !== "/exam" ? "86px" : 0
+                paddingTop: noNav ? 0 : "86px"
             }}>
                 {children}
             </main>

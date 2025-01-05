@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import { Plus } from "lucide-react";
 import { readStreamableValue } from 'ai/rsc';
 import { addCard } from "@/store/local-cards-slice";
-import { insertPlainTextAtCursor, transformString } from "@/utils";
+import { insertPlainTextAtCursor, parseJSONSafely, transformString } from "@/utils";
 import { useForceUpdate } from "@/hooks";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,12 +22,16 @@ export function InputBox() {
   const [isComposing, setIsComposing] = React.useState(false);
   const defaultText = "学びたい日本語の文を入力してください";
   const ready2Send = editableRef.current?.textContent && editableRef.current?.textContent !== defaultText;
+  const urlRef = useRef<string>("");
 
   async function handleSendBtnClick(originalText: string) {
     if (!originalText || originalText === defaultText) return;
     try {
       dispatch(
-        addCard(originalText.includes(":") ? originalText.split(":")[1].trim() : originalText.trim())
+        addCard({
+          originalText: originalText.includes(":") ? originalText.split(":")[1].trim() : originalText.trim(),
+          url: urlRef.current
+        })
       );
       if (editableRef.current) {
         editableRef.current.textContent = "";
@@ -41,7 +45,18 @@ export function InputBox() {
   const handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
     event.preventDefault();
     const plainText = event.clipboardData.getData("text/plain");
-    insertPlainTextAtCursor(transformString(plainText));
+    const parsedData = parseJSONSafely(plainText);
+    
+    if (typeof parsedData === 'object' && parsedData !== null) {
+      if ('url' in parsedData) {
+        urlRef.current = parsedData.url;
+      }
+      if ('text' in parsedData) {
+        insertPlainTextAtCursor(transformString(parsedData.text));
+      }
+    } else {
+      insertPlainTextAtCursor(transformString(plainText));
+    }
     forUpdate();
   };
 
@@ -56,7 +71,10 @@ export function InputBox() {
       }
 
       event.preventDefault();
-      dispatch(addCard(content));
+      dispatch(addCard({
+        originalText: content,
+        url: urlRef.current
+      }))
       if (editableRef.current) {
         editableRef.current.textContent = '';
       }

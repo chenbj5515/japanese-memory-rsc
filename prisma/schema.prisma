@@ -17,6 +17,7 @@ model memo_card {
   review_times       Int?        @default(0)
   user_id            String      @default("chenbj")
   kana_pronunciation String?
+  source_video_url   String?
   word_card          word_card[] @relation("MemoToWord")
 }
 
