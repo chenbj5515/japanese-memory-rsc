@@ -51,7 +51,7 @@ export default function ClientLayout({
 
     return (
         <>
-            {/* {
+            {
                 !noNav ? (
                     <header className="p-[12px] backdrop-blur-[3px] backdrop-saturate-[180%] justify-between items-center w-full fixed z-[200] top-0 flex">
                         <Popover>
@@ -103,7 +103,7 @@ export default function ClientLayout({
                         </label>
                     </header>
                 ) : null
-            } */}
+            }
             <main style={{
                 paddingTop: noNav ? 0 : "86px"
             }}>

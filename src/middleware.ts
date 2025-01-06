@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function middleware(req: NextRequest) {
     const session = await auth();
     if (!session) {
-        return NextResponse.redirect(new URL('/api/auth/signin', req.url));
+        return NextResponse.redirect(new URL('/home', req.url));
     }
     if (req.nextUrl.pathname === '/') {
         return NextResponse.redirect(new URL('/latest', req.url));

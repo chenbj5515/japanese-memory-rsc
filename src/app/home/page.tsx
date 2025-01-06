@@ -1,7 +1,11 @@
+"use client"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
+import { useRouter } from "next/navigation"
 
 export default function LandingPage() {
+  const router = useRouter()
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
@@ -23,7 +27,10 @@ export default function LandingPage() {
         <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
           Stop scattering your notes everywhere. Centralize, organize, and master Japanese - all in one powerful place.
         </p>
-        <Button className="bg-[#18181B] text-white hover:bg-[#27272A] px-8 py-6 text-lg">
+        <Button 
+          className="bg-[#18181B] text-white hover:bg-[#27272A] px-8 py-6 text-lg"
+          onClick={() => router.push('/api/auth/signin')}
+        >
           Get Started for free
         </Button>
 
