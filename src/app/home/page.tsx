@@ -72,7 +72,7 @@ export default function LandingPage() {
                 }}
               >
                 <div className="p-6">
-                  <h3 className="text-sm font-medium">{card.title}</h3>
+                  <h3 className="text-lg font-medium">{card.title}</h3>
                   <div className="flex justify-center mt-8">
                     <Image 
                       src={card.img}
@@ -82,7 +82,7 @@ export default function LandingPage() {
                       className="object-contain transition-transform duration-500 hover:scale-105"
                     />
                   </div>
-                  <p className="text-sm text-gray-600 mt-4 leading-snug">
+                  <p className="text-sm text-[#49494b] mt-4 leading-snug">
                     {card.description}
                   </p>
                 </div>
