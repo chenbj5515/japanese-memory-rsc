@@ -12,7 +12,6 @@ export function SkeuomorphicCard({ children, className }: SkeuomorphicCardProps)
     <div 
       className={cn(
         "relative bg-white dark:bg-black rounded-2xl p-6",
-        "transition-transform duration-200 hover:translate-y-[-2px]",
         "border border-gray-100 dark:border-gray-800",
         className
       )}

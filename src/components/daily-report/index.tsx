@@ -2,6 +2,8 @@
 
 import { AnimatePresence, motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
+import Link from "next/link"
+import { History } from 'lucide-react'
 import { SkeuomorphicCard } from './skeuomorphic-card'
 import { StudyCard } from './study-card'
 import { useState } from 'react'
@@ -42,8 +44,16 @@ export default function DailyReport({ data }: { data: ReportData }) {
         transition={{ duration: 0.5 }}
         className="max-w-4xl mx-auto space-y-6"
       >
-        <header className="text-center mb-12 ">
-          <p className="text-xl text-gray-600 tracking-[2px]">{data.date}</p>
+        <header className="text-center mb-12 flex justify-between items-center relative">
+          <div className="absolute left-1/2 -translate-x-1/2">
+            <p className="text-xl text-gray-600 tracking-[2px]">{data.date}</p>
+          </div>
+          <div className="ml-auto flex items-center gap-2 text-base font-medium">
+            <Link href="/daily-report/history" className="flex items-center gap-2">
+              <History className="h-5 w-5" />
+              履歴
+            </Link>
+          </div>
         </header>
 
         <motion.div
@@ -72,7 +82,7 @@ export default function DailyReport({ data }: { data: ReportData }) {
           <AnimatePresence mode="sync">
             {noStudyRecord ? (
               <div className="text-center py-12">
-                <p className="text-gray-600 mb-6">
+                <p className="text-gray-600 mb-6 font-sans">
                   今日はまだ学習記録がありません。最近学んだ文を復習してみませんか？
                 </p>
                 <Button onClick={() => router.push('/latest')}>

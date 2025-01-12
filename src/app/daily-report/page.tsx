@@ -4,23 +4,25 @@ import { prisma } from "@/prisma"
 import { $Enums } from "@prisma/client"
 import { askAIDirectly } from '@/server-actions'
 
-export default async function YearEndReportPage() {
+export default async function YearEndReportPage({ searchParams }: { searchParams: { date?: string } }) {
   const session = await auth()
   if (!session?.userId) return null
   let id = 0
+  let { date } = await searchParams;
 
-  const today = new Date()
-  today.setHours(0, 0, 0, 0)
-  const tomorrow = new Date(today)
-  tomorrow.setDate(tomorrow.getDate() + 1)
+  const targetDate = date ? new Date(date) : new Date()
 
-  // Get action logs for today
+  targetDate.setHours(0, 0, 0, 0)
+  const nextDay = new Date(targetDate)
+  nextDay.setDate(nextDay.getDate() + 1)
+
+  // Get action logs for the specified date
   const actionLogs = await prisma.user_action_logs.findMany({
     where: {
       user_id: session.userId,
       create_time: {
-        gte: today,
-        lt: tomorrow
+        gte: targetDate,
+        lt: nextDay
       }
     }
   })
@@ -123,7 +125,7 @@ export default async function YearEndReportPage() {
   studyItems.push(...listeningMistakes)
 
   const reportData = {
-    date: today.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
+    date: targetDate.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }),
     stats: {
       flashcards,
       words,

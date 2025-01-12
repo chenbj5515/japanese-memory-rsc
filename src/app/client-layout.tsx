@@ -87,7 +87,7 @@ export default function ClientLayout({
                                     <Link prefetch href="/exam-preparation" className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === '/exam-preparation' ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>試験</Link>
                                 </li>
                                 <li className="sm:block hidden">
-                                    <Link prefetch href="/daily-report" className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === '/daily-report' ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>デイリーレポート</Link>
+                                    <Link prefetch href="/daily-report" className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname.startsWith('/daily-report') ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>デイリーレポート</Link>
                                 </li>
                             </ul>
                         </nav>
