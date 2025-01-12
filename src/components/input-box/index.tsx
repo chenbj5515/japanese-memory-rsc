@@ -46,7 +46,7 @@ export function InputBox() {
     event.preventDefault();
     const plainText = event.clipboardData.getData("text/plain");
     const parsedData = parseJSONSafely(plainText);
-    
+
     if (typeof parsedData === 'object' && parsedData !== null) {
       if ('url' in parsedData) {
         urlRef.current = parsedData.url;
@@ -159,7 +159,7 @@ export function InputBox() {
         onKeyDown={handleKeyDown}
         onCompositionStart={handleCompositionStart}
         onCompositionEnd={handleCompositionEnd}
-        className="dark:bg-bgDark dark:text-white dark:border-[1px] absolute w-full p-3 pl-3 pr-12 rounded-lg border-2 border-lightgrey outline-none focus:border-[#808080] bg-[#fff] left-[50%] bottom-0 transhtmlForm -translate-x-1/2"
+        className="input-box dark:bg-bgDark dark:text-white dark:border-[1px] absolute w-full p-3 pl-3 pr-12 rounded-lg border-2 border-lightgrey outline-none focus:border-[#808080] bg-[#fff] left-[50%] bottom-0 transhtmlForm -translate-x-1/2"
         contentEditable
         suppressContentEditableWarning
         onBlur={handleBlur}

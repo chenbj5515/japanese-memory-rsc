@@ -142,9 +142,16 @@ export function WordCardAdder() {
     React.useEffect(() => {
         function handleMouseUp(event: MouseEvent) {
             if (event.target instanceof Node) {
+                // input-box内での選択を無視する
+                const isInputBox = (event.target as Element).closest('.input-box');
+                if (isInputBox) {
+                    return;
+                }
+
                 const inContainer =
                     event.target === containerRef.current
                     || containerRef.current?.contains(event.target);
+                
                 // ポップアップ内でマウスがクリックした場合、何もしない
                 if (!inContainer) {
                     if (selectedText) {
