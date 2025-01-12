@@ -4,7 +4,7 @@ import { prisma } from "@/prisma"
 import { $Enums } from "@prisma/client"
 import { askAIDirectly } from '@/server-actions'
 
-export default async function YearEndReportPage({ searchParams }: { searchParams: { date?: string } }) {
+export default async function YearEndReportPage({ searchParams }: { searchParams: Promise<{ date?: string }> }) {
   const session = await auth()
   if (!session?.userId) return null
   let id = 0
