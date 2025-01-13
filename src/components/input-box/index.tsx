@@ -48,13 +48,12 @@ export function InputBox() {
     const parsedData = parseJSONSafely(plainText);
 
     if (typeof parsedData === 'object' && parsedData !== null) {
-      if ('url' in parsedData) {
-        urlRef.current = parsedData.url;
-      }
+      urlRef.current = parsedData?.url || "";
       if ('text' in parsedData) {
         insertPlainTextAtCursor(transformString(parsedData.text));
       }
     } else {
+      urlRef.current = "";
       insertPlainTextAtCursor(transformString(plainText));
     }
     forUpdate();
