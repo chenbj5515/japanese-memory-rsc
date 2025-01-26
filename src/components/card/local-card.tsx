@@ -150,8 +150,6 @@ export function LocalCard(props: ILoaclCard) {
         }
     }
 
-    console.log(url, "url============")
-
     return (
         <Card
             ref={ref}
