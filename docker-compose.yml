@@ -19,8 +19,8 @@ services:
       - "443:443"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-      - /etc/letsencrypt/live/japanese-memo.app:/etc/letsencrypt/live/japanese-memo.app:ro
-      - /etc/letsencrypt/archive/japanese-memo.app:/etc/letsencrypt/archive/japanese-memo.app:ro
+      - /etc/letsencrypt/live/japanese-memory.com:/etc/letsencrypt/live/japanese-memory.com:ro
+      - /etc/letsencrypt/archive/japanese-memory.com:/etc/letsencrypt/archive/japanese-memory.com:ro
       - /etc/letsencrypt/privkey.pem:/etc/letsencrypt/privkey.pem:ro
     depends_on:
       - next-app
