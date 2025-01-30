@@ -27,7 +27,7 @@ jobs:
             echo 'NEXTAUTH_URL="${{ vars.NEXTAUTH_URL }}"' >> ~/japanese-memory-rsc/.env.local
             echo 'AUTH_GITHUB_ID="${{ vars.AUTH_GITHUB_ID }}"' >> ~/japanese-memory-rsc/.env.local
             echo 'AUTH_GITHUB_SECRET="${{ secrets.AUTH_GITHUB_SECRET }}"' >> ~/japanese-memory-rsc/.env.local
-            echo 'GOOGLE_CLIENT_ID="${{ secrets.GOOGLE_CLIENT_ID }}"' >> ~/japanese-memory-rsc/.env.local
+            echo 'GOOGLE_CLIENT_ID="${{ vars.GOOGLE_CLIENT_ID }}"' >> ~/japanese-memory-rsc/.env.local
             echo 'GOOGLE_CLIENT_SECRET="${{ secrets.GOOGLE_CLIENT_SECRET }}"' >> ~/japanese-memory-rsc/.env.local
             echo 'AUTH_SECRET="${{ secrets.AUTH_SECRET }}"' >> ~/japanese-memory-rsc/.env.local
             echo 'NEXT_PUBLIC_SUBSCRIPTION_KEY="${{ secrets.NEXT_PUBLIC_SUBSCRIPTION_KEY }}"' >> ~/japanese-memory-rsc/.env.local
