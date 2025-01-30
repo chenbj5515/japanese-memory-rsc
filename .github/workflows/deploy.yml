@@ -41,5 +41,6 @@ jobs:
             cd ~/japanese-memory-rsc
             git pull origin main
             docker-compose down
+            sudo docker system prune -a -f  # 添加 -f 标志以自动确认，避免交互式提示
             docker-compose up --build -d
           EOF
