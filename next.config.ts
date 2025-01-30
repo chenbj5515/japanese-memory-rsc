@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
     config.plugins.push(codeInspectorPlugin({ bundler: 'webpack' }));
     return config;
   },
+  experimental: {
+    workerThreads: false,
+    cpus: 1,
+  },
 };
 
 export default withSentryConfig(withSentryConfig(withPWA(nextConfig), {
