@@ -1,0 +1,13 @@
+# 忽略 node_modules，不复制到 Docker
+node_modules
+
+# 忽略 Git 相关文件
+.git
+.gitignore
+
+# 忽略本地环境变量文件
+.env
+
+# 忽略 Docker 本地构建缓存
+.dockerignore
+Dockerfile
