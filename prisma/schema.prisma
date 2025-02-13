@@ -118,7 +118,7 @@ enum exam_status_enum {
 enum membership_plan_enum {
   FREE       // 無料ユーザー（1日あたりのリクエスト制限あり）
   SELF_API   // ユーザー自身の OPENAI API KEY を持つユーザー（毎月 1 ドルの定額料金）
-  MY_API     // プラットフォームの OPENAI API KEY を利用するユーザー（毎月 5 ドルの定額料金）
+  PLATFORM_API     // プラットフォームの OPENAI API KEY を利用するユーザー（毎月 5 ドルの定額料金）
 }
 
 /// 会員プランモデル：各会員プランの詳細な設定を記述
