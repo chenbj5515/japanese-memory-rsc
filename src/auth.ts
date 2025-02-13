@@ -82,19 +82,4 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return session;
         },
     },
-    cookies: {
-        sessionToken: {
-            name: `__Secure-next-auth.session-token`,
-            options: {
-                httpOnly: true,
-                // 设置 SameSite 为 "none"
-                sameSite: "none",
-                path: "/",
-                // 注意：sameSite 为 "none" 要求 secure 必须为 true，
-                // 因此在生产环境下一定要运行在 HTTPS 下
-                secure: process.env.NODE_ENV === "production",
-            },
-        },
-        // 如果需要，也可以为其他 Cookie 进行相应配置
-    },
 })

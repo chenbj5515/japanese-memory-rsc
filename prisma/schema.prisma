@@ -30,6 +30,7 @@ model user {
   update_time DateTime? @default(now()) @db.Timestamptz(6)
   github_id   String?   @db.VarChar(255)
   profile     String?   @db.VarChar(100)
+  subscriptions user_subscription[]
 }
 
 model word_card {
@@ -111,4 +112,36 @@ enum exam_status_enum {
   initial
   in_progress
   completed
+}
+
+/// 会員プランの種類を示す列挙型
+enum membership_plan_enum {
+  FREE       // 無料ユーザー（1日あたりのリクエスト制限あり）
+  SELF_API   // ユーザー自身の OPENAI API KEY を持つユーザー（毎月 1 ドルの定額料金）
+  MY_API     // プラットフォームの OPENAI API KEY を利用するユーザー（毎月 5 ドルの定額料金）
+}
+
+/// 会員プランモデル：各会員プランの詳細な設定を記述
+model membership_plan {
+  id                  String                 @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name                membership_plan_enum
+  monthly_fee         Float                  // 月額料金
+  daily_request_limit Int?                   // 無料ユーザーの場合のみ有効（1日のリクエスト上限）
+  description         String?                // オプション：プランの追加説明
+
+  subscriptions       user_subscription[]    @relation("PlanSubscriptions")
+}
+
+/// 会員サブスクリプションモデル：ユーザーが特定の会員プランに加入した詳細情報を記録
+model user_subscription {
+  id                  String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id             String              @db.Uuid
+  membership_plan_id  String              @db.Uuid
+  start_time          DateTime            @default(now()) @db.Timestamptz(6) // サブスクリプションの開始日時
+  end_time            DateTime            @db.Timestamptz(6) // サブスクリプションの終了日時
+  active              Boolean             @default(true)  // サブスクリプションが有効かどうか
+  openai_api_key      String?             // SELF_API の場合、ユーザー自身の OPENAI API KEY を保持
+
+  user                user                @relation(fields: [user_id], references: [user_id])
+  membership_plan     membership_plan     @relation("PlanSubscriptions", fields: [membership_plan_id], references: [id])
 }
