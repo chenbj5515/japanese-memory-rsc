@@ -22,7 +22,7 @@ export default function ClientLayout({
     const pathname = usePathname();
     const dispatch = useDispatch();
 
-    const noNav = pathname === "/home" || pathname === "/exam" || pathname === "/login";
+    const noNav = pathname === "/home" || pathname === "/exam" || pathname === "/login" || pathname === "/subscription";
 
     function handleToggle() {
         if (theme === "dark") {
