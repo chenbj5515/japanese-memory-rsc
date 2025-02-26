@@ -12,24 +12,15 @@ import { TWordCard } from '@/app/word-cards/page'
 import { $Enums, Prisma } from '@prisma/client'
 import { Input } from "@/components/ui/input"
 import { MemoCard } from '../card';
-import { insertExamResults } from './server-actions/insert-exam-result';
-import { updateExamResult } from './server-actions/update-exam-result';
 import { useModalCard } from '@/hooks/modal';
 import { GlassModal } from '../glass-modal';
 import { useCountDowner, useFixConfirmDialog } from './hooks';
 import { QuestionInput } from './question-input';
 import { FixConfirmDialog } from './fix-confirm-dialog';
 import { mergeResultsByQuestion, checkAnswer } from './utils';
-import { updateExamStatus } from './server-actions/update-exam';
 import { useEscToGoBack, useRefState } from '@/hooks';
 import { useState } from 'react';
 import LoadingButton from '../ui/loading-button';
-import { insertActionLogs } from './server-actions/insert-action-logs';
-
-interface IProps {
-    initialResults: ExamInfo[];
-    id: string
-}
 
 type ExamResult = Omit<Prisma.exam_resultsGetPayload<{}>, "create_time">
 
@@ -43,12 +34,147 @@ export interface ExamInfo extends ExamResult {
     judging?: boolean;
     completed: boolean;
     judge_result?: string;
+    create_time: string;
 }
 
-export default function NewExam(props: IProps) {
-    const { initialResults, id } = props;
+const INITIAL_RESULTS = [
+    {
+        "no": 0,
+        "result_id": "",
+        "exam_id": "",
+        "question_type": "kana_from_japanese", 
+        "question_ref": "",
+        "question": "着実",
+        "reference_answer": "",
+        "user_answer": "",
+        "is_correct": false,
+        "wordCard": {
+            "id": "",
+            "word": "着実",
+            "meaning": "意味：踏实、稳健",
+            "create_time": "2024-07-11T05:33:10.527Z",
+            "user_id": "",
+            "review_times": 1,
+            "memo_card_id": "",
+            "memo_card": {
+                "id": "",
+                "translation": "然后，类型3是数据收集和制作资料之类让决定的事情稳健地正确地完成的人。",
+                "create_time": "2024-07-09T00:09:20.448Z",
+                "update_time": "2024-07-12T02:42:24.153Z",
+                "record_file_path": null,
+                "original_text": "それからタイプ３はデータ収集や資料作成など決められたことを着実に正確にやり遂げる人。",
+                "review_times": 2,
+                "user_id": "",
+                "kana_pronunciation": "それからタイプ３はデータしゅうしゅうやしりょうさくせいなどきめられたことをちゃくじつにせいかくにやりとげるひと。",
+                "source_video_url": null
+            }
+        },
+        "question_score": 2,
+        "judging": false,
+        "completed": false
+    },
+    {
+        "no": 1,
+        "result_id": "",
+        "exam_id": "",
+        "question_type": "translation_from_japanese",
+        "question_ref": "",
+        "question": "着実",
+        "reference_answer": "踏实、稳健",
+        "user_answer": "",
+        "is_correct": false,
+        "wordCard": {
+            "id": "",
+            "word": "着実",
+            "meaning": "意味：踏实、稳健",
+            "create_time": "2024-07-11T05:33:10.527Z",
+            "user_id": "",
+            "review_times": 1,
+            "memo_card_id": "",
+            "memo_card": {
+                "id": "",
+                "translation": "然后，类型3是数据收集和制作资料之类让决定的事情稳健地正确地完成的人。",
+                "create_time": "2024-07-09T00:09:20.448Z",
+                "update_time": "2024-07-12T02:42:24.153Z",
+                "record_file_path": null,
+                "original_text": "それからタイプ３はデータ収集や資料作成など決められたことを着実に正確にやり遂げる人。",
+                "review_times": 2,
+                "user_id": "",
+                "kana_pronunciation": "それからタイプ３はデータしゅうしゅうやしりょうさくせいなどきめられたことをちゃくじつにせいかくにやりとげるひと。",
+                "source_video_url": null
+            }
+        },
+        "question_score": 2,
+        "judging": false,
+        "completed": false
+    },
+    {
+        "no": 18,
+        "result_id": "",
+        "exam_id": "",
+        "question_type": "japanese_from_chinese",
+        "question_ref": "",
+        "question": "充足的/充裕的",
+        "reference_answer": "たっぷり",
+        "user_answer": "",
+        "is_correct": false,
+        "wordCard": {
+            "id": "",
+            "word": "たっぷり",
+            "meaning": "意味：充足的/充裕的",
+            "create_time": "2024-04-22T03:17:56.874Z",
+            "user_id": "",
+            "review_times": 1,
+            "memo_card_id": "",
+            "memo_card": {
+                "id": "",
+                "translation": "分量足的和风便当。",
+                "create_time": "2024-04-22T00:17:34.992Z",
+                "update_time": "2024-04-28T11:30:05.946Z",
+                "record_file_path": null,
+                "original_text": "ボリュウムたっぷりの和風弁当なんです。",
+                "review_times": 3,
+                "user_id": "",
+                "kana_pronunciation": "ぼりゅうむたっぷりのわふうべんとうなんです。",
+                "source_video_url": null
+            }
+        },
+        "question_score": 4,
+        "judging": false,
+        "completed": false
+    },
+    {
+        "no": 30,
+        "result_id": "",
+        "exam_id": "",
+        "question_type": "transcription_from_audio",
+        "question_ref": "",
+        "question": "あと文化祭の準備の時に飲み物差し入れてくれたのもかっこよかった",
+        "reference_answer": "あと文化祭の準備の時に飲み物差し入れてくれたのもかっこよかった",
+        "user_answer": "",
+        "is_correct": false,
+        "cardInfo": {
+            "id": "",
+            "translation": "还有在文化节准备时给我们送来饮料，那也很帅气。",
+            "create_time": "2025-01-13T11:37:38.211Z",
+            "update_time": "2025-01-14T01:06:20.934Z",
+            "record_file_path": "",
+            "original_text": "あと文化祭の準備の時に飲み物差し入れてくれたのもかっこよかった",
+            "review_times": 1,
+            "user_id": "",
+            "kana_pronunciation": "あとぶんかさいのじゅんびのときにのみものさしいれてくれたのもかっこよかった。",
+            "source_video_url": "https://www.youtube.com/watch?v=CDNzs1Nr-FA&t=147"
+        },
+        "question_score": 4,
+        "judging": false,
+        "completed": false
+    }
+] as any as ExamInfo[];
+
+export default function DemoExam() {
+    const initialResults: ExamInfo[] = INITIAL_RESULTS;
+
     const { timerDisplayRef } = useCountDowner();
-    console.log(initialResults);
 
     // AIによって「不正解」と判定された問題を「正解」へと変更する操作を行う際に必要な確認ダイアログの表示・制御ロジック
     const { isOpen, currentQuestionNo, handleFixClick, handleConfirm, handleCancel } = useFixConfirmDialog({
@@ -58,12 +184,6 @@ export default function NewExam(props: IProps) {
                     ? { ...result, is_correct: true, score: result.question_score }
                     : result
             ));
-
-            const score = examResultsRef.current.reduce((acc, cur) => acc + (cur.is_correct ? cur.question_score : 0), 0)
-            const updatedResult = examResultsRef.current.find(result => result.no === currentQuestionNo);
-            if (updatedResult?.result_id) {
-                updateExamResult(id, updatedResult?.result_id, score);
-            }
         },
     });
 
@@ -93,26 +213,15 @@ export default function NewExam(props: IProps) {
 
     const q3List = examResults.filter(result => result.question_type === $Enums.question_type_enum.transcription_from_audio)
 
-    const score = examResults.reduce((acc, cur) => acc + (cur.is_correct ? cur.question_score : 0), 0)
-
     const handleCommit = async () => {
         if (loading) return;
         setLoading(true);
-        const updatedResults = await Promise.all(examResults.map(processExamResult));
-        await updateExamStatus(id, $Enums.exam_status_enum.completed);
-        const { insertedResults } = await insertExamResults(updatedResults, score) as any;
-        
-        if (insertedResults) {
-            setExamResults(updatedResults.map((item, index) => ({
-                ...item,
-                ...insertedResults[index],
-            })));
-        }
+        await Promise.all(examResults.map(processExamResult));
     };
 
     // 通常の問題(音声問題以外)の採点処理
     const processNormalQuestion = async (result: ExamInfo) => {
-        setExamResults(examResultsRef.current.map(item => 
+        setExamResults(examResultsRef.current.map(item =>
             item.no === result.no ? { ...item, judging: true } : item
         ));
 
@@ -123,10 +232,6 @@ export default function NewExam(props: IProps) {
             const aiResult = await getKanaFromAI(result.question);
             reference_answer = aiResult;
             isCorrect = result.user_answer === aiResult;
-        }
-
-        if (!isCorrect && result.wordCard?.id) {
-            logIncorrectAnswer(result);
         }
 
         return {
@@ -140,20 +245,12 @@ export default function NewExam(props: IProps) {
 
     // 音声問題の採点処理
     const processAudioQuestion = async (result: ExamInfo) => {
-        const {diff, htmlString} = getDiff(result.question || "", result.user_answer || "");
+        const { diff, htmlString } = getDiff(result.question || "", result.user_answer || "");
         const rightWordsLen = diff
             .filter(diffInfo => diffInfo[0] === 0)
             .reduce((acc, cur) => acc + cur[1].length, 0);
 
         const right = rightWordsLen > 0.8 * (result.question.length ?? 0);
-        
-        if (!right && result.cardInfo?.id) {
-            insertActionLogs(
-                result.cardInfo.id, 
-                $Enums.action_type_enum.UNABLE_TO_UNDERSTAND_AUDIO,
-                $Enums.related_type_enum.memo_card
-            );
-        }
 
         return {
             ...result,
@@ -175,31 +272,16 @@ export default function NewExam(props: IProps) {
         return aiResult;
     };
 
-    // 不正解時のアクションログ記録
-    const logIncorrectAnswer = async (result: ExamInfo) => {
-        const actionType = result.question_type === $Enums.question_type_enum.kana_from_japanese
-            ? $Enums.action_type_enum.FORGOT_WORD_PRONUNCIATION
-            : result.question_type === $Enums.question_type_enum.translation_from_japanese 
-                ? $Enums.action_type_enum.FORGOT_WORD_MEANING
-                : $Enums.action_type_enum.UNKNOWN_PHRASE_EXPRESSION;
-
-        await insertActionLogs(
-            result.wordCard!.id,
-            actionType,
-            $Enums.related_type_enum.word_card
-        );
-    };
-
     // 各問題の採点処理
     const processExamResult = async (result: ExamInfo) => {
         const next = result.question_type === $Enums.question_type_enum.transcription_from_audio
             ? await processAudioQuestion(result)
             : await processNormalQuestion(result);
 
-        setExamResults(examResultsRef.current.map(item => 
+        setExamResults(examResultsRef.current.map(item =>
             item.no === result.no ? next : item
         ));
-        
+
         return next;
     };
 
@@ -218,7 +300,7 @@ export default function NewExam(props: IProps) {
     }
 
     return (
-        <div className="p-5 relative font-NewYork container w-[680px] mx-auto bg-gray-50 min-h-screen">
+        <div className="relative font-NewYork container w-[640px] mx-auto bg-gray-50 min-h-screen pt-[14px]">
             <h1 className='font-bold text-[24px] text-center'>試験</h1>
             {/* カウントダウン */}
             {
@@ -231,28 +313,10 @@ export default function NewExam(props: IProps) {
                     </div>
                 ) : null
             }
-            {/* 点数 */}
-            {
-                allCompleted ? (
-                    <div className='absolute w-[260px] top-[6px] -right-[360px]'>
-                        <div
-                            style={{ marginLeft: score.toString().length === 1 ? "46px" : "16px" }}
-                            className='text-wrong w-[160px] h-[142px] -rotate-6 text-[112px]'
-                        >{score}</div>
-                        <Image
-                            className='absolute'
-                            src="/lines.png"
-                            width="246"
-                            height="82"
-                            alt='line'
-                        />
-                    </div>
-                ) : null
-            }
-            <div className="space-y-8 mt-[20px]">
+            <div className="space-y-8 mt-[10px]">
                 {/* 翻訳・読み */}
                 <Card>
-                    <CardHeader>
+                    <CardHeader className="p-4">
                         <CardTitle className="text-[18px]">翻訳・読み</CardTitle>
                     </CardHeader>
                     {q1List.map((group, index) => (
@@ -285,7 +349,7 @@ export default function NewExam(props: IProps) {
 
                 {/* 日本語への翻訳 */}
                 <Card>
-                    <CardHeader>
+                    <CardHeader className="p-4">
                         <CardTitle className="text-[18px]">日本語への翻訳</CardTitle>
                     </CardHeader>
                     {q2List.map((result, index) => (
@@ -315,7 +379,7 @@ export default function NewExam(props: IProps) {
 
                 {/* 聴解問題 */}
                 <Card>
-                    <CardHeader>
+                    <CardHeader className="p-4">
                         <CardTitle className="text-[18px]">聴解問題</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6">
@@ -357,7 +421,7 @@ export default function NewExam(props: IProps) {
 
             {
                 !allCompleted && (
-                    <div className='flex justify-center mt-[42px] mb-[20px]'>
+                    <div className='flex justify-center mt-[28px] mb-[20px]'>
                         <LoadingButton isLoading={loading} onClick={handleCommit} className="w-[120px] text-md px-6 py-5">
                             提出
                         </LoadingButton>

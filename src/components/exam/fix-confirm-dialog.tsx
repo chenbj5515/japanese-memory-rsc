@@ -18,17 +18,27 @@ export function FixConfirmDialog({
     confirmLabel = "はい",
     cancelLabel = "キャンセル"
 }: ConfirmDialogProps) {
+    const handleConfirm = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        onConfirm();
+    };
+
+    const handleCancel = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        onCancel();
+    };
+
     return (
         <Dialog open={open} onOpenChange={onCancel}>
-            <DialogContent aria-describedby=''>
+            <DialogContent aria-describedby='' onClick={(e) => e.stopPropagation()}>
                 <DialogHeader className='p-3'>
                     <DialogTitle>{title}</DialogTitle>
                 </DialogHeader>
                 <DialogFooter>
-                    <Button className='w-[100px]' variant="default" onClick={onConfirm}>
+                    <Button className='w-[100px]' variant="default" onClick={handleConfirm}>
                         {confirmLabel}
                     </Button>
-                    <Button variant="secondary" onClick={onCancel}>
+                    <Button variant="secondary" onClick={handleCancel}>
                         {cancelLabel}
                     </Button>
                 </DialogFooter>

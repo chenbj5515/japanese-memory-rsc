@@ -12,18 +12,21 @@ interface IProps {
     wordCards: TWordCard[]
 }
 
-function calculateElementsPerRow(parentWidth: number, childWidth = 228) {
-    let n = Math.floor(parentWidth / childWidth);
-    if (n <= 1) {
+function calculateElementsPerRow(parentWidth: number, childWidth = 280, minGap = 20) {
+    // 如果容器宽度小于一个卡片宽度，则返回1
+    if (parentWidth < childWidth) {
         return 1;
     }
-    let space = (parentWidth - (n * childWidth)) / (n - 1);
-
-    if (space < 10) {
-        return n - 1;
-    }
-
-    return n;
+    
+    // 计算考虑最小间距后，最多能放几个卡片
+    // 公式: n个卡片需要的总宽度 = n * childWidth + (n-1) * minGap <= parentWidth
+    // 解方程: n * childWidth + (n-1) * minGap <= parentWidth
+    // n * childWidth + n * minGap - minGap <= parentWidth
+    // n * (childWidth + minGap) <= parentWidth + minGap
+    // n <= (parentWidth + minGap) / (childWidth + minGap)
+    const maxCards = Math.floor((parentWidth + minGap) / (childWidth + minGap));
+    
+    return Math.max(1, maxCards); // 至少返回1
 }
 
 function splitIntoRows<T>(wordList: T[], n: number) {
@@ -39,15 +42,11 @@ export function WordCards(props: IProps) {
     const router = useRouter();
 
     const [rows, setRows] = React.useState<TWordCard[][]>([]);
-
     const [cardInfo, setCardInfo] = React.useState<Prisma.memo_cardGetPayload<{}> | null>(null);
-
     const [showGlass, setShowGlass] = React.useState(false);
-
     const containerRef = React.useRef<HTMLDivElement>(null);
-
-    const intervalRef = React.useRef(10);
-
+    const cardWidthRef = React.useRef(280); // 卡片宽度
+    const gapWidthRef = React.useRef(20);   // 最小间距
     const ref = React.useRef<HTMLDivElement>(null);
 
     React.useEffect(() => {
@@ -66,15 +65,17 @@ export function WordCards(props: IProps) {
 
     React.useEffect(() => {
         const observer = new ResizeObserver(() => {
-            // 1. 現在のウィンドウサイズに応じて、1行に表示できるカードの数を取得します
-            // 2. すべてのカードを二次元配列で表現し、各サブ配列が1行を表します。
             if (ref.current) {
                 const containerWidth = ref.current.clientWidth;
-                const elementNumPerRow = calculateElementsPerRow(containerWidth);
-                intervalRef.current = (containerWidth - elementNumPerRow * 228) / (elementNumPerRow - 1);
+                const cardWidth = cardWidthRef.current;
+                const minGap = gapWidthRef.current;
+                
+                // 计算每行最多能放几个卡片
+                const elementNumPerRow = calculateElementsPerRow(containerWidth, cardWidth, minGap);
+                
                 setRows(prev => {
                     const curRows = prev.flat().length ? prev.flat() : wordCards;
-                    const next = splitIntoRows<TWordCard>(curRows, elementNumPerRow)
+                    const next = splitIntoRows<TWordCard>(curRows, elementNumPerRow);
                     return next;
                 });
             }
@@ -85,6 +86,12 @@ export function WordCards(props: IProps) {
             observer.disconnect();
         };
     }, [wordCards]);
+
+    // 计算每行卡片之间的实际间距
+    const calculateGap = (containerWidth: number, cardsInRow: number, cardWidth: number) => {
+        if (cardsInRow <= 1) return 0;
+        return (containerWidth - cardsInRow * cardWidth) / (cardsInRow - 1);
+    };
 
     async function handleRecognizeClick(id: string) {
         if (rows.length === 1 && rows[0].length === 1) {
@@ -130,25 +137,52 @@ export function WordCards(props: IProps) {
             ) : null}
             <div ref={ref} className="w-full">
                 {
-                    rows.map((row, idx) => (
-                        <div key={idx} className={`flex ${idx === rows.length - 1 ? "" : "justify-between"}`}>
-                            {
-                                row.map(cardInfo => (
-                                    <div
-                                        key={cardInfo.id}
-                                        className="sm:w-auto w-full"
-                                        style={{ marginRight: `${idx === rows.length - 1 ? `${intervalRef.current}px` : "0"}` }}
-                                    >
-                                        <WordCard
-                                            wordCardInfo={cardInfo}
-                                            onRecognize={handleRecognizeClick}
-                                            onUnRecognize={handleUnRecognizeClick}
-                                        />
-                                    </div>
-                                ))
-                            }
-                        </div>
-                    ))
+                    rows.map((row, rowIdx) => {
+                        // 获取容器宽度
+                        const containerWidth = ref.current?.clientWidth || 0;
+                        
+                        // 使用第一行的卡片数量计算标准间距
+                        // 这确保了所有行（包括最后一行）使用相同的间距
+                        const maxCardsPerRow = rows[0].length;
+                        const standardGap = calculateGap(containerWidth, maxCardsPerRow, cardWidthRef.current);
+                        
+                        // 判断是否是最后一行且卡片数量少于最大行
+                        const isLastIncompleteRow = rowIdx === rows.length - 1 && row.length < maxCardsPerRow;
+                        
+                        return (
+                            <div 
+                                key={rowIdx} 
+                                className="flex" 
+                                style={{ 
+                                    marginBottom: '20px',
+                                    // 完整行使用space-between，最后一行不完整时使用flex-start
+                                    justifyContent: isLastIncompleteRow ? 'flex-start' : 'space-between'
+                                }}
+                            >
+                                {
+                                    row.map((cardInfo, cardIdx) => (
+                                        <div
+                                            key={cardInfo.id}
+                                            style={{ 
+                                                width: `${cardWidthRef.current}px`,
+                                                // 对于最后一行，每个卡片（除了最后一个）都添加固定的右边距
+                                                // 对于其他行，space-between会自动处理间距
+                                                marginRight: isLastIncompleteRow && cardIdx < row.length - 1 
+                                                    ? `${standardGap}px` 
+                                                    : undefined
+                                            }}
+                                        >
+                                            <WordCard
+                                                wordCardInfo={cardInfo}
+                                                onRecognize={handleRecognizeClick}
+                                                onUnRecognize={handleUnRecognizeClick}
+                                            />
+                                        </div>
+                                    ))
+                                }
+                            </div>
+                        );
+                    })
                 }
             </div>
         </>

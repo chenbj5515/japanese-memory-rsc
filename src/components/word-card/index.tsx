@@ -17,8 +17,6 @@ interface IProps {
 export function WordCard(props: IProps) {
     const { wordCardInfo, wordCardInfo: { id, word, meaning }, onRecognize, onUnRecognize } = props;
 
-    console.log(wordCardInfo)
-
     const cardRef = useTripleRightClick(async () => {
         onRecognize?.(id);
         await updateReviewTimes(id);
@@ -31,7 +29,7 @@ export function WordCard(props: IProps) {
     }
 
     return (
-        <Card ref={cardRef} className="sm:w-[228px] sm:text-base text-[17px] w-full word-card sm:h-[150px] rounded-[8px] dark:bg-eleDark dark:text-white p-5 mt-2 mb-8 relative">
+        <Card ref={cardRef} className="sm:w-[280px] sm:text-base text-[17px] w-full word-card sm:h-[170px] rounded-[8px] dark:bg-eleDark dark:text-white p-5 mt-2 mb-8 relative">
             <div
                 className="play-button-bg rounded-[50%] w-8 h-8 absolute top-2 right-2 cursor-pointer"
                 onClick={() => handlePlayBtn(word)}
@@ -56,16 +54,16 @@ export function WordCard(props: IProps) {
                 ></section>
                 {meaning}
             </div>
-            <div className="flex justify-between sm:w-[195px] w-full mt-[32px] mb-[0px]">
+            <div className="flex justify-between sm:w-[240px] w-full mt-[32px] mb-[20px] gap-[20px]">
                 <Button
-                    className="sm:text-sm text-[16px]"
+                    className="sm:text-sm text-[16px] flex-1"
                     onClick={() => onRecognize(id)}
                     variant="outline"
                 >
                     わかる
                 </Button>
                 <Button
-                    className="sm:text-sm text-[16px]"
+                    className="sm:text-sm text-[16px] flex-1"
                     onClick={() => onUnRecognize(wordCardInfo)}
                     variant="outline"
                 >

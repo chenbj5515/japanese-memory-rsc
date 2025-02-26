@@ -89,6 +89,8 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
             
         }))
 
+        console.log(initialResults, "initialResults==========")
+
         return <NewExam initialResults={initialResults} id={id} />;
     } else {
         const count = await prisma.word_card.count({
@@ -209,6 +211,7 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
                 completed: false
             });
         });
+        console.log(initialResults, "initialResults==========")
         return <NewExam initialResults={initialResults} id={id} />;
     }
 }

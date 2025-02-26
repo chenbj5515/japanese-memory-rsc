@@ -10,7 +10,7 @@ export async function askAI(input: string, temperature?: number) {
 
     (async () => {
         const { textStream } = await streamText({
-            model: openai('gpt-4-turbo'),
+            model: openai('gpt-4o'),
             prompt: input,
             temperature: temperature || 0
         });
@@ -27,7 +27,7 @@ export async function askAI(input: string, temperature?: number) {
 
 export async function askAIDirectly(input: string, temperature?: number) {
     const { textStream } = await streamText({
-        model: openai('gpt-4-turbo'),
+        model: openai('gpt-4o'),
         prompt: input,
         temperature: temperature || 0
     });

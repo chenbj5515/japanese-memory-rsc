@@ -6,7 +6,7 @@ export default function UnloginHeader() {
   const router = useRouter()
 
   return (
-    <nav className="flex fixed top-0 items-center justify-between w-full px-0 h-[86px]">
+    <nav className="flex fixed top-0 items-center justify-between w-full px-0 h-[86px] z-10">
       <div className="flex items-center pl-4">
         <BrandIcon size="large" />
       </div>
