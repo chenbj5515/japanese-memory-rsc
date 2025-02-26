@@ -17,6 +17,8 @@ export default async function Home() {
     take: 10,
   });
 
+  console.log(memoCards)
+
   return (
     <>
       <div className="pb-[36px]">

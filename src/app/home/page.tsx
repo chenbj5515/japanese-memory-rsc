@@ -2,20 +2,14 @@
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
+// import UnloginHeader from "../unlogin-header"
 
 export default function LandingPage() {
   const router = useRouter()
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="flex items-center justify-between px-4 py-4 max-w-7xl mx-auto">
-        <div className="flex items-center gap-4">
-          {/* <Button variant="default" className="bg-[#18181B] text-white hover:bg-[#27272A]">
-            Log in
-          </Button> */}
-        </div>
-      </nav>
+      {/* <UnloginHeader /> */}
 
       {/* Hero Section */}
       <main className="px-4 pt-16 pb-24 text-center max-w-7xl mx-auto relative">
@@ -29,7 +23,7 @@ export default function LandingPage() {
         </p>
         <Button 
           className="bg-[#18181B] text-white hover:bg-[#27272A] px-8 py-6 text-lg"
-          onClick={() => router.push('/login')}
+          onClick={() => router.push('/api/auth/signin')}
         >
           Get Started for free
         </Button>

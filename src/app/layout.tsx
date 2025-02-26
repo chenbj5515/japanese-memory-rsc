@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import Provider from "./provider";
 import "./globals.css";
 import { usePathname } from "next/navigation";
+import { Pacifico } from 'next/font/google';
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -13,6 +14,13 @@ const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
   weight: "100 900",
+});
+// 配置字体，只会执行一次
+const pacifico = Pacifico({
+  weight: '400',  // 字体粗细
+  subsets: ['latin'],  // 字符子集
+  display: 'swap',  // 字体显示策略
+  variable: '--font-pacifico',  // CSS 变量名（可选）
 });
 
 export default function RootLayout({
@@ -28,7 +36,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased ${pathname === '/daily-report' ? 'bg-[#f1f1f1]' : ''}`}
+        className={`${geistSans.variable} ${geistMono.variable} ${pacifico.variable} antialiased ${pathname === '/daily-report' ? 'bg-[#f1f1f1]' : ''}`}
       >
         <main className="flex flex-col dark:bg-bgDark">
           <Provider>{children}</Provider>

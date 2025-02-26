@@ -17,6 +17,8 @@ interface IProps {
 export function WordCard(props: IProps) {
     const { wordCardInfo, wordCardInfo: { id, word, meaning }, onRecognize, onUnRecognize } = props;
 
+    console.log(wordCardInfo)
+
     const cardRef = useTripleRightClick(async () => {
         onRecognize?.(id);
         await updateReviewTimes(id);
