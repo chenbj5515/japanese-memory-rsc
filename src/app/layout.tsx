@@ -36,7 +36,7 @@ export default function RootLayout({
         <link rel="manifest" href="/manifest.json" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${pacifico.variable} antialiased ${pathname === '/daily-report' ? 'bg-[#f1f1f1]' : ''}`}
+        className={`${geistSans.variable} ${geistMono.variable} ${pacifico.variable} antialiased`}
       >
         <main className="flex flex-col dark:bg-bgDark">
           <Provider>{children}</Provider>

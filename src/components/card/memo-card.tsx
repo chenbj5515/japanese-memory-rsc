@@ -98,7 +98,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     return (
         <Card
             ref={cardRef}
-            className="p-5 relative leading-[1.9] tracking-[1.5px]"
+            className="border border-black p-5 relative leading-[1.9] tracking-[1.5px]"
         >
             <div className="sm:text-[14px] text-[16px] absolute -top-[30px] left-1 text-[#999]">
                 {create_time ? getTimeAgo(create_time.toString()) : ""}
@@ -109,7 +109,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
                     href={source_video_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="border-solid border-[1px] border-[hsl(var(--input))] play-button-bg dark:bg-bgDark dark:shadow-none rounded-[50%] w-12 h-12 absolute top-2 right-2 cursor-pointer flex items-center justify-center"
+                    className="border border-[#1d283a] play-button-bg dark:bg-bgDark dark:shadow-none rounded-[50%] w-12 h-12 absolute top-2 right-2 cursor-pointer flex items-center justify-center"
                 >
                     {
                         source_video_url.includes("youtube") ? (
@@ -132,7 +132,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
                 </a>
             ) : (
                 <div
-                    className="border-solid border-[1px] border-[hsl(var(--input))] play-button-bg dark:bg-bgDark dark:shadow-none rounded-[50%] w-12 h-12 absolute top-2 right-2 cursor-pointer"
+                    className="border-solid border-[1px] border-[#1d283a] play-button-bg dark:bg-bgDark dark:shadow-none rounded-[50%] w-12 h-12 absolute top-2 right-2 cursor-pointer"
                     onClick={handlePlayBtn}
                 >
                     <svg
@@ -201,7 +201,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
                         type="checkbox"
                         className="peer opacity-0 cursor-pointer h-full w-full left-0 top-0 double-click absolute z-[11]"
                     />
-                    <span className="peer-checked:dark:shadow-darkActive peer-active:dark:filter-blurHalf peer-active:dark:shadow-darkActive peer-checked:filter-blurHalf peer-checked:shadow-buttonActive group-active:filter-blurHalf group-active:shadow-custom absolute left-1/2 top-1/2 bg-white border border-[hsl(var(--input))] rounded-[68.8px] block transition-all duration-300 [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] dark:shadow-none dark:bg-bgDark w-[50px] h-[50px] -translate-x-1/2 -translate-y-1/2"></span>
+                    <span className="border-[#1d283a] peer-checked:dark:shadow-darkActive peer-active:dark:filter-blurHalf peer-active:dark:shadow-darkActive peer-checked:filter-blurHalf peer-checked:shadow-buttonActive group-active:filter-blurHalf group-active:shadow-custom absolute left-1/2 top-1/2 bg-white border rounded-[68.8px] block transition-all duration-300 [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] dark:shadow-none dark:bg-bgDark w-[50px] h-[50px] -translate-x-1/2 -translate-y-1/2"></span>
                 </div>
                 {/* 录音プレーボタン */}
                 <div className="inline-block relative w-[40px] h-[40px] group">
@@ -212,7 +212,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
                         type="checkbox"
                         className="peer opacity-0 cursor-pointer h-full w-full left-0 top-0 absolute z-[11]"
                     />
-                    <span className="peer-active:dark:shadow-darkActive group-active:filter-blurHalf group-active:shadow-buttonActive absolute left-1/2 top-1/2 bg-white border border-[hsl(var(--input))] rounded-[68.8px] block transition-all duration-300 [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] dark:shadow-none dark:bg-bgDark w-[50px] h-[50px] -translate-x-1/2 -translate-y-1/2"></span>
+                    <span className="border-[#1d283a] peer-active:dark:shadow-darkActive group-active:filter-blurHalf group-active:shadow-buttonActive absolute left-1/2 top-1/2 bg-white border rounded-[68.8px] block transition-all duration-300 [transition-timing-function:cubic-bezier(0.23,1,0.32,1)] dark:shadow-none dark:bg-bgDark w-[50px] h-[50px] -translate-x-1/2 -translate-y-1/2"></span>
                 </div>
             </div>
             <div className="relative flex flex-col mt-2">

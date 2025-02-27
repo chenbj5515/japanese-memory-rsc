@@ -299,6 +299,9 @@ export default function DemoExam() {
         });
     }
 
+    // 自定义样式类
+    const customCardStyle = "!border !border-solid !border-[#1d283a]";
+
     return (
         <div className="relative font-NewYork container w-[640px] mx-auto bg-gray-50 min-h-screen pt-[14px]">
             <h1 className='font-bold text-[24px] text-center'>試験</h1>
@@ -315,7 +318,7 @@ export default function DemoExam() {
             }
             <div className="space-y-8 mt-[10px]">
                 {/* 翻訳・読み */}
-                <Card>
+                <Card className={customCardStyle}>
                     <CardHeader className="p-4">
                         <CardTitle className="text-[18px]">翻訳・読み</CardTitle>
                     </CardHeader>
@@ -348,7 +351,7 @@ export default function DemoExam() {
                 </Card>
 
                 {/* 日本語への翻訳 */}
-                <Card>
+                <Card className={customCardStyle}>
                     <CardHeader className="p-4">
                         <CardTitle className="text-[18px]">日本語への翻訳</CardTitle>
                     </CardHeader>
@@ -378,7 +381,7 @@ export default function DemoExam() {
                 </Card>
 
                 {/* 聴解問題 */}
-                <Card>
+                <Card className={customCardStyle}>
                     <CardHeader className="p-4">
                         <CardTitle className="text-[18px]">聴解問題</CardTitle>
                     </CardHeader>
@@ -421,7 +424,7 @@ export default function DemoExam() {
 
             {
                 !allCompleted && (
-                    <div className='flex justify-center mt-[28px] mb-[20px]'>
+                    <div className='flex justify-center mt-[24px] mb-[20px]'>
                         <LoadingButton isLoading={loading} onClick={handleCommit} className="w-[120px] text-md px-6 py-5">
                             提出
                         </LoadingButton>

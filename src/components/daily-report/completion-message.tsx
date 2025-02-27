@@ -8,7 +8,7 @@ export function CompletionMessage() {
     <motion.div
       initial={{ opacity: 0, scale: 0.8 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="relative dark:bg-black bg-white rounded-xl shadow-sm px-6 py-12 text-center"
+      className="border border-[#1d283a] relative dark:bg-black bg-white rounded-[16px] shadow-sm px-6 py-12 text-center"
     >
       <ConfettiAnimation />
       <motion.div

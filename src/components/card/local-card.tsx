@@ -153,7 +153,7 @@ export function LocalCard(props: ILoaclCard) {
     return (
         <Card
             ref={ref}
-            className="p-5 relative leading-[1.9] tracking-[1.5px]"
+            className="border border-black p-5 relative leading-[1.9] tracking-[1.5px]"
         >
 
             {/* 朗読ボタン */}

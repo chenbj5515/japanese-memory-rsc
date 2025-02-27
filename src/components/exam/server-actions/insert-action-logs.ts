@@ -24,8 +24,18 @@ export async function insertActionLogs(
         }
     });
 
-    // 既存のログがない場合のみ新規作成
-    if (!existingLog) {
+    if (existingLog) {
+        // 既存のログがある場合は create_time を更新
+        await prisma.user_action_logs.update({
+            where: {
+                id: existingLog.id
+            },
+            data: {
+                create_time: new Date()
+            }
+        });
+    } else {
+        // 既存のログがない場合は新規作成
         await prisma.user_action_logs.create({
             data: {
                 user_id: session.userId,

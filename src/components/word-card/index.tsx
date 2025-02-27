@@ -29,7 +29,7 @@ export function WordCard(props: IProps) {
     }
 
     return (
-        <Card ref={cardRef} className="sm:w-[280px] sm:text-base text-[17px] w-full word-card sm:h-[170px] rounded-[8px] dark:bg-eleDark dark:text-white p-5 mt-2 mb-8 relative">
+        <Card ref={cardRef} className="border border-black sm:w-[280px] sm:text-base text-[17px] w-full word-card sm:h-[170px] rounded-[8px] dark:bg-eleDark dark:text-white p-5 mt-2 mb-8 relative">
             <div
                 className="play-button-bg rounded-[50%] w-8 h-8 absolute top-2 right-2 cursor-pointer"
                 onClick={() => handlePlayBtn(word)}
@@ -56,14 +56,14 @@ export function WordCard(props: IProps) {
             </div>
             <div className="flex justify-between sm:w-[240px] w-full mt-[32px] mb-[20px] gap-[20px]">
                 <Button
-                    className="sm:text-sm text-[16px] flex-1"
+                    className="border border-black sm:text-sm text-[16px] flex-1"
                     onClick={() => onRecognize(id)}
                     variant="outline"
                 >
                     わかる
                 </Button>
                 <Button
-                    className="sm:text-sm text-[16px] flex-1"
+                    className="border border-black sm:text-sm text-[16px] flex-1"
                     onClick={() => onUnRecognize(wordCardInfo)}
                     variant="outline"
                 >

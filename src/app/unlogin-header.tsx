@@ -10,7 +10,7 @@ export default function UnloginHeader() {
       <div className="flex items-center pl-4">
         <BrandIcon size="large" />
       </div>
-      <div className="flex items-center gap-8 font-medium pr-6">
+      <div className="flex items-center gap-8 font-medium pr-14">
         <button 
           onClick={() => router.push('/guide')}
           className="text-black hover:text-[#595a5d] transition-colors"

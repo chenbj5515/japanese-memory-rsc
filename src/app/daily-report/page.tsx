@@ -56,13 +56,15 @@ export default async function YearEndReportPage({ searchParams }: { searchParams
       .filter(log => log.action_type === $Enums.action_type_enum.FORGOT_WORD_MEANING)
       .map(async log => {
         const wordCard = await prisma.word_card.findUnique({
-          where: { id: log.related_id }
+          where: { id: log.related_id },
+          include: { memo_card: true }
         })
         return {
           id: id++,
           type: 'meaning',
           question: `「${wordCard?.word}」の意味を忘れました、今覚えていますか？`,
-          answer: `${wordCard?.meaning.replaceAll("意味：", "")}`
+          answer: `${wordCard?.meaning.replaceAll("意味：", "")}`,
+          memo_card: wordCard?.memo_card
         }
       })
   )
@@ -74,7 +76,8 @@ export default async function YearEndReportPage({ searchParams }: { searchParams
       .filter(log => log.action_type === $Enums.action_type_enum.FORGOT_WORD_PRONUNCIATION)
       .map(async log => {
         const wordCard = await prisma.word_card.findUnique({
-          where: { id: log.related_id }
+          where: { id: log.related_id },
+          include: { memo_card: true }
         })
         const { output } = await askAIDirectly(`これは日本語の単語またはフレーズです：${wordCard?.word}、それをひらがなで表記してください、気をつけて原文とか余分な言葉を出さないで、ひらがなだけを出してください。`);
 
@@ -82,7 +85,8 @@ export default async function YearEndReportPage({ searchParams }: { searchParams
           id: id++,
           type: 'pronunciation',
           question: `「${wordCard?.word}」の発音を忘れました、今覚えていますか？`,
-          answer: `${wordCard?.word}(${output})`
+          answer: `${wordCard?.word}(${output})`,
+          memo_card: wordCard?.memo_card
         }
       })
   )
@@ -94,13 +98,15 @@ export default async function YearEndReportPage({ searchParams }: { searchParams
       .filter(log => log.action_type === $Enums.action_type_enum.UNKNOWN_PHRASE_EXPRESSION)
       .map(async log => {
         const wordCard = await prisma.word_card.findUnique({
-          where: { id: log.related_id }
+          where: { id: log.related_id },
+          include: { memo_card: true }
         })
         return {
           id: id++,
           type: 'expression',
           question: `「${wordCard?.meaning.replaceAll("意味：", "")}」の日本語で表現する方法を忘れました、今覚えていますか？`,
-          answer: wordCard?.word || ''
+          answer: wordCard?.word || '',
+          memo_card: wordCard?.memo_card
         }
       })
   )
@@ -119,6 +125,7 @@ export default async function YearEndReportPage({ searchParams }: { searchParams
           type: 'listening',
           question: 'この文を聞き取れませんでした、もう一回聞いて分かりますか？',
           answer: memoCard?.original_text || '',
+          memo_card: memoCard
         }
       })
   )

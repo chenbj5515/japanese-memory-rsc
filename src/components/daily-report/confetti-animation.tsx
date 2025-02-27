@@ -43,5 +43,5 @@ export function ConfettiAnimation() {
     }
   }, [])
 
-  return <div ref={containerRef} className="absolute inset-0" />
+  return <div ref={containerRef} className="fixed inset-0" />
 }

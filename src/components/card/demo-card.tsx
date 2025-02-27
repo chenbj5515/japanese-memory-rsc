@@ -17,9 +17,9 @@ export function DemoCard() {
     }
 
     return (
-        <MemoCard 
+        <MemoCard
             {...demoData}
-            onDelete={() => {}}
+            onDelete={() => { }}
         />
     );
 }
