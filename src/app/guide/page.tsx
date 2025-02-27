@@ -11,7 +11,7 @@ const App: React.FC = () => {
                 {/* Hero Section */}
                 <div className="text-center mb-4">
                     <h1 className="text-4xl font-bold mb-4">
-                        Design Philosophy of Bun
+                        Design Philosophy of Bunn
                     </h1>
                     <p className="text-gray-600 text-lg text-black/60">
                         learn gracefully, review effectively
@@ -118,10 +118,10 @@ const App: React.FC = () => {
                                 </div>
                                 <div className="border-l-4 border-blue-500 pl-6">
                                     <h3 className="text-xl font-medium mb-2">
-                                        4. Paste to Bun
+                                        4. Paste to Bunn
                                     </h3>
                                     <p className="text-gray-700">
-                                        Return to the <a href="https://japanese-memory-rsc.vercel.app/latest" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700 hover:underline">Bun app</a> and paste the content into
+                                        Return to the <a href="https://japanese-memory-rsc.vercel.app/latest" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700 hover:underline">Bunn app</a> and paste the content into
                                         the input box at the bottom.
                                     </p>
                                 </div>
@@ -188,7 +188,7 @@ const App: React.FC = () => {
                         </ul>
                         <p className="text-gray-700 mt-8">
                             Of course, if you prefer anime, you can find Japanese anime with Japanese subtitles on Netflix. 
-                            Netflix's subtitle feature provides natural sentence breaks that align perfectly with the workflow of Bun.
+                            Netflix's subtitle feature provides natural sentence breaks that align perfectly with the workflow of Bunn.
                         </p>
                     </div>
                 </Card>
@@ -216,7 +216,7 @@ const App: React.FC = () => {
                         </ul>
                         
                         <p className="text-gray-700">
-                            When you engage with the material in these multiple ways, you'll find that you can remember a substantial portion of what you've learned. The Bun system is designed to support this multi-faceted approach to learning, making retention much more effective than traditional methods.
+                            When you engage with the material in these multiple ways, you'll find that you can remember a substantial portion of what you've learned. The Bunn system is designed to support this multi-faceted approach to learning, making retention much more effective than traditional methods.
                         </p>
                     </div>
                 </Card>
@@ -224,21 +224,21 @@ const App: React.FC = () => {
                 {/* Summary Section */}
                 <Card className="p-8 bg-white border-none shadow-none">
                     <h2 className="text-2xl font-semibold text-center mb-12">
-                        Why Bun?
+                        Why Bunn?
                     </h2>
                     <div className="max-w-3xl mx-auto">
                         <div className="text-gray-700 space-y-6">
                             <div className="mb-8">
                                 <h3 className="text-xl font-medium mb-3">Built by a Real Language Learner</h3>
                                 <p className="leading-relaxed">
-                                    Bun is created by a developer who is actively learning Japanese and living in Japan. This means the app is designed with real understanding of language learning challenges and needs.
+                                    Bunn is created by a developer who is actively learning Japanese and living in Japan. This means the app is designed with real understanding of language learning challenges and needs.
                                 </p>
                             </div>
 
                             <div className="mb-8">
                                 <h3 className="text-xl font-medium mb-3">Serious Learning System</h3>
                                 <p className="leading-relaxed">
-                                    Unlike many language apps that focus on gamification and entertainment, Bun is a serious learning tool built on solid pedagogical principles and effective learning methodologies.
+                                    Unlike many language apps that focus on gamification and entertainment, Bunn is a serious learning tool built on solid pedagogical principles and effective learning methodologies.
                                 </p>
                             </div>
 
@@ -251,7 +251,7 @@ const App: React.FC = () => {
                         </div>
                     </div>
                     <div className="mt-4 max-w-3xl mx-auto">
-                        Have fun exploring <a href="https://japanese-memory-rsc.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700 hover:underline">Bun</a>!
+                        Have fun exploring <a href="https://japanese-memory-rsc.vercel.app/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700 hover:underline">Bunn</a>!
                     </div>
                 </Card>
             </div>

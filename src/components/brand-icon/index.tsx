@@ -23,7 +23,7 @@ const BrandIcon: React.FC<BrandIconProps> = ({ size = 'normal', italic = false }
                     className={`font-['Pacifico',_cursive] text-[#333333] translate-y-[1px] ${size === 'large' ? 'text-3xl' : 'text-2xl'} ${italic ? 'italic' : ''}`}
                     style={{ textShadow: '1px 1px 1px rgba(0,0,0,0.1)' }}
                 >
-                    bun
+                    bunn
                 </span>
             </span>
         </a>
