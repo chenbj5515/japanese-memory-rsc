@@ -12,6 +12,7 @@ import { Logout } from "@/server-actions";
 import "remixicon/fonts/remixicon.css";
 import LoginedHeader from './logined-header';
 import UnloginHeader from './unlogin-header';
+import Footer from './footer';
 
 export default function ClientLayout({
     children,
@@ -24,9 +25,11 @@ export default function ClientLayout({
     const pathname = usePathname();
     const dispatch = useDispatch();
 
-    const noNav =pathname === "/exam";
+    const noNavPaths = ["/exam"];
+    const noNav = noNavPaths.includes(pathname);
 
-    const unloginHeader = pathname === "/home" || pathname === "/guide" || pathname === "/login" || pathname === "/pricing" || pathname === "/guide";
+    const unloginHeaderPaths = ["/home", "/guide", "/login", "/pricing", "/privacy-policy", "/terms-of-service"];
+    const unloginHeader = unloginHeaderPaths.includes(pathname);
 
     function handleToggle() {
         if (theme === "dark") {
@@ -62,11 +65,15 @@ export default function ClientLayout({
                         ? null
                         : <LoginedHeader />
             }
-            <main style={{
-                paddingTop: noNav ? 0 : "86px"
+            <div style={{
+                paddingTop: noNav ? 0 : "86px",
+                paddingBottom: "100px"
             }}>
                 {children}
-            </main>
+            </div>
+            {
+                unloginHeader ? <Footer /> : null
+            }
         </>
     )
 }

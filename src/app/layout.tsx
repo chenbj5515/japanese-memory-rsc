@@ -2,7 +2,6 @@
 import localFont from "next/font/local";
 import Provider from "./provider";
 import "./globals.css";
-import { usePathname } from "next/navigation";
 import { Pacifico } from 'next/font/google';
 
 const geistSans = localFont({
@@ -28,7 +27,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname();
   
   return (
     <html lang="en">
@@ -38,7 +36,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${pacifico.variable} antialiased`}
       >
-        <main className="flex flex-col dark:bg-bgDark">
+        <main className="flex flex-col dark:bg-bgDark relative">
           <Provider>{children}</Provider>
         </main>
       </body>

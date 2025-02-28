@@ -114,7 +114,7 @@ export default function LandingPage() {
       ) : null}
 
       {/* Hero Section */}
-      <main className="px-4 pt-16 pb-24 text-center max-w-7xl mx-auto relative">
+      <div className="px-4 pt-16 pb-24 text-center max-w-7xl mx-auto relative">
         {/* Hero content */}
         <h1 className="text-6xl font-bold mb-6 tracking-tight leading-[1.2]">
           Your Personal Japanese<br />
@@ -262,8 +262,7 @@ export default function LandingPage() {
             </div>
           </div>
         </div>
-
-      </main>
+      </div>
     </div>
   )
 }
