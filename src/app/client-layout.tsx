@@ -28,7 +28,7 @@ export default function ClientLayout({
     const noNavPaths = ["/exam"];
     const noNav = noNavPaths.includes(pathname);
 
-    const unloginHeaderPaths = ["/home", "/guide", "/login", "/pricing", "/privacy-policy", "/terms-of-service"];
+    const unloginHeaderPaths = ["/home", "/guide", "/login", "/pricing", "/privacy-policy", "/terms-of-service", "/business-disclosure"];
     const unloginHeader = unloginHeaderPaths.includes(pathname);
 
     function handleToggle() {

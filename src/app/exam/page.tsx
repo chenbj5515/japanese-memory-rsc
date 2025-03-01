@@ -89,8 +89,6 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
             
         }))
 
-        console.log(initialResults, "initialResults==========")
-
         return <NewExam initialResults={initialResults} id={id} />;
     } else {
         const count = await prisma.word_card.count({
@@ -105,7 +103,7 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
                 user_id: session?.userId,
             },
             skip: randomSkip,
-            take: 20,
+            take: 10,
             include: {
                 memo_card: true,
             },
@@ -123,7 +121,7 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
         const initialResults: ExamInfo[] = [];
         let no = 0;
         // 日本語から中国語等
-        wordCards.slice(0, 10).forEach((wordCard) => {
+        wordCards.slice(0, 5).forEach((wordCard) => {
             if (containsKanji(wordCard.word)) {
                 initialResults.push({
                     no: no++,
@@ -175,7 +173,7 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
         });
 
         // 中国語から日本語
-        wordCards.slice(10).forEach((wordCard) => {
+        wordCards.slice(5).forEach((wordCard) => {
             initialResults.push({
                 no: no++,
                 result_id: "",
