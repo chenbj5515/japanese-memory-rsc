@@ -67,7 +67,7 @@ export default function ClientLayout({
             }
             <div style={{
                 paddingTop: noNav ? 0 : "86px",
-                paddingBottom: "100px"
+                paddingBottom: unloginHeader ? "100px" : 0
             }}>
                 {children}
             </div>

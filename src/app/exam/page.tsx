@@ -209,7 +209,6 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
                 completed: false
             });
         });
-        console.log(initialResults, "initialResults==========")
         return <NewExam initialResults={initialResults} id={id} />;
     }
 }
