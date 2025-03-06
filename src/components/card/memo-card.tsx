@@ -10,8 +10,6 @@ import { Card } from "@/components/ui/card";
 import { ExternalLink } from "lucide-react";
 import { deleteMemoCard, updateMemoCardTranslation, updatePronunciation, updateOriginalText } from "./server-actions";
 import { useAudioRecorder } from "@/hooks/audio";
-import { Tooltip, TooltipContent, TooltipTrigger } from "@radix-ui/react-tooltip";
-import { TooltipProvider } from "@radix-ui/react-tooltip";
 import { Button } from "../ui/button";
 
 export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {

@@ -13,7 +13,6 @@ import { useAIGenerate } from "./hooks";
 import { useAudioRecorder } from "@/hooks/audio";
 import { ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 export function LocalCard(props: ILoaclCard) {
     const { original_text, url } = props;

@@ -125,7 +125,7 @@ export default function LandingPage() {
         </p>
         <Button
           className="bg-[#18181B] text-white hover:bg-[#27272A] px-8 py-6 text-lg"
-          onClick={() => router.push('/api/auth/signin')}
+          onClick={() => router.push('/login')}
         >
           Get Started for free
         </Button>
