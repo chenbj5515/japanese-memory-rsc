@@ -4,9 +4,9 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useDispatch } from 'react-redux';
 import { clearLocalCards } from '@/store/local-cards-slice';
 import "remixicon/fonts/remixicon.css";
-import LoginedHeader from './logined-header';
-import UnloginHeader from './unlogin-header';
-import Footer from './footer';
+import LoginedHeader from '../logined-header';
+import { UnloginHeader } from './unlogin-header';
+import { Footer } from './footer';
 
 export default function ClientLayout({
     children,

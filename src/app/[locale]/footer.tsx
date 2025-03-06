@@ -1,6 +1,6 @@
 "use client"
 
-export default function Footer() {
+export function Footer() {
     return (
         <footer className="w-full absolute bottom-0 mt-8 mx-auto px-4 pb-16">
             {/* 底部链接 */}

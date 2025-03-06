@@ -27,18 +27,17 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  
   return (
-    <html lang="en">
+    <html>
       <head>
         <link rel="manifest" href="/manifest.json" />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} ${pacifico.variable} antialiased`}
-      >
-        <main className="flex flex-col dark:bg-bgDark relative">
-          <Provider>{children}</Provider>
-        </main>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${pacifico.variable} antialiased`}>
+        <Provider>
+          <main className="flex flex-col dark:bg-bgDark relative">
+            {children}
+          </main>
+        </Provider>
       </body>
     </html>
   );

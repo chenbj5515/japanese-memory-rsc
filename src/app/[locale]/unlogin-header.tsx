@@ -1,10 +1,10 @@
 "use client"
 import { useRouter } from "next/navigation"
 import BrandIcon from "@/components/brand-icon"
-// import { LanguageSelector } from "@/components/language-selector"
+import { LanguageSelector } from "@/components/language-selector"
 import { useTranslations } from "next-intl"
 
-export default function UnloginHeader() {
+export function UnloginHeader() {
   const router = useRouter()
   const t = useTranslations();
 
@@ -14,7 +14,7 @@ export default function UnloginHeader() {
         <BrandIcon size="large" />
       </div>
       <div className="flex items-center gap-8 font-medium pr-14">
-        {/* <LanguageSelector /> */}
+        <LanguageSelector />
         <button
           onClick={() => router.push('/guide')}
           className="text-black hover:text-[#595a5d] transition-colors"

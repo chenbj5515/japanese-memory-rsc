@@ -4,6 +4,7 @@ import type React from "react"
 import { Check, X } from "lucide-react"
 import Link from "next/link"
 import { loadStripe } from "@stripe/stripe-js"
+import { useLanguage } from "@/i18n/language-context"
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,7 +12,16 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 // 确保在组件外部初始化
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
 
+const FeatureItem = ({ children, included = false }: { children: React.ReactNode; included?: boolean }) => (
+    <li className="flex items-center">
+        <Check className={`mr-2 h-4 w-4 ${included ? 'text-primary' : 'text-gray-300'}`} />
+        <span className={included ? 'text-gray-700' : 'text-gray-400'}>{children}</span>
+    </li>
+)
+
 export default function SubscriptionPage() {
+    const { t } = useLanguage()
+
     const handleSubscribe = async () => {
         try {
             const response = await fetch("/api/create-checkout-session", {
@@ -36,60 +46,51 @@ export default function SubscriptionPage() {
     return (
         <div className="container mx-auto">
             <div className="h-[100px] flex mt-2 justify-center">
-                <h1 className="text-3xl font-bold">Pricing</h1>
+                <h1 className="text-3xl font-bold">{t('pricing.title')}</h1>
             </div>
             <div className="grid md:grid-cols-2 gap-20 max-w-[700px] mx-auto">
                 <Card className="w-[324px] h-[400px] transition-all duration-300 hover:border-primary">
                     <CardHeader>
-                        <CardTitle>Free Plan</CardTitle>
-                        <CardDescription>Basic features for casual users</CardDescription>
+                        <CardTitle>{t('pricing.freePlan.title')}</CardTitle>
+                        <CardDescription>{t('pricing.freePlan.description')}</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-3xl font-bold mb-4">$0 / month</p>
+                        <p className="text-3xl font-bold mb-4">{t('pricing.freePlan.price')}</p>
                         <ul className="space-y-2">
-                            <FeatureItem included>20 sentences per day</FeatureItem>
-                            <FeatureItem included>20 words per day</FeatureItem>
-                            <FeatureItem>Subtitle extraction plugin</FeatureItem>
-                            <FeatureItem>Web page translation plugin</FeatureItem>
+                            <FeatureItem included>{t('pricing.freePlan.features.sentences')}</FeatureItem>
+                            <FeatureItem included>{t('pricing.freePlan.features.words')}</FeatureItem>
+                            <FeatureItem>{t('pricing.freePlan.features.subtitle')}</FeatureItem>
+                            <FeatureItem>{t('pricing.freePlan.features.webTranslation')}</FeatureItem>
                         </ul>
                     </CardContent>
                     <CardFooter>
                         <Button className="w-full mt-[30px]" variant="outline">
-                            Current Plan
+                            {t('pricing.freePlan.currentPlan')}
                         </Button>
                     </CardFooter>
                 </Card>
 
                 <Card className="w-[324px] h-[400px] transition-all duration-300 hover:border-primary">
                     <CardHeader>
-                        <CardTitle>Premium Plan</CardTitle>
-                        <CardDescription>Unlimited access and advanced features</CardDescription>
+                        <CardTitle>{t('pricing.proPlan.title')}</CardTitle>
+                        <CardDescription>{t('pricing.proPlan.description')}</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <p className="text-3xl font-bold mb-4">$5 / month</p>
+                        <p className="text-3xl font-bold mb-4">{t('pricing.proPlan.price')}</p>
                         <ul className="space-y-2">
-                            <FeatureItem included>Unlimited sentences</FeatureItem>
-                            <FeatureItem included>Unlimited words</FeatureItem>
-                            <FeatureItem included>Subtitle extraction plugin</FeatureItem>
-                            <FeatureItem included>Web page translation plugin</FeatureItem>
+                            <FeatureItem included>{t('pricing.proPlan.features.sentences')}</FeatureItem>
+                            <FeatureItem included>{t('pricing.proPlan.features.words')}</FeatureItem>
+                            <FeatureItem included>{t('pricing.proPlan.features.subtitle')}</FeatureItem>
+                            <FeatureItem included>{t('pricing.proPlan.features.webTranslation')}</FeatureItem>
                         </ul>
                     </CardContent>
                     <CardFooter>
                         <Button className="w-full mt-[30px]" onClick={handleSubscribe}>
-                            Upgrade Now
+                            {t('pricing.proPlan.upgrade')}
                         </Button>
                     </CardFooter>
                 </Card>
             </div>
         </div>
-    )
-}
-
-function FeatureItem({ children, included = false }: { children: React.ReactNode; included?: boolean }) {
-    return (
-        <li className="flex items-center space-x-2">
-            {included ? <Check className="h-5 w-5 text-green-500" /> : <X className="h-5 w-5 text-red-500" />}
-            <span>{children}</span>
-        </li>
     )
 }
