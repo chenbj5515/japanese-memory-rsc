@@ -9,7 +9,6 @@ import { DemoWordCard, defaultWordCardInfo } from "@/components/word-card/demo-w
 import { MemoCard } from "@/components/card/memo-card"
 import DemoExam from "@/components/exam/demo-exam"
 import DemoDailyReport from "@/components/daily-report/demo-daily-report"
-// import { useLanguage } from "@/i18n/language-context"
 
 export default function LandingPage() {
   const router = useRouter()

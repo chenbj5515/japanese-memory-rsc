@@ -3,6 +3,7 @@ import * as React from "react"
 import { Globe } from "lucide-react"
 import { useLocale } from 'next-intl';
 import { usePathname, useRouter } from 'next/navigation';
+import Cookies from 'js-cookie';
 
 export function LanguageSelector() {
     const locale = useLocale();
@@ -13,6 +14,11 @@ export function LanguageSelector() {
 
     const handleLanguageChange = (value: string) => {
         const currentRoute = pathname.split('/').pop() || '';
+        Cookies.set('NEXT_LOCALE', value, {
+            path: '/',
+            expires: 365, // 一年有效期
+            sameSite: 'lax'
+        });
         router.push(`/${value}/${currentRoute}`);
         setIsOpen(false);
     }

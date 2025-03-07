@@ -7,27 +7,20 @@ const publicPages = ['/home', '/privacy-policy', '/terms-of-service', '/business
 
 // 获取用户首选语言
 function getPreferredLocale(request: NextRequest): string {
-    // 获取 Accept-Language 头
-    const acceptLanguage = request.headers.get('Accept-Language');
-    if (!acceptLanguage) return 'en';
+    // 首先检查 Cookie 中是否有语言偏好
+    const localeCookie = request.cookies.get('NEXT_LOCALE');
+    if (localeCookie?.value && locales.includes(localeCookie.value)) {
+        return localeCookie.value;
+    }
 
-    // 解析语言偏好
-    const preferredLanguages = acceptLanguage.split(',')
-        .map(lang => {
-            const [language] = lang.trim().split(';');
-            return language.split('-')[0]; // 只取主要语言标签
-        });
-
-    // 查找第一个匹配的支持语言
-    const matchedLocale = preferredLanguages.find(lang => locales.includes(lang));
-    return matchedLocale || 'en';
+    return 'en';
 }
 
 // 创建 next-intl 中间件
 const intlMiddleware = createIntlMiddleware({
     locales,
     defaultLocale: 'en',
-    localePrefix: 'as-needed'
+    localePrefix: 'always'
 });
 
 export async function middleware(req: NextRequest) {
@@ -51,14 +44,28 @@ export async function middleware(req: NextRequest) {
 
     // 如果访问的是公共页面
     if (isPublicPage) {
-        return intlMiddleware(req);
+        const response = intlMiddleware(req);
+        // 设置语言偏好 Cookie
+        response.cookies.set('NEXT_LOCALE', locale, {
+            path: '/',
+            maxAge: 365 * 24 * 60 * 60, // 一年有效期
+            sameSite: 'lax'
+        });
+        return response;
     }
 
     if (!session) {
         return NextResponse.redirect(new URL(`/${locale}/home`, req.url));
     }
 
-    return intlMiddleware(req);
+    const response = intlMiddleware(req);
+    // 设置语言偏好 Cookie
+    response.cookies.set('NEXT_LOCALE', locale, {
+        path: '/',
+        maxAge: 365 * 24 * 60 * 60, // 一年有效期
+        sameSite: 'lax'
+    });
+    return response;
 }
 
 export const config = {
