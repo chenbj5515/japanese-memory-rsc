@@ -1,6 +1,6 @@
 "use client"
 import { speakText } from "@/utils";
-import { TWordCard } from "@/app/word-cards/page";
+import { TWordCard } from "@/app/[locale]/word-cards/page";
 import { useTripleRightClick } from "@/hooks";
 import {
     Card,

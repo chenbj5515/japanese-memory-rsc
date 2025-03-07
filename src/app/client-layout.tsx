@@ -19,8 +19,6 @@ export default function ClientLayout({
 
     const currentRoute = pathname.split('/').pop() || '';
 
-    console.log(currentRoute, "currentRoute=================");
-
     const noNavPaths = ["exam", "login"];
     const noNav = noNavPaths.includes(currentRoute);
 

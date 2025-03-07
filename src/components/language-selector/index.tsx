@@ -10,7 +10,6 @@ export function LanguageSelector() {
     const pathname = usePathname();
     const [isOpen, setIsOpen] = React.useState(false)
     const containerRef = React.useRef<HTMLDivElement>(null)
-    const menuRef = React.useRef<HTMLDivElement>(null)
 
     const handleLanguageChange = (value: string) => {
         const currentRoute = pathname.split('/').pop() || '';

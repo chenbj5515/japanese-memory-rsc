@@ -1,4 +1,4 @@
-import { TWordCard } from "@/app/word-cards/page";
+import { TWordCard } from "@/app/[locale]/word-cards/page";
 import { askAI } from "@/server-actions";
 import { readStreamableValue } from 'ai/rsc';
 import { ExamInfo } from "..";

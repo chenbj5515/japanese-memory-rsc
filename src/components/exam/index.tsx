@@ -8,7 +8,7 @@ import { PlayCircle, Search } from 'lucide-react'
 import { containsKanji, getDiff, speakText } from '@/utils'
 import { askAI } from '@/server-actions'
 import { readStreamableValue } from 'ai/rsc';
-import { TWordCard } from '@/app/word-cards/page'
+import { TWordCard } from '@/app/[locale]/word-cards/page'
 import { $Enums, Prisma } from '@prisma/client'
 import { Input } from "@/components/ui/input"
 import { MemoCard } from '../card';

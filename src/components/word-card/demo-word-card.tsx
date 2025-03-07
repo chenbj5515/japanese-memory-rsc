@@ -1,6 +1,6 @@
 "use client"
 import { WordCard } from "./index";
-import { TWordCard } from "@/app/word-cards/page";
+import { TWordCard } from "@/app/[locale]/word-cards/page";
 
 // 默认单词卡数据
 const defaultWordCardInfo: TWordCard = {

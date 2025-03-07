@@ -6,6 +6,12 @@ export default {
     guide: '使用指南',
     pricing: '定价',
     contact: '联系我们',
+    footer: {
+      copyright: 'Bunn © 2025',
+      termsOfService: '服务条款',
+      privacyPolicy: '隐私政策',
+      businessDisclosure: '特定商取引法に基づく表示'
+    }
   },
   home: {
     title: '用AI学习日语',
@@ -36,9 +42,87 @@ export default {
     }
   },
   guide: {
-    title: '使用指南',
-    getStarted: '开始使用',
-    designPhilosophy: '设计理念',
+    title: 'Bunn 的设计理念',
+    subtitle: '优雅地学习，高效地复习',
+    core: {
+      title: '句子是核心',
+      description: '停止无系统地学习语言。相反，通过明确关注句子作为核心单位来快速进步。您可以通过各种方法获取句子：',
+      methods: {
+        subtitles: '从 YouTube/Netflix 视频中获取即时字幕',
+        copy: '直接从网站复制日语文本'
+      },
+      future: '未来，我们还将支持图像输入功能，使学习更加便捷。',
+      demo: {
+        intro: '看看这个互动演示卡片，让您可以练习：',
+        shadow: '影子跟读 - 跟着音频重复以提高发音',
+        dictation: '听写 - 测试您是否能大致记住句子'
+      }
+    },
+    getStarted: {
+      title: '如何获取日语句子',
+      intro: '虽然您可以自由选择句子来源，但我强烈建议尝试以下流程：',
+      steps: {
+        extension: {
+          title: '1. 下载扩展程序',
+          description: '从 Chrome 网上应用店安装<link>我的 Chrome 扩展程序</link>'
+        },
+        videos: {
+          title: '2. 找到您喜欢的视频',
+          description: '选择 YouTube 或 Netflix 上的视频。对于 YouTube 视频，选择带有内置字幕的视频（避免使用 YouTube 的字幕功能，因为其句子断句通常较差，不符合我们以句子为中心的方法）。'
+        },
+        copy: {
+          title: '3. 复制字幕',
+          description: '按 Ctrl+C 并等待字幕被复制到剪贴板。'
+        },
+        paste: {
+          title: '4. 粘贴到 Bunn',
+          description: '返回到<link>Bunn 应用</link>并将内容粘贴到底部的输入框中。'
+        }
+      },
+      review: '复习时，您可以点击每张卡片右上角的<button>按钮</button>立即返回到句子的原始上下文和发音。这个功能帮助您更好地理解句子在原始上下文中的使用方式，并确保您练习的发音准确。',
+      clickMe: '点击我！',
+      recommendation: {
+        intro: '我个人推荐<channel>Mary 的 YouTube 频道</channel>。原因如下：',
+        reasons: [
+          '自带内置字幕所以句子断句完美',
+          '与我的扩展程序和应用配合使用时，提供无缝的影子跟读体验',
+          '现代、实用的日语，可以在日常生活中使用',
+          '内容足够有趣，让学习变得愉快'
+        ]
+      },
+      netflix: '当然，如果您更喜欢动漫，可以在 Netflix 上找到带有日语字幕的日本动漫。Netflix 的字幕功能提供自然的句子断句，完美符合 Bunn 的工作流程。'
+    },
+    remember: {
+      title: '如果我记不住学过的内容怎么办？',
+      normal: '首先，忘记是完全正常的。每个人都会忘记所学内容的很大一部分 - 这就是我们大脑的工作方式。',
+      key: '关键是要有选择性：只输入您觉得有趣或重要的句子。如果您真的觉得某些内容有趣或重要，您自然会更愿意投入时间进行：',
+      methods: [
+        '影子跟读',
+        '听写练习',
+        '从关键词回忆句子',
+        '参加测试',
+        '复习每日学习报告'
+      ],
+      conclusion: '当您以这些多种方式参与学习材料时，您会发现您能记住所学内容的很大一部分。Bunn 系统旨在支持这种多方面的学习方法，使记忆保持比传统方法更加有效。'
+    },
+    why: {
+      title: '为什么选择 Bunn？',
+      sections: {
+        built: {
+          title: '由真实的语言学习者打造',
+          description: 'Bunn 由一位正在学习日语并生活在日本的开发者创建。这意味着应用程序是基于对语言学习挑战和需求的真实理解而设计的。'
+        },
+        serious: {
+          title: '严肃的学习系统',
+          description: '与许多专注于游戏化和娱乐的语言应用不同，Bunn 是一个建立在坚实的教学原则和有效学习方法基础上的严肃学习工具。'
+        },
+        workflow: {
+          title: '清晰高效的工作流程',
+          description: '我们设计了一个独特的精简学习过程，消除了不必要的复杂性。每个功能都在您的语言学习之旅中服务于明确的目的。'
+        }
+      },
+      explore: '开始探索<link>Bunn</link>吧！'
+    }
   },
   pricing: {
     title: '定价方案',
@@ -51,7 +135,7 @@ export default {
       description: '适合休闲用户的基本功能',
       price: '¥0 / 月',
       features: {
-        sentences: '每天20句话',
+        sentences: '每天20各句子',
         words: '每天20个单词',
         subtitle: '字幕提取插件',
         webTranslation: '网页翻译插件'

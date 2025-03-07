@@ -6,6 +6,12 @@ export default {
     guide: 'Guide',
     pricing: 'Pricing',
     contact: 'Contact',
+    footer: {
+      copyright: 'Bunn © 2025',
+      termsOfService: 'Terms of Service',
+      privacyPolicy: 'Privacy Policy',
+      businessDisclosure: 'Business Disclosure'
+    }
   },
   home: {
     title: 'Learn Japanese with AI',
@@ -36,9 +42,87 @@ export default {
     }
   },
   guide: {
-    title: 'How to Use',
-    getStarted: 'Get Started',
-    designPhilosophy: 'Design Philosophy',
+    title: "Design Philosophy of Bunn",
+    subtitle: "learn gracefully, review effectively",
+    core: {
+      title: "Sentences are Core",
+      description: "Stop learning language without a system. Instead, make rapid progress by focusing explicitly on sentences as core units. You can obtain sentences through various methods:",
+      methods: {
+        subtitles: "Get instant subtitles from YouTube/Netflix videos",
+        copy: "Copy Japanese text directly from websites"
+      },
+      future: "In the future, we will also support image input functionality to make learning even more convenient.",
+      demo: {
+        intro: "Check out this interactive demo card that lets you practice with:",
+        shadow: "Shadow reading - repeat after the audio to improve pronunciation",
+        dictation: "Dictation - test if you can roughly remember the sentence"
+      }
+    },
+    getStarted: {
+      title: "Where to Find Japanese Sentences",
+      intro: "While you're free to choose your sentence sources, I strongly recommend trying the following process:",
+      steps: {
+        extension: {
+          title: "1. Download the Extension",
+          description: "Install <link>my Chrome extension</link> from the Chrome Web Store."
+        },
+        videos: {
+          title: "2. Find Videos You Like",
+          description: "Choose videos on YouTube or Netflix. For YouTube videos, select ones with built-in subtitles (avoid using YouTube's caption feature as its sentence breaks are often poor and don't align with our sentence-centered approach)."
+        },
+        copy: {
+          title: "3. Copy Subtitles",
+          description: "Press Ctrl+C and wait for the subtitles to be copied to your clipboard."
+        },
+        paste: {
+          title: "4. Paste to Bunn",
+          description: "Return to the <link>Bunn app</link> and paste the content into the input box at the bottom."
+        }
+      },
+      review: "When reviewing, you can click the <button>button</button> in the top-right corner of each card to instantly return to the source context and pronunciation of the sentence. This feature helps you better understand how the sentence is used in its original context and ensures you're practicing with accurate pronunciation.",
+      clickMe: "Click me!",
+      recommendation: {
+        intro: "I personally recommend <channel>Mary's YouTube Channel</channel>. Here's why:",
+        reasons: [
+          "Perfect sentence breaks with built-in subtitles",
+          "Seamless shadowing experience when used with my extension and app",
+          "Modern, practical Japanese that you can use in daily life",
+          "Engaging content that makes learning enjoyable"
+        ]
+      },
+      netflix: "Of course, if you prefer anime, you can find Japanese anime with Japanese subtitles on Netflix. Netflix's subtitle feature provides natural sentence breaks that align perfectly with the workflow of Bunn."
+    },
+    remember: {
+      title: "What If I Can't Remember What I've Learned?",
+      normal: "First of all, forgetting is completely normal. Everyone forgets a significant proportion of what they learn - it's how our brains work.",
+      key: "The key is to be selective: only input sentences that you find interesting or important. If you genuinely find something interesting or important, you'll naturally be more willing to invest time in:",
+      methods: [
+        "Shadow reading",
+        "Dictation practice",
+        "Recalling sentences from key vocabulary words",
+        "Taking tests",
+        "Reviewing your daily learning reports"
+      ],
+      conclusion: "When you engage with the material in these multiple ways, you'll find that you can remember a substantial portion of what you've learned. The Bunn system is designed to support this multi-faceted approach to learning, making retention much more effective than traditional methods."
+    },
+    why: {
+      title: "Why Bunn?",
+      sections: {
+        built: {
+          title: "Built by a Real Language Learner",
+          description: "Bunn is created by a developer who is actively learning Japanese and living in Japan. This means the app is designed with real understanding of language learning challenges and needs."
+        },
+        serious: {
+          title: "Serious Learning System",
+          description: "Unlike many language apps that focus on gamification and entertainment, Bunn is a serious learning tool built on solid pedagogical principles and effective learning methodologies."
+        },
+        workflow: {
+          title: "Clear and Efficient Workflow",
+          description: "We've designed a uniquely streamlined learning process that eliminates unnecessary complexity. Every feature serves a clear purpose in your language learning journey."
+        }
+      },
+      explore: "Have fun exploring <link>Bunn</link>!"
+    }
   },
   pricing: {
     title: 'Pricing Plans',

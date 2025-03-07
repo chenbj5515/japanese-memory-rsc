@@ -1,4 +1,4 @@
-export default async function BusinessDisclosure() {
+export default function BusinessDisclosure() {
     return (
       <div className="min-h-screen bg-white text-[18px] leading-relaxed tracking-[0.4px]">
   

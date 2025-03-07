@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import createIntlMiddleware from 'next-intl/middleware';
 
 const locales = ['en', 'zh'];
-const publicPages = ['/home', '/privacy-policy', '/terms-of-service', '/business-disclosure'];
+const publicPages = ['/home', '/privacy-policy', '/terms-of-service', '/business-disclosure', '/guide', '/pricing'];
 
 // 创建 next-intl 中间件
 const intlMiddleware = createIntlMiddleware({
@@ -41,6 +41,8 @@ export const config = {
         '/random',
         '/translation',
         '/word-cards',
+        '/guide',
+        '/pricing',
         '/test',
         '/home',
         '/privacy-policy',
