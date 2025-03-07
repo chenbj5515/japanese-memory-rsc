@@ -1,6 +1,6 @@
 "use client"
 import Image from "next/image"
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import React from "react"
@@ -14,6 +14,7 @@ import DemoDailyReport from "@/components/daily-report/demo-daily-report"
 export default function LandingPage() {
   const router = useRouter()
   const t = useTranslations();
+  const locale = useLocale();
 
   // 添加状态管理
   const [showDemo, setShowDemo] = React.useState<null | 'memo' | 'word' | 'exam' | 'daily'>(null)
@@ -120,7 +121,15 @@ export default function LandingPage() {
       <div className="px-4 pt-16 pb-24 text-center max-w-7xl mx-auto relative">
         {/* Hero content */}
         <h1 className="text-6xl font-bold mb-6 tracking-tight leading-[1.2]">
-          {t('home.personalJourney')}
+          {locale === 'en' ? (
+            <>
+              Your Personal Japanese
+              <br />
+              Learning Journey
+            </>
+          ) : (
+            t('home.personalJourney')
+          )}
         </h1>
         <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
           {t('home.stopScattering')}
