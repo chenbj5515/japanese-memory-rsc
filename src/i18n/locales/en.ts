@@ -155,6 +155,19 @@ export default {
       upgrade: 'Upgrade Now'
     }
   },
+  login: {
+    welcome: 'Welcome back',
+    description: 'Login with your GitHub or Google account',
+    loginWithGithub: 'Login with GitHub',
+    loginWithGoogle: 'Login with Google',
+    agreement: {
+      prefix: 'By clicking continue, you agree to our',
+      terms: 'Terms of Service',
+      and: 'and',
+      privacy: 'Privacy Policy',
+      suffix: '.'
+    }
+  },
   terms: {
     title: 'Terms of Service',
     subtitle: 'Bunn Terms of Service',

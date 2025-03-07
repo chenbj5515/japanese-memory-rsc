@@ -2,6 +2,7 @@
 import { useSession } from "next-auth/react"
 import { useRouter, usePathname } from "next/navigation"
 import Link from "next/link"
+import { useLocale } from 'next-intl'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
@@ -12,6 +13,7 @@ export default function LoginedHeader() {
   const { data } = useSession()
   const router = useRouter()
   const pathname = usePathname()
+  const locale = useLocale()
   const [theme, setTheme] = useState("light")
 
   function handleToggle() {
@@ -25,7 +27,7 @@ export default function LoginedHeader() {
 
   async function handleLogout() {
     await Logout()
-    router.push('/')
+    router.push(`/${locale}/home`)
   }
 
   return (
@@ -51,19 +53,19 @@ export default function LoginedHeader() {
       <nav className="w-[620px]">
         <ul className="flex items-center justify-between">
           <li>
-            <Link prefetch href="/latest" className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === '/latest' ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>最新</Link>
+            <Link prefetch href={`/${locale}/latest`} className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === `/${locale}/latest` ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>最新</Link>
           </li>
           <li>
-            <Link prefetch href="/random" className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === '/random' ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>ランダム</Link>
+            <Link prefetch href={`/${locale}/random`} className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === `/${locale}/random` ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>ランダム</Link>
           </li>
           <li>
-            <Link prefetch href="/word-cards" className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === '/word-cards' ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>単語帳</Link>
+            <Link prefetch href={`/${locale}/word-cards`} className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === `/${locale}/word-cards` ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>単語帳</Link>
           </li>
           <li className="sm:block hidden">
-            <Link prefetch href="/exam-preparation" className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === '/exam-preparation' ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>試験</Link>
+            <Link prefetch href={`/${locale}/exam-preparation`} className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === `/${locale}/exam-preparation` ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>試験</Link>
           </li>
           <li className="sm:block hidden">
-            <Link prefetch href="/daily-report" className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname.startsWith('/daily-report') ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>デイリーレポート</Link>
+            <Link prefetch href={`/${locale}/daily-report`} className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname.startsWith(`/${locale}/daily-report`) ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>デイリーレポート</Link>
           </li>
         </ul>
       </nav>

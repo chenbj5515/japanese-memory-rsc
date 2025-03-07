@@ -5,7 +5,7 @@ import { $Enums, Prisma } from '@prisma/client';
 import { MemoCard, WordCard } from "@/components";
 import { updateReviewTimes } from "../_server-actions";
 import { TWordCard } from "../page";
-import Loading from "@/app/loading";
+import Loading from "@/app/[locale]/loading";
 import { insertActionLogs } from "@/components/exam/server-actions/insert-action-logs";
 
 interface IProps {

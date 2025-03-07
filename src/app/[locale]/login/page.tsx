@@ -3,8 +3,11 @@ import type React from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { signIn } from 'next-auth/react'
+import { useTranslations } from 'next-intl'
 
 export default function LoginPage() {
+  const t = useTranslations('login');
+
   const handleSignIn = async (provider: string) => {
     try {
       await signIn(provider, {
@@ -29,8 +32,8 @@ export default function LoginPage() {
               </a>
             </div>
             <div>
-              <CardTitle className="text-xl mt-4">Welcome back</CardTitle>
-              <CardDescription className="mt-4">Login with your GitHub or Google account</CardDescription>
+              <CardTitle className="text-xl mt-4">{t('welcome')}</CardTitle>
+              <CardDescription className="mt-4">{t('description')}</CardDescription>
             </div>
           </CardHeader>
           <CardContent>
@@ -43,7 +46,7 @@ export default function LoginPage() {
                       fill="currentColor"
                     />
                   </svg>
-                  Login with GitHub
+                  {t('loginWithGithub')}
                 </Button>
                 <Button variant="outline" className="w-full" onClick={() => handleSignIn('google')}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="mr-2 h-4 w-4">
@@ -52,14 +55,14 @@ export default function LoginPage() {
                       fill="currentColor"
                     />
                   </svg>
-                  Login with Google
+                  {t('loginWithGoogle')}
                 </Button>
               </div>
             </div>
           </CardContent>
         </Card>
         <div className="mt-16 text-balance text-center text-xs text-muted-foreground">
-          By clicking continue, you agree to our <a href="/terms-of-service" className="underline underline-offset-4 hover:text-primary">Terms of Service</a> and <a href="/privacy-policy" className="underline underline-offset-4 hover:text-primary">Privacy Policy</a>.
+          {t('agreement.prefix')} <a href="/terms-of-service" className="underline underline-offset-4 hover:text-primary">{t('agreement.terms')}</a> {t('agreement.and')} <a href="/privacy-policy" className="underline underline-offset-4 hover:text-primary">{t('agreement.privacy')}</a>{t('agreement.suffix')}
         </div>
       </div>
     </div>

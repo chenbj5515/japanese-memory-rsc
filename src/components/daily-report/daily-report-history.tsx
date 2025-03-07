@@ -4,7 +4,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { $Enums, Prisma } from '@prisma/client';
 import { use } from 'react';
-import Loading from '@/app/loading';
+import Loading from '@/app/[locale]/loading';
 import { ReportItem } from './report-item';
 
 interface MonthData {

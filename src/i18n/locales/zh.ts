@@ -155,6 +155,19 @@ export default {
       upgrade: '立即升级'
     }
   },
+  login: {
+    welcome: '欢迎回来',
+    description: '使用 GitHub 或 Google 账号登录',
+    loginWithGithub: '使用 GitHub 登录',
+    loginWithGoogle: '使用 Google 登录',
+    agreement: {
+      prefix: '点击继续即表示您同意我们的',
+      terms: '服务条款',
+      and: '和',
+      privacy: '隐私政策',
+      suffix: '。'
+    }
+  },
   terms: {
     title: '服务条款',
     subtitle: 'Bunn服务条款',
