@@ -28,6 +28,7 @@ export async function middleware(req: NextRequest) {
         `^(/(${locales.join('|')}))?(${publicPages.join('|')})?/?$`,
         'i'
     );
+
     const isPublicPage = publicPathnameRegex.test(req.nextUrl.pathname);
     const preferredLocale = getPreferredLocale(req);
     const locale = req.nextUrl.locale || preferredLocale;
@@ -38,6 +39,13 @@ export async function middleware(req: NextRequest) {
     if (req.nextUrl.pathname === '/') {
         if (!session) {
             return NextResponse.redirect(new URL(`/${locale}/home`, req.url));
+        }
+        // 检查URL参数中是否有redirect
+        const redirectParam = req.nextUrl.searchParams.get('redirect');
+        if (redirectParam) {
+          // 确保redirect以/开头
+          const redirectPath = redirectParam.startsWith('/') ? redirectParam : `/${redirectParam}`;
+          return NextResponse.redirect(new URL(`/${locale}${redirectPath}`, req.url));
         }
         return NextResponse.redirect(new URL(`/${locale}/latest`, req.url));
     }

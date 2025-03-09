@@ -1,0 +1,50 @@
+{
+  "domains": {
+    "stripe": {
+      "docs": [
+        "https://docs.stripe.com/",
+        "https://docs.stripe.com/api",
+        "https://docs.stripe.com/payments",
+        "https://docs.stripe.com/checkout"
+      ],
+      "patterns": [
+        "src/**/stripe/**",
+        "src/**/payment/**",
+        "src/**/pricing/**"
+      ]
+    },
+    "nextjs": {
+      "docs": [
+        "https://nextjs.org/docs",
+        "https://nextjs.org/docs/app",
+        "https://nextjs.org/docs/api-reference"
+      ],
+      "patterns": [
+        "src/app/**",
+        "next.config.js"
+      ]
+    },
+    "i18n": {
+      "docs": [
+        "https://next-intl-docs.vercel.app/",
+        "https://formatjs.io/docs/react-intl"
+      ],
+      "patterns": [
+        "src/**/translations/**",
+        "src/**/i18n/**",
+        "messages/**"
+      ]
+    },
+    "tailwind": {
+      "docs": [
+        "https://tailwindcss.com/docs",
+        "https://tailwindcss.com/docs/installation",
+        "https://tailwindcss.com/docs/utility-first"
+      ],
+      "patterns": [
+        "tailwind.config.js",
+        "**/*.css"
+      ]
+    }
+  }
+} 

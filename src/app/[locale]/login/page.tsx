@@ -4,14 +4,19 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { signIn } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
+import { useSearchParams } from 'next/navigation'
 
 export default function LoginPage() {
   const t = useTranslations('login');
+  const searchParams = useSearchParams();
 
   const handleSignIn = async (provider: string) => {
     try {
+      const params = new URLSearchParams(searchParams);
+      const callbackUrl = params.toString() ? `/?${params.toString()}` : '/';
+      
       await signIn(provider, {
-        callbackUrl: '/',
+        callbackUrl,
         redirect: true
       })
     } catch (error) {
@@ -37,7 +42,7 @@ export default function LoginPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-6">
+            <div className="mt-[26px] grid gap-6">
               <div className="flex flex-col gap-4">
                 <Button variant="outline" className="w-full" onClick={() => handleSignIn('github')}>
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="mr-2 h-4 w-4">

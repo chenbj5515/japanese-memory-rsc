@@ -1,16 +1,11 @@
-'use client'
-
 import type React from "react"
 import { Check, X } from "lucide-react"
-import Link from "next/link"
-import { loadStripe } from "@stripe/stripe-js"
+import { auth } from "@/auth"
+import { getTranslations } from 'next-intl/server'
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useTranslations } from "next-intl"
-
-// 确保在组件外部初始化
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+import { UpgradeButton } from "./components/upgrade-button"
 
 const FeatureItem = ({ children, included = false }: { children: React.ReactNode; included?: boolean }) => (
   <li className="flex items-center">
@@ -23,30 +18,15 @@ const FeatureItem = ({ children, included = false }: { children: React.ReactNode
   </li>
 )
 
-export default function SubscriptionPage() {
-  const t = useTranslations('pricing');
+export default async function SubscriptionPage() {
+  const t = await getTranslations('pricing');
+  const session = await auth()
+  
+  // const paymentLinkUrl = 'https://buy.stripe.com/8wMdRtfWa0jV2uQ5kk';
+  const paymentLinkUrl = 'https://buy.stripe.com/test_dR6dRrfBr2jm6pW9AB';
+  const urlWithMetadata = `${paymentLinkUrl}${session?.userId ? `?client_reference_id=${session.userId}` : ''}`;
 
-  const handleSubscribe = async () => {
-    try {
-      const response = await fetch("/api/create-checkout-session", {
-        method: "POST",
-      });
-      console.log(response, "response")
-      const { sessionId } = await response.json();
-
-      // const stripe = await stripePromise;
-      // await stripe?.redirectToCheckout({ sessionId });
-      const stripe = await loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
-
-      console.log(stripe, sessionId, "stripe, sessionId")
-      await stripe?.redirectToCheckout({
-        sessionId: sessionId  // 这里必须提供 sessionId
-      });
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-
+  console.log(urlWithMetadata, "urlWithMetadata")
   return (
     <div className="container mx-auto">
       <div className="h-[100px] flex mt-2 justify-center">
@@ -89,9 +69,7 @@ export default function SubscriptionPage() {
             </ul>
           </CardContent>
           <CardFooter>
-            <Button className="w-full mt-[30px]" onClick={handleSubscribe}>
-              {t('proPlan.upgrade')}
-            </Button>
+            <UpgradeButton upgradeText={t('proPlan.upgrade')} />
           </CardFooter>
         </Card>
       </div>
