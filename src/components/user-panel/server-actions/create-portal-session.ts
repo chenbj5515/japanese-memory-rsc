@@ -2,9 +2,29 @@
 
 import { auth } from '@/auth';
 import { stripe } from '@/stripe'
+import { cookies } from 'next/headers'
+
+// Stripe 支持的语言代码类型
+type Locale = 'bg' | 'cs' | 'da' | 'de' | 'el' | 'en' | 'es' | 'et' | 'fi' | 'fil' | 'fr' | 'hr' | 'hu' | 'id' | 'it' | 'ja' | 'ko' | 'lt' | 'lv' | 'ms' | 'mt' | 'nb' | 'nl' | 'pl' | 'pt' | 'ro' | 'ru' | 'sk' | 'sl' | 'sv' | 'th' | 'tr' | 'vi' | 'zh';
+
+// 将 Next.js 的语言代码映射到 Stripe 支持的语言代码
+function mapLocaleToStripe(locale: string): Locale {
+    // 这里可以添加更多的映射关系
+    const mapping: Record<string, Locale> = {
+        'zh-CN': 'zh',
+        'zh-TW': 'zh',
+        'zh': 'zh',
+        'en': 'en',
+        'ja': 'ja'
+    };
+    return mapping[locale] || 'en';
+}
 
 export async function createPortalSession() {
     const session = await auth();
+    const cookieStore = await cookies();
+    const nextLocale = cookieStore.get('NEXT_LOCALE')?.value || 'en';
+    const locale = mapLocaleToStripe(nextLocale);
 
     if (!session?.user?.email) {
         throw new Error('Not authenticated')
@@ -24,6 +44,7 @@ export async function createPortalSession() {
     const portalSession = await stripe.billingPortal.sessions.create({
         customer: customer.data[0].id,
         return_url: `${process.env.NEXT_PUBLIC_BASE_URL}`,
+        locale: locale,
     })
 
     return portalSession.url
