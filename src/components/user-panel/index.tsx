@@ -49,11 +49,18 @@ export default function UserPanel() {
                 <div className="px-2 py-1.5">
                     <p className="text-sm font-medium truncate">{data?.email}</p>
                 </div>
-                <div className="px-2 py-1.5 flex items-center justify-between">
-                    <p className="text-sm font-medium">{t('membershipPlan')}</p>
-                    <span className="text-sm">
-                        {subscription_end_time ? 'Premium' : 'Free'}
-                    </span>
+                <div className="py-1.5 flex items-center justify-between">
+                    <Button
+                        variant="ghost"
+                        size="sm"
+                        className="p-[8px] w-full justify-between text-sm border-none outline-none"
+                        onClick={() => window.open(`/${locale}/pricing`, '_blank')}
+                    >
+                        <p className="text-sm font-medium">{t('membershipPlan')}</p>
+                        <span className="text-sm">
+                            {subscription_end_time ? 'Premium' : 'Free'}
+                        </span>
+                    </Button>
                 </div>
                 {subscription_end_time && (
                     <div className="px-2 py-1.5 flex items-center justify-between">
