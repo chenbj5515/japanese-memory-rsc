@@ -45,15 +45,15 @@ export default function UserPanel() {
                     <AvatarFallback>user</AvatarFallback>
                 </Avatar>
             </PopoverTrigger>
-            <PopoverContent className="w-72 p-2 space-y-2">
-                <div className="px-2 py-1.5">
+            <PopoverContent className="w-72 p-2 space-y-1">
+                <div className="h-10 px-2 flex items-center">
                     <p className="text-sm font-medium truncate">{data?.email}</p>
                 </div>
-                <div className="py-1.5 flex items-center justify-between">
+                <div className="h-10 flex items-center">
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="p-[8px] w-full justify-between text-sm border-none outline-none"
+                        className="p-[8px] h-full w-full justify-between text-sm border-none outline-none"
                         onClick={() => window.open(`/${locale}/pricing`, '_blank')}
                     >
                         <p className="text-sm font-medium">{t('membershipPlan')}</p>
@@ -63,7 +63,7 @@ export default function UserPanel() {
                     </Button>
                 </div>
                 {subscription_end_time && (
-                    <div className="px-2 py-1.5 flex items-center justify-between">
+                    <div className="h-10 px-2 flex items-center justify-between">
                         <p className="text-sm font-medium">{t('expiryDate')}</p>
                         <span className="text-sm">{formatDate(subscription_end_time)}</span>
                     </div>
@@ -72,18 +72,18 @@ export default function UserPanel() {
                     <Button
                         variant="ghost"
                         size="sm"
-                        className="p-[8px] w-full justify-between text-sm border-none outline-none"
+                        className="h-10 p-[8px] w-full justify-between text-sm border-none outline-none"
                         onClick={handleManageSubscription}
                     >
                         {t('subscriptionManagement')}
                         <ChevronRight className="h-4 w-4" />
                     </Button>
                 )}
-                <Separator />
+                <Separator className="!mt-[8px] !mb-[8px]" />
                 <Button
                     variant="ghost"
                     size="sm"
-                    className="p-[8px] w-full justify-start text-sm"
+                    className="h-10 p-[8px] w-full justify-start text-sm"
                     onClick={handleLogout}
                 >
                     {t('logout')}
