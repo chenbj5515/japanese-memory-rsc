@@ -94,7 +94,7 @@ export function WordCardAdder() {
 
     async function effectGetMeaning() {
         if (meaningTextRef.current) {
-            const { output } = await askAI(`在「originalText」这个上下文中出现了「${selectedText}」这个单词或短语、我要你尽可能简短地给出「${selectedText}」这个单词或短语的意思，注意我只需要这个单词或短语的中文含义，不要给出除此之外的任何内容，注意「这个意思是」的前缀也不要。`);
+            const { output } = await askAI(`在「originalText」这个上下文中出现了「${selectedText}」这个单词或短语、我要你尽可能简短地给出「${selectedText}」这个单词或短语的意思，注意我只需要这个单词或短语在这个句子中文含义，不要给出除此之外的任何内容，注意「这个意思是」的前缀也不要。`);
             for await (const delta of readStreamableValue(output)) {
                 if (meaningTextRef.current && delta && stateRef.current === "selected") {
                     meaningTextRef.current.textContent += delta;
