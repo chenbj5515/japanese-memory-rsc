@@ -37,7 +37,7 @@ export default {
       },
       dailyReport: {
         title: 'Daily Report',
-        description: '5 minutes before bed. Review what you\'ve forgotten. Stay on track.'
+        description: "5 minutes before bed. Review what you've forgotten. Stay on track."
       }
     }
   },
@@ -308,5 +308,16 @@ export default {
         description: 'If you have any questions about this Privacy Policy, please contact us at'
       }
     }
+  },
+  LoginedHeader: {
+    membershipPlan: 'Membership Plan',
+    expiryDate: 'Expiry Date',
+    subscriptionManagement: 'Subscription Management',
+    logout: 'Logout',
+    latest: 'Latest',
+    random: 'Random',
+    wordCards: 'Word Cards',
+    exam: 'Exam',
+    dailyReport: 'Daily Report'
   }
 } as const; 

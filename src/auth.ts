@@ -1,4 +1,3 @@
-
 import NextAuth from "next-auth"
 import GitHub from "next-auth/providers/github"
 import GoogleProvider from "next-auth/providers/google"
@@ -50,6 +49,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if (!user_mail || !platform_id) return false;
 
             const dbUser = await findUserByPlatformID(platform_id);
+            console.log(dbUser, "dbUser")
             if (!dbUser) {
                 // 如果用户不存在，创建新用户
                 await createUserInDatabase(user_mail, platform_id, user.name, user.image);
@@ -61,11 +61,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
             //　user_idをtokenに追加する
             if (platform_id) {
-
                 const dbUser = await findUserByPlatformID(platform_id);
 
                 token.user_id = dbUser?.user_id;
                 token.profile = dbUser?.profile;
+                token.email = dbUser?.email;
+
+                // 查询用户的订阅信息
+                if (dbUser?.user_id) {
+                    const subscription = await prisma.user_subscription.findFirst({
+                        where: {
+                            user_id: dbUser.user_id,
+                            active: true,
+                        },
+                        orderBy: {
+                            end_time: 'desc'
+                        }
+                    });
+
+                    console.log(subscription, "subscription")
+
+                    if (subscription) {
+                        token.subscription_end_time = subscription.end_time.toISOString();
+                    }
+                }
             }
 
             return token;
@@ -74,9 +93,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         async session({ session, token }) {
             const userId = token.user_id;
             const profile = token.profile;
-            if (typeof userId === "string" && typeof profile === "string") {
+            const email = token.email;
+            const subscription_end_time = token.subscription_end_time;
+
+            console.log(typeof subscription_end_time, "subscription_end_time")
+
+            if (typeof userId === "string" && typeof profile === "string" && typeof email === "string") {
                 session.userId = userId;
                 session.profile = profile;
+                session.email = email;
+            }
+            if (typeof subscription_end_time === "string") {
+                session.subscription_end_time = subscription_end_time;
             }
             // user_idをトークンからセッションに追加する
             return session;

@@ -308,5 +308,16 @@ export default {
         description: '如果您对本隐私政策有任何问题，请通过以下方式联系我们'
       }
     }
+  },
+  LoginedHeader: {
+    membershipPlan: "会员计划",
+    expiryDate: "有效期限",
+    subscriptionManagement: "订阅管理",
+    logout: "退出登录",
+    latest: "最新",
+    random: "随机",
+    wordCards: "单词本",
+    exam: "考试",
+    dailyReport: "每日报告"
   }
 } as const; 

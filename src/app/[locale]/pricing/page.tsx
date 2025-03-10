@@ -1,6 +1,5 @@
 import type React from "react"
 import { Check, X } from "lucide-react"
-import { auth } from "@/auth"
 import { getTranslations } from 'next-intl/server'
 
 import { Button } from "@/components/ui/button"
@@ -20,13 +19,7 @@ const FeatureItem = ({ children, included = false }: { children: React.ReactNode
 
 export default async function SubscriptionPage() {
   const t = await getTranslations('pricing');
-  const session = await auth()
-  
-  // const paymentLinkUrl = 'https://buy.stripe.com/8wMdRtfWa0jV2uQ5kk';
-  const paymentLinkUrl = 'https://buy.stripe.com/test_dR6dRrfBr2jm6pW9AB';
-  const urlWithMetadata = `${paymentLinkUrl}${session?.userId ? `?client_reference_id=${session.userId}` : ''}`;
 
-  console.log(urlWithMetadata, "urlWithMetadata")
   return (
     <div className="container mx-auto">
       <div className="h-[100px] flex mt-2 justify-center">

@@ -1,12 +1,9 @@
 'use server'
 
 import { auth } from "@/auth"
-import Stripe from 'stripe'
 import { cookies } from 'next/headers'
+import { stripe } from '@/stripe'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-02-24.acacia',
-})
 
 export async function createCheckoutSession() {
   const session = await auth()
