@@ -23,7 +23,7 @@ export async function createPortalSession() {
     // 创建一个新的门户会话
     const portalSession = await stripe.billingPortal.sessions.create({
         customer: customer.data[0].id,
-        return_url: `${process.env.NEXT_PUBLIC_APP_URL}`,
+        return_url: `${process.env.NEXT_PUBLIC_BASE_URL}`,
     })
 
     return portalSession.url
