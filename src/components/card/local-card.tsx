@@ -260,7 +260,7 @@ export function LocalCard(props: ILoaclCard) {
                                 }  w-[101%] h-[105%] -left-[4px] -top-[2px]`}
                         ></section>
                     ) : null}
-                    {original_text}
+                    <span className="original-text">{original_text}</span>
                 </div>
             </div>
             翻訳：
