@@ -1,35 +1,45 @@
 "use server"
+import { TWordCard } from "@/app/[locale]/word-cards/page";
 import { auth } from "@/auth";
 import { prisma } from "@/prisma";
-import { $Enums } from "@prisma/client";
 
-export async function updateReviewTimes(id: string) {
+export async function updateForgetCount(wordCardInfo: TWordCard) {
+  try {
     const session = await auth();
 
     if (!session?.userId) {
-        throw new Error('ユーザー未登録');
+      throw new Error('ユーザー未登録');
+    }
+  
+    if (!wordCardInfo) {
+      throw new Error('Word card not found');
     }
 
-    const updatedWordCard = await prisma.word_card.updateMany({
-        where: {
-            id: id,
-            user_id: session?.userId
-        },
+    await Promise.all([
+      // 1. 更新 word_card 的 forget_count
+      prisma.word_card.update({
+        where: { id: wordCardInfo.id },
         data: {
-            review_times: {
-                increment: 1
-            }
+          forget_count: {
+            increment: 1
+          }
         }
-    });
+      }),
 
-    prisma.user_action_logs.create({
+      // 2. 更新 memo_card 的 forget_count
+      prisma.memo_card.update({
+        where: { id: wordCardInfo.memo_card_id },
         data: {
-            user_id: session?.userId,
-            action_type: $Enums.action_type_enum.COMPLETE_WORD_REVIEW,
-            related_id: id,
-            related_type: 'word_card'
+          forget_count: {
+            increment: 1
+          }
         }
-    });
+      })
+    ]);
 
-    return JSON.stringify(updatedWordCard);
-}
+    return { success: true }
+  } catch (error) {
+    console.error('Error updating forget count:', error)
+    return { success: false, error: 'Failed to update forget count' }
+  }
+} 

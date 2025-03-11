@@ -1,26 +1,22 @@
 "use client"
 import { speakText } from "@/utils";
 import { TWordCard } from "@/app/[locale]/word-cards/page";
-import { useTripleRightClick } from "@/hooks";
+// import { useTripleRightClick } from "@/hooks";
 import {
     Card,
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { updateReviewTimes } from "./server-actions";
 
 interface IProps {
     wordCardInfo: TWordCard;
-    onRecognize: (id: string) => void;
+    onRecognize: (wordCardInfo: TWordCard) => void;
     onUnRecognize: (wordCardInfo: TWordCard) => void;
 }
 
 export function WordCard(props: IProps) {
     const { wordCardInfo, wordCardInfo: { id, word, meaning }, onRecognize, onUnRecognize } = props;
 
-    const cardRef = useTripleRightClick(async () => {
-        onRecognize?.(id);
-        await updateReviewTimes(id);
-    })
+    // const cardRef = useTripleRightClick(async () => {})
 
     function handlePlayBtn(text: string) {
         speakText(text, {
@@ -29,7 +25,7 @@ export function WordCard(props: IProps) {
     }
 
     return (
-        <Card ref={cardRef} className="border border-black sm:w-[280px] sm:text-base text-[17px] w-full word-card sm:h-[170px] rounded-[8px] dark:bg-eleDark dark:text-white p-5 mt-2 mb-8 relative">
+        <Card className="border border-black sm:w-[280px] sm:text-base text-[17px] w-full word-card sm:h-[170px] rounded-[8px] dark:bg-eleDark dark:text-white p-5 mt-2 mb-8 relative">
             <div
                 className="play-button-bg rounded-[50%] w-8 h-8 absolute top-2 right-2 cursor-pointer"
                 onClick={() => handlePlayBtn(word)}
@@ -57,7 +53,7 @@ export function WordCard(props: IProps) {
             <div className="flex justify-between sm:w-[240px] w-full mt-[32px] mb-[20px] gap-[20px]">
                 <Button
                     className="border border-black sm:text-sm text-[16px] flex-1"
-                    onClick={() => onRecognize(id)}
+                    onClick={() => onRecognize(wordCardInfo)}
                     variant="outline"
                 >
                     わかる

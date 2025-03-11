@@ -7,6 +7,7 @@ import { updateReviewTimes } from "../_server-actions";
 import { TWordCard } from "../page";
 import Loading from "@/app/[locale]/loading";
 import { insertActionLogs } from "@/components/exam/server-actions/insert-action-logs";
+import { updateForgetCount } from "@/components/word-card/server-actions";
 
 interface IProps {
     wordCards: TWordCard[]
@@ -93,7 +94,7 @@ export function WordCards(props: IProps) {
         return (containerWidth - cardsInRow * cardWidth) / (cardsInRow - 1);
     };
 
-    async function handleRecognizeClick(id: string) {
+    async function handleRecognizeClick(wordCardInfo: TWordCard) {
         if (rows.length === 1 && rows[0].length === 1) {
             router.refresh();
         }
@@ -101,26 +102,27 @@ export function WordCards(props: IProps) {
         // 2. 要素が含まれる部分配列およびその後の部分配列を再配置する。
         setRows(prev => {
             if (prev.length === 1) {
-                const updatedRow = prev[0].filter(item => item.id !== id);
+                const updatedRow = prev[0].filter(item => item.id !== wordCardInfo.id);
                 return [updatedRow];
             }
             const n = prev[0].length;
             const flattened = prev.flat();
-            const updated = flattened.filter(item => item.id !== id);
+            const updated = flattened.filter(item => item.id !== wordCardInfo.id);
             const next: TWordCard[][] = [];
             for (let i = 0; i < updated.length; i += n) {
                 next.push(updated.slice(i, i + n));
             }
             return next;
         });
-        await updateReviewTimes(id);
-        insertActionLogs(id, $Enums.action_type_enum.COMPLETE_WORD_REVIEW, $Enums.related_type_enum.word_card);
+        await updateReviewTimes(wordCardInfo);
+        insertActionLogs(wordCardInfo.id, $Enums.action_type_enum.COMPLETE_WORD_REVIEW, $Enums.related_type_enum.word_card);
     }
 
     function handleUnRecognizeClick(item: TWordCard) {
         setShowGlass(true);
         setCardInfo(item.memo_card);
         insertActionLogs(item.id, $Enums.action_type_enum.FORGOT_WORD_MEANING, $Enums.related_type_enum.word_card);
+        updateForgetCount(item);
     }
 
     return (

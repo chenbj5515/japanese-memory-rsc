@@ -1,13 +1,18 @@
 "use server"
 import { auth } from "@/auth";
 import { prisma } from "@/prisma";
+import { TWordCard } from "../page";
 
-export async function updateReviewTimes(id: string) {
+export async function updateReviewTimes(wordCardInfo: TWordCard) {
     const session = await auth();
+
+    if (!session?.userId) {
+        throw new Error('ユーザー未登録');
+    }
 
     const updatedMemoCard = await prisma.word_card.update({
         where: {
-            id: id,
+            id: wordCardInfo.id,
             user_id: session?.userId
         },
         data: {
