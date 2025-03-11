@@ -5,7 +5,9 @@ import { MemoCard } from "@/components";
 import { Prisma } from '@prisma/client';
 import { RootState } from "@/store";
 import { useTranslations } from 'next-intl';
-import { Button } from "@/components/ui/button";
+import LoadingButton from '@/components/ui/loading-button';
+import { importSampleMemoCards } from "./server-actions"
+import { useRouter } from "next/navigation";
 
 interface IProps {
     memoCardsInitial: Prisma.memo_cardGetPayload<{}>[]
@@ -16,16 +18,25 @@ const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 export function MemoCards(props: IProps) {
     const { memoCardsInitial } = props;
     const [memoCards, setMemoCards] = React.useState(memoCardsInitial);
+    const [isLoading, setIsLoading] = React.useState(false);
     const { localCards } = useTypedSelector((state: RootState) => state.localCardsSlice);
     const t = useTranslations('memoCards');
+    const router = useRouter();
 
     function handleDelete(id: string) {
         setMemoCards(prev => prev.filter(card => card.id !== id));
     }
 
-    function handleImportSampleData() {
-        // 这里添加导入示例数据的逻辑
-        console.log('导入示例数据');
+    async function handleImportSampleData() {
+        try {
+            setIsLoading(true);
+            await importSampleMemoCards();
+            window.location.reload();
+        } catch (error) {
+            console.error('导入示例数据失败:', error);
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     return (
@@ -46,12 +57,13 @@ export function MemoCards(props: IProps) {
                                 {/* <p className="text-base leading-7 text-black dark:text-white">
                                     {t('enterJapanese')}
                                 </p> */}
-                                <Button 
+                                <LoadingButton
                                     onClick={handleImportSampleData}
                                     className="mt-2"
+                                    isLoading={isLoading}
                                 >
                                     {t('importSampleData')}
-                                </Button>
+                                </LoadingButton>
                             </div>
                         </div>
                     </div>
