@@ -13,7 +13,8 @@ export function DemoCard() {
         review_times: 0,
         user_id: "15813a9c-0624-48e2-a2e2-73a26d357deb",
         kana_pronunciation: "それきくのやぼだよお",
-        context_url: "https://www.youtube.com/watch?v=9dS3EKcvofQ&t=146"
+        context_url: "https://www.youtube.com/watch?v=9dS3EKcvofQ&t=146",
+        forget_count: 0
     }
 
     return (
