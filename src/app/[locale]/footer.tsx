@@ -13,7 +13,7 @@ export function Footer() {
                 <span className="text-gray-400">•</span>
                 <a href="/terms-of-service" className="text-gray-400 hover:opacity-90">{t('termsOfService')}</a>
                 <a href="/privacy-policy" className="text-gray-400 hover:opacity-90">{t('privacyPolicy')}</a>
-                <a href="/business-disclosure" className="text-gray-400 hover:opacity-90">{t('businessDisclosure')}</a>
+                {/* <a href="/business-disclosure" className="text-gray-400 hover:opacity-90">{t('businessDisclosure')}</a> */}
             </div>
         </footer>
     )

@@ -321,7 +321,7 @@ export default {
     dailyReport: "每日报告"
   },
   memoCards: {
-    noDataFound: '未找到数据，请输入您感兴趣的日语文本',
+    noDataFound: '请输入您感兴趣的日语文本',
     importSampleData: '导入示例数据'
   }
 } as const; 

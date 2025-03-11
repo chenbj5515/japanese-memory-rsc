@@ -2,12 +2,14 @@
 
 import { auth } from "@/auth";
 import { prisma } from "@/prisma";
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 
 export async function importSampleMemoCards() {
   const session = await auth();
   const userId = session?.userId;
-  
+//   const headersList = await headers()
+//   const referer = headersList.get('referer')
+
   if (!userId) {
     throw new Error("用户未登录");
   }

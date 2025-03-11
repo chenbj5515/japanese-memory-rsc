@@ -7,7 +7,6 @@ import { RootState } from "@/store";
 import { useTranslations } from 'next-intl';
 import LoadingButton from '@/components/ui/loading-button';
 import { importSampleMemoCards } from "./server-actions"
-import { useRouter } from "next/navigation";
 
 interface IProps {
     memoCardsInitial: Prisma.memo_cardGetPayload<{}>[]
@@ -21,7 +20,6 @@ export function MemoCards(props: IProps) {
     const [isLoading, setIsLoading] = React.useState(false);
     const { localCards } = useTypedSelector((state: RootState) => state.localCardsSlice);
     const t = useTranslations('memoCards');
-    const router = useRouter();
 
     function handleDelete(id: string) {
         setMemoCards(prev => prev.filter(card => card.id !== id));
@@ -34,8 +32,6 @@ export function MemoCards(props: IProps) {
             window.location.reload();
         } catch (error) {
             console.error('导入示例数据失败:', error);
-        } finally {
-            setIsLoading(false);
         }
     }
 

@@ -321,7 +321,7 @@ export default {
     dailyReport: 'Daily Report'
   },
   memoCards: {
-    noDataFound: 'No data found, enter Japanese text you are interested in',
+    noDataFound: 'Enter Japanese text you are interested in',
     importSampleData: 'Import Sample Data'
   }
 } as const; 

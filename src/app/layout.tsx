@@ -34,7 +34,7 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${pacifico.variable} antialiased`}>
         <Provider>
-          <SpeedInsights />
+          {/* <SpeedInsights /> */}
           <main className="flex flex-col dark:bg-bgDark relative">
             {children}
           </main>
