@@ -319,5 +319,9 @@ export default {
     wordCards: 'Word Cards',
     exam: 'Exam',
     dailyReport: 'Daily Report'
+  },
+  memoCards: {
+    noDataFound: 'No data found, enter Japanese text you are interested in',
+    importSampleData: 'Import Sample Data'
   }
 } as const; 

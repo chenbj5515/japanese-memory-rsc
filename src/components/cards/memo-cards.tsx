@@ -4,6 +4,8 @@ import { useSelector, TypedUseSelectorHook } from "react-redux";
 import { MemoCard } from "@/components";
 import { Prisma } from '@prisma/client';
 import { RootState } from "@/store";
+import { useTranslations } from 'next-intl';
+import { Button } from "@/components/ui/button";
 
 interface IProps {
     memoCardsInitial: Prisma.memo_cardGetPayload<{}>[]
@@ -15,9 +17,15 @@ export function MemoCards(props: IProps) {
     const { memoCardsInitial } = props;
     const [memoCards, setMemoCards] = React.useState(memoCardsInitial);
     const { localCards } = useTypedSelector((state: RootState) => state.localCardsSlice);
+    const t = useTranslations('memoCards');
 
     function handleDelete(id: string) {
         setMemoCards(prev => prev.filter(card => card.id !== id));
+    }
+
+    function handleImportSampleData() {
+        // 这里添加导入示例数据的逻辑
+        console.log('导入示例数据');
     }
 
     return (
@@ -32,11 +40,19 @@ export function MemoCards(props: IProps) {
                     <div className="flex mt-[80px] items-center justify-center bg-gradient-to-b from-blue-50 to-white dark:from-blue-900 dark:to-blue-800">
                         <div className="px-4 mx-auto text-center lg:px-8 sm:py-24 lg:py-32">
                             <h1 className="text-3xl font-bold tracking-tight text-black dark:text-white sm:text-[2.2rem]">
-                                データが見つかりません
+                                {t('noDataFound')}
                             </h1>
-                            <p className="mt-6 text-base leading-7 text-black dark:text-white">
-                                気になる日本語を入力してください
-                            </p>
+                            <div className="mt-6 flex flex-col items-center gap-4">
+                                {/* <p className="text-base leading-7 text-black dark:text-white">
+                                    {t('enterJapanese')}
+                                </p> */}
+                                <Button 
+                                    onClick={handleImportSampleData}
+                                    className="mt-2"
+                                >
+                                    {t('importSampleData')}
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 ) : null

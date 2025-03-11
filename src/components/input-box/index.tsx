@@ -134,23 +134,6 @@ export function InputBox() {
 
   return (
     <>
-      <TooltipProvider>
-        <Tooltip delayDuration={350}>
-          <TooltipTrigger asChild>
-            <Button
-              variant="outline"
-              size="icon"
-              className="hidden sm:inline-flex w-10 h-10 p-0 absolute left-[-60px] top-[4px]"
-              onClick={handleClick}
-            >
-              <Plus className="h-6 w-6" />
-            </Button>
-          </TooltipTrigger>
-          <TooltipContent className="bg-primary text-primary-foreground">
-            <p className="text-sm">ランダムに日本語の文が生成します</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
       <div
         ref={editableRef}
         onPaste={handlePaste}
