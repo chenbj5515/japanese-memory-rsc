@@ -29,14 +29,14 @@ const mockData = {
             "question": "「ハーレム」の意味を忘れました、今覚えていますか？",
             "answer": "后宫",
             "memo_card": {
-                "id": "f1848a44-3a53-4567-8f04-85f80e26c65d",
+                "id": "",
                 "translation": "我要打造一个全是我喜欢的专属女仆的后宫……",
                 "create_time": "2025-01-27T13:05:39.128Z",
                 "update_time": "2025-01-27T13:05:49.294Z",
                 "record_file_path": "",
                 "original_text": "俺好みの専属メイドで、ハーレムを作るなんてことも…",
                 "review_times": 0,
-                "user_id": "15813a9c-0624-48e2-a2e2-73a26d357deb",
+                "user_id": "",
                 "kana_pronunciation": "おれすきのせんぞくめいどで、はーれむをつくるなんてことも…",
                 "context_url": "https://www.netflix.com/watch/81402908?trackId=155573558&t=659"
             }
@@ -47,14 +47,14 @@ const mockData = {
             "question": "「しらばっくれる」の意味を忘れました、今覚えていますか？",
             "answer": "装傻",
             "memo_card": {
-                "id": "9aac76d4-4082-43b5-8c44-1382741b1514",
+                "id": "",
                 "translation": "你还在装傻吗！",
                 "create_time": "2025-02-08T13:52:36.929Z",
                 "update_time": "2025-02-08T13:52:49.879Z",
                 "record_file_path": "",
                 "original_text": "まだしらばっくれるか！",
                 "review_times": 0,
-                "user_id": "15813a9c-0624-48e2-a2e2-73a26d357deb",
+                "user_id": "",
                 "kana_pronunciation": "まだしらばっくれるか！",
                 "context_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=14"
             }
@@ -65,14 +65,14 @@ const mockData = {
             "question": "「しかねます」の意味を忘れました、今覚えていますか？",
             "answer": "无法",
             "memo_card": {
-                "id": "3383369d-3dc8-4bc8-940b-68f065bb36b9",
+                "id": "",
                 "translation": "关于先前您提出的请求，我们无法承接。",
                 "create_time": "2024-03-01T04:50:37.906Z",
                 "update_time": "2024-03-04T02:09:22.835Z",
                 "record_file_path": null,
                 "original_text": "先日、ご依頼いただいた件ですが、私どもではお引き受けしかねます。",
                 "review_times": 4,
-                "user_id": "15813a9c-0624-48e2-a2e2-73a26d357deb",
+                "user_id": "",
                 "kana_pronunciation": "せんじつ、ごいらいいただいたけんですが、わたくしどもではおひきうけしかねます。",
                 "context_url": null
             }
@@ -83,14 +83,14 @@ const mockData = {
             "question": "「挙げ句の果てに」の意味を忘れました、今覚えていますか？",
             "answer": "最后结果是",
             "memo_card": {
-                "id": "baa91d62-c4de-4ba1-ae2c-589a94277001",
+                "id": "",
                 "translation": "到头来连自己的罪行也不承认。",
                 "create_time": "2025-02-08T13:53:34.156Z",
                 "update_time": "2025-02-08T13:53:40.159Z",
                 "record_file_path": "",
                 "original_text": "挙げ句の果てに自分の罪も認められない",
                 "review_times": 0,
-                "user_id": "15813a9c-0624-48e2-a2e2-73a26d357deb",
+                "user_id": "",
                 "kana_pronunciation": "あげくのはてにじぶんのつみもみとめられない",
                 "context_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=21"
             }
@@ -101,14 +101,14 @@ const mockData = {
             "question": "「引き下がれない」の意味を忘れました、今覚えていますか？",
             "answer": "退让不了",
             "memo_card": {
-                "id": "1ef9c569-090e-402b-b58f-2025cc3fe841",
+                "id": "",
                 "translation": "既然来到这一步，我也无法退缩了。",
                 "create_time": "2025-02-08T14:04:34.760Z",
                 "update_time": "2025-02-08T14:04:39.753Z",
                 "record_file_path": "",
                 "original_text": "ここまできたら俺も引き下がれない",
                 "review_times": 0,
-                "user_id": "15813a9c-0624-48e2-a2e2-73a26d357deb",
+                "user_id": "",
                 "kana_pronunciation": "ここまできたらおれもひきさがれない，",
                 "context_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=426"
             }
