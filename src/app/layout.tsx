@@ -1,4 +1,5 @@
 import localFont from "next/font/local";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import Provider from "./provider";
 import "./globals.css";
 import { Pacifico } from 'next/font/google';
@@ -33,6 +34,7 @@ export default function RootLayout({
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} ${pacifico.variable} antialiased`}>
         <Provider>
+          <SpeedInsights />
           <main className="flex flex-col dark:bg-bgDark relative">
             {children}
           </main>
