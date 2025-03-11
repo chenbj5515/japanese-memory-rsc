@@ -38,7 +38,7 @@ const mockData = {
                 "review_times": 0,
                 "user_id": "15813a9c-0624-48e2-a2e2-73a26d357deb",
                 "kana_pronunciation": "おれすきのせんぞくめいどで、はーれむをつくるなんてことも…",
-                "source_video_url": "https://www.netflix.com/watch/81402908?trackId=155573558&t=659"
+                "context_url": "https://www.netflix.com/watch/81402908?trackId=155573558&t=659"
             }
         },
         {
@@ -56,7 +56,7 @@ const mockData = {
                 "review_times": 0,
                 "user_id": "15813a9c-0624-48e2-a2e2-73a26d357deb",
                 "kana_pronunciation": "まだしらばっくれるか！",
-                "source_video_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=14"
+                "context_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=14"
             }
         },
         {
@@ -74,7 +74,7 @@ const mockData = {
                 "review_times": 4,
                 "user_id": "15813a9c-0624-48e2-a2e2-73a26d357deb",
                 "kana_pronunciation": "せんじつ、ごいらいいただいたけんですが、わたくしどもではおひきうけしかねます。",
-                "source_video_url": null
+                "context_url": null
             }
         },
         {
@@ -92,7 +92,7 @@ const mockData = {
                 "review_times": 0,
                 "user_id": "15813a9c-0624-48e2-a2e2-73a26d357deb",
                 "kana_pronunciation": "あげくのはてにじぶんのつみもみとめられない",
-                "source_video_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=21"
+                "context_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=21"
             }
         },
         {
@@ -110,7 +110,7 @@ const mockData = {
                 "review_times": 0,
                 "user_id": "15813a9c-0624-48e2-a2e2-73a26d357deb",
                 "kana_pronunciation": "ここまできたらおれもひきさがれない，",
-                "source_video_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=426"
+                "context_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=426"
             }
         }
     ]

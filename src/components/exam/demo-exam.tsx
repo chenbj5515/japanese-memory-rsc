@@ -66,7 +66,7 @@ const INITIAL_RESULTS = [
                 "review_times": 2,
                 "user_id": "",
                 "kana_pronunciation": "それからタイプ３はデータしゅうしゅうやしりょうさくせいなどきめられたことをちゃくじつにせいかくにやりとげるひと。",
-                "source_video_url": null
+                "context_url": null
             }
         },
         "question_score": 2,
@@ -101,7 +101,7 @@ const INITIAL_RESULTS = [
                 "review_times": 2,
                 "user_id": "",
                 "kana_pronunciation": "それからタイプ３はデータしゅうしゅうやしりょうさくせいなどきめられたことをちゃくじつにせいかくにやりとげるひと。",
-                "source_video_url": null
+                "context_url": null
             }
         },
         "question_score": 2,
@@ -136,7 +136,7 @@ const INITIAL_RESULTS = [
                 "review_times": 3,
                 "user_id": "",
                 "kana_pronunciation": "ぼりゅうむたっぷりのわふうべんとうなんです。",
-                "source_video_url": null
+                "context_url": null
             }
         },
         "question_score": 4,
@@ -163,7 +163,7 @@ const INITIAL_RESULTS = [
             "review_times": 1,
             "user_id": "",
             "kana_pronunciation": "あとぶんかさいのじゅんびのときにのみものさしいれてくれたのもかっこよかった。",
-            "source_video_url": "https://www.youtube.com/watch?v=CDNzs1Nr-FA&t=147"
+            "context_url": "https://www.youtube.com/watch?v=CDNzs1Nr-FA&t=147"
         },
         "question_score": 4,
         "judging": false,

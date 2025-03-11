@@ -21,7 +21,7 @@ const defaultWordCardInfo: TWordCard = {
         "review_times": 0,
         "user_id": "",
         "kana_pronunciation": "え、わたしじょうでしんそうねじまげろってことですか？",
-        "source_video_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=374"
+        "context_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=374"
     }
 };
 

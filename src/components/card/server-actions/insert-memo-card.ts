@@ -18,7 +18,7 @@ export async function insertMemoCard(originalText: string, translation: string, 
             kana_pronunciation: pronunciation,
             create_time: new Date(),
             update_time: new Date(),
-            source_video_url: url
+            context_url: url
         },
     });
 

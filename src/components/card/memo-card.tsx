@@ -15,7 +15,7 @@ import { Button } from "../ui/button";
 export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     onDelete?: (id: string) => void
 }) {
-    const { translation, kana_pronunciation, original_text, create_time, id, source_video_url, onDelete } = props;
+    const { translation, kana_pronunciation, original_text, create_time, id, context_url, onDelete } = props;
 
     const [recorderPressed, setRecorderPressedState] = React.useState(false);
     const [recordPlayBtnPressed, setRecordPlayBtnPressed] = React.useState(false);
@@ -106,17 +106,17 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
                 {create_time ? getTimeAgo(create_time.toString()) : ""}
             </div>
             {/* 朗読ボタン */}
-            {source_video_url ? (
+            {context_url ? (
                 <>
-                    {source_video_url.includes("youtube") || source_video_url.includes("netflix") ? (
+                    {context_url.includes("youtube") || context_url.includes("netflix") ? (
                         <a
-                            href={source_video_url}
+                            href={context_url}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="border-solid border border-black play-button-bg dark:bg-bgDark dark:shadow-none rounded-[50%] w-12 h-12 absolute top-2 right-2 cursor-pointer flex items-center justify-center"
                         >
                             {
-                                source_video_url.includes("youtube") ? (
+                                context_url.includes("youtube") ? (
                                     <div className="w-[27px] h-5 overflow-hidden flex items-center justify-center relative">
                                         <img
                                             src="https://www.gstatic.com/youtube/img/branding/youtubelogo/svg/youtubelogo.svg"
@@ -160,7 +160,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
                                         variant="outline"
                                         size="icon"
                                         className="w-12 h-12 rounded-full border border-black transition-all duration-300 opacity-0 absolute top-0 left-0 group-hover:opacity-100 group-hover:translate-y-14 bg-white hover:bg-gray-100 flex items-center justify-center"
-                                        onClick={() => window.open(source_video_url, "_blank")}
+                                        onClick={() => window.open(context_url, "_blank")}
                                     >
                                         <ExternalLink className="h-5 w-5" />
                                     </Button>
