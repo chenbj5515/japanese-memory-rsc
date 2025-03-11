@@ -51,7 +51,8 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
                         review_times: true,
                         user_id: true,
                         kana_pronunciation: true,
-                        context_url: true
+                        context_url: true,
+                        forget_count: true
                     },
                 });
                 return {
@@ -76,7 +77,8 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
                         user_id: true,
                         review_times: true,
                         memo_card_id: true,
-                        memo_card: true
+                        memo_card: true,
+                        forget_count: true
                     },
                 });
                 return {
