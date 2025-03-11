@@ -11,6 +11,7 @@ const defaultWordCardInfo: TWordCard = {
     "user_id": "",
     "review_times": 1,
     "memo_card_id": "ce158482-798c-4380-bba9-b742f05f1404",
+    "forget_count": 0,
     "memo_card": {
         "id": "ce158482-798c-4380-bba9-b742f05f1404",
         "translation": "你是说要我因为私人情感扭曲事实吗？",
@@ -21,7 +22,8 @@ const defaultWordCardInfo: TWordCard = {
         "review_times": 0,
         "user_id": "",
         "kana_pronunciation": "え、わたしじょうでしんそうねじまげろってことですか？",
-        "context_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=374"
+        "context_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=374",
+        "forget_count": 0
     }
 };
 
@@ -32,10 +34,7 @@ interface DemoWordCardProps {
 
 export function DemoWordCard({ onUnRecognize, onRecognize }: DemoWordCardProps = {}) {
     // 模拟回调函数
-    const handleRecognize = (id: string) => {
-        console.log('已认识单词:', id);
-        // 如果传入了外部的onRecognize回调，则调用它
-        onRecognize?.(id);
+    const handleRecognize = (wordCardInfo: TWordCard) => {
     };
 
     const handleUnRecognize = (wordCardInfo: TWordCard) => {
