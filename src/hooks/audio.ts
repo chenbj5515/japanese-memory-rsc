@@ -1,17 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 
 // 録音開始関数、停止関数と再生関数をエクスポートする
-export function useAudioRecorder(hasPermission: boolean) {
+export function useAudioRecorder() {
     const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
     const audioChunks = useRef<Blob[]>([]);
     const audioURL = useRef<string | null>(null);
     const audio = useRef<HTMLAudioElement | null>(null);
 
     const startRecording = async () => {
-        if (!hasPermission) {
-            console.error('マイクの権限がありません。');
-            return;
-        }
+        // if (!hasPermission) {
+        //     console.error('マイクの権限がありません。');
+        //     return;
+        // }
 
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });

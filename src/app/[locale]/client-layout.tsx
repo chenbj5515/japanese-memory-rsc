@@ -7,6 +7,7 @@ import "remixicon/fonts/remixicon.css";
 import LoginedHeader from '../logined-header';
 import { UnloginHeader } from './unlogin-header';
 import { Footer } from './footer';
+import { useAudioPermission } from '@/hooks/use-audio-permission';
 
 export default function ClientLayout({
     children,
@@ -16,6 +17,7 @@ export default function ClientLayout({
     const router = useRouter();
     const pathname = usePathname();
     const dispatch = useDispatch();
+    useAudioPermission();
 
     const currentRoute = pathname.split('/').pop() || '';
 

@@ -127,7 +127,7 @@ const App: React.FC = () => {
                                     <p className="text-gray-700">
                                         {t.rich('getStarted.steps.paste.description', {
                                             link: (chunks) => (
-                                                <a href="https://japanese-memory-rsc.vercel.app/latest" 
+                                                <a href="https://japanese-memory-rsc.vercel.app/memo-cards" 
                                                    target="_blank" 
                                                    rel="noopener noreferrer" 
                                                    className="text-blue-500 hover:text-blue-700 hover:underline"

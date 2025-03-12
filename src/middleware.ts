@@ -53,7 +53,7 @@ export async function middleware(req: NextRequest) {
             const redirectPath = redirectParam.startsWith('/') ? redirectParam : `/${redirectParam}`;
             return NextResponse.redirect(new URL(`/${locale}${redirectPath}`, req.url));
         }
-        return NextResponse.redirect(new URL(`/${locale}/latest`, req.url));
+        return NextResponse.redirect(new URL(`/${locale}/memo-cards`, req.url));
     }
 
     // 检查是否是受保护的页面

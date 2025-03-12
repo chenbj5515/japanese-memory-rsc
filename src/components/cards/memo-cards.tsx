@@ -22,7 +22,6 @@ export function MemoCards(props: IProps) {
     const [isLoading, setIsLoading] = React.useState(false);
     const { localCards } = useTypedSelector((state: RootState) => state.localCardsSlice);
     const t = useTranslations('memoCards');
-    const hasAudioPermission = useAudioPermission();
 
     const newCards = use(newCardsPromise);
     const forgottenCards = use(forgottenCardsPromise);
@@ -47,7 +46,7 @@ export function MemoCards(props: IProps) {
         <Suspense fallback={<Loading />}>
             {memoCards?.map(card => (
                 <div className="memo-card sm:text-base text-[18px] mx-auto mb-14 max-w-92-675" key={card.id}>
-                    <MemoCard {...card} onDelete={handleDelete} hasAudioPermission={hasAudioPermission} />
+                    <MemoCard {...card} onDelete={handleDelete} />
                 </div>
             ))}
             {

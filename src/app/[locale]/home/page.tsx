@@ -104,7 +104,7 @@ export default function LandingPage() {
                   : showDemo === 'daily'
                     ? <DemoDailyReport />
                     : showMemoCard
-                      ? <MemoCard {...defaultWordCardInfo.memo_card} onDelete={() => { }} />
+                      ? <MemoCard {...defaultWordCardInfo.memo_card} onDelete={() => { }}/>
                       : (
                         <DemoWordCard
                           onUnRecognize={handleUnRecognize}

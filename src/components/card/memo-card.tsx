@@ -14,9 +14,8 @@ import { Button } from "../ui/button";
 
 export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     onDelete?: (id: string) => void;
-    hasAudioPermission: boolean;
 }) {
-    const { translation, kana_pronunciation, original_text, create_time, id, context_url, onDelete, hasAudioPermission } = props;
+    const { translation, kana_pronunciation, original_text, create_time, id, context_url, onDelete } = props;
 
     const [recorderPressed, setRecorderPressedState] = React.useState(false);
     const [recordPlayBtnPressed, setRecordPlayBtnPressed] = React.useState(false);
@@ -31,7 +30,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
 
     const dispatch = useDispatch();
 
-    const { startRecording, stopRecording, playRecording } = useAudioRecorder(hasAudioPermission);
+    const { startRecording, stopRecording, playRecording } = useAudioRecorder();
 
     const cardRef = useTripleRightClick(async () => {
         onDelete?.(id);

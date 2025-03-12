@@ -122,7 +122,7 @@ export default function DailyReport({ data }: { data: ReportData }) {
                 <p className="text-gray-600 mb-6 font-sans">
                   今日はまだ学習記録がありません。最近学んだ文を復習してみませんか？
                 </p>
-                <Button onClick={() => router.push('/latest')}>
+                <Button onClick={() => router.push('/memo-cards')}>
                   復習を始める
                 </Button>
               </div>
