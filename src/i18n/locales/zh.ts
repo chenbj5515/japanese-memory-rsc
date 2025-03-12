@@ -318,7 +318,8 @@ export default {
     random: "随机",
     wordCards: "单词本",
     exam: "考试",
-    dailyReport: "每日报告"
+    dailyReport: "每日报告",
+    memoCards: "记忆卡片"
   },
   memoCards: {
     noDataFound: '请输入您感兴趣的日语文本',

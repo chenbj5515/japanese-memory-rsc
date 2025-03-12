@@ -318,7 +318,8 @@ export default {
     random: 'Random',
     wordCards: 'Word Cards',
     exam: 'Exam',
-    dailyReport: 'Daily Report'
+    dailyReport: 'Daily Report',
+    memoCards: 'Memo Cards'
   },
   memoCards: {
     noDataFound: 'Enter Japanese text you are interested in',

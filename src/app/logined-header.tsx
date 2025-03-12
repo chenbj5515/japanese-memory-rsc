@@ -28,10 +28,7 @@ export default function LoginedHeader() {
       <nav className="w-[620px]">
         <ul className="flex items-center justify-between">
           <li>
-            <Link prefetch href={`/${locale}/latest`} className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === `/${locale}/latest` ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>{t('latest')}</Link>
-          </li>
-          <li>
-            <Link prefetch href={`/${locale}/random`} className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === `/${locale}/random` ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>{t('random')}</Link>
+            <Link prefetch href={`/${locale}/memo-cards`} className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === `/${locale}/memo-cards` ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>{t('memoCards')}</Link>
           </li>
           <li>
             <Link prefetch href={`/${locale}/word-cards`} className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === `/${locale}/word-cards` ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>{t('wordCards')}</Link>

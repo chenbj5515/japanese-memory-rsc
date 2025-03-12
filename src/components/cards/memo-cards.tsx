@@ -1,5 +1,5 @@
 "use client"
-import React from "react";
+import React, { use } from "react";
 import { useSelector, TypedUseSelectorHook } from "react-redux";
 import { MemoCard } from "@/components";
 import { Prisma } from '@prisma/client';
@@ -9,20 +9,25 @@ import LoadingButton from '@/components/ui/loading-button';
 import { importSampleMemoCards } from "./server-actions"
 
 interface IProps {
-    memoCardsInitial: Prisma.memo_cardGetPayload<{}>[]
+    newCardsPromise: Promise<Prisma.memo_cardGetPayload<{}>[]>
+    forgottenCardsPromise: Promise<Prisma.memo_cardGetPayload<{}>[]>
 }
 
 const useTypedSelector: TypedUseSelectorHook<RootState> = useSelector;
 
 export function MemoCards(props: IProps) {
-    const { memoCardsInitial } = props;
-    const [memoCards, setMemoCards] = React.useState(memoCardsInitial);
+    const { newCardsPromise, forgottenCardsPromise } = props;
     const [isLoading, setIsLoading] = React.useState(false);
     const { localCards } = useTypedSelector((state: RootState) => state.localCardsSlice);
     const t = useTranslations('memoCards');
 
+    const newCards = use(newCardsPromise);
+    const forgottenCards = use(forgottenCardsPromise);
+
+    const memoCards = [...newCards, ...forgottenCards];
+
     function handleDelete(id: string) {
-        setMemoCards(prev => prev.filter(card => card.id !== id));
+        window.location.reload();
     }
 
     async function handleImportSampleData() {
