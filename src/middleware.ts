@@ -39,8 +39,14 @@ const intlMiddleware = createIntlMiddleware({
 });
 
 export async function middleware(req: NextRequest) {
-    const locale = getAndSetLocale(req);
     const pathname = req.nextUrl.pathname;
+
+    // 如果是monitoring路由，直接放行
+    if (pathname.includes('/monitoring')) {
+        return NextResponse.next();
+    }
+
+    const locale = getAndSetLocale(req);
 
     // 处理根路由重定向
     if (pathname === '/') {
@@ -78,6 +84,6 @@ export const config = {
          * - _next/image (image optimization files)
          * - favicon.ico (favicon file)
          */
-        '/((?!api|_next/static|_next/image|favicon.ico|assets|icon).*)',
+        '/((?!_next/static|_next/image|favicon.ico|assets|icon).*)',
     ],
 };
