@@ -368,6 +368,14 @@ export default {
     words: '单词',
     test: '测试',
     noRecord: '今天还没有学习记录。要不要复习一下最近学过的句子？',
-    startReview: '开始复习'
+    startReview: '开始复习',
+    forgotMeaning: '「{word}」的含义你忘记了，现在记得了吗？',
+    forgotPronunciation: '「{word}」的发音你忘记了，现在记得了吗？',
+    forgotExpression: '「{meaning}」用日语怎么表达你忘记了，现在记得了吗？',
+    unableToUnderstand: '这句话你听不懂，现在再听一遍能听懂吗？',
+    completion: {
+      congratulations: '恭喜你！',
+      message: '你已经清理了今天发现的自己遗忘的知识点。\n保持这个节奏！'
+    }
   }
 } as const; 

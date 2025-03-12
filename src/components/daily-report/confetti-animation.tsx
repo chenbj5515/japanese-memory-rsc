@@ -1,10 +1,11 @@
 'use client'
 
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import confetti, { Shape } from 'canvas-confetti'
 
 export function ConfettiAnimation() {
   const containerRef = useRef<HTMLDivElement>(null)
+  const [isVisible, setIsVisible] = useState(true)
 
   useEffect(() => {
     const container = containerRef.current
@@ -38,10 +39,17 @@ export function ConfettiAnimation() {
     triggerConfetti(1500) // After 1.5 seconds
     triggerConfetti(3000) // After 3 seconds
 
+    // Hide the container after animations complete (3 seconds + animation duration)
+    const timer = setTimeout(() => {
+      setIsVisible(false)
+    }, 4500) // 3000 (last animation) + 1500 (animation duration)
+
     return () => {
       confetti.reset()
+      clearTimeout(timer)
     }
   }, [])
 
+  if (!isVisible) return null
   return <div ref={containerRef} className="fixed inset-0" />
 }

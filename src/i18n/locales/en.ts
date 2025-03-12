@@ -368,6 +368,14 @@ export default {
     words: 'Words',
     test: 'Test',
     noRecord: 'No study records for today. Would you like to review recently learned sentences?',
-    startReview: 'Start Review'
+    startReview: 'Start Review',
+    forgotMeaning: 'You forgot the meaning of "{word}", do you remember it now?',
+    forgotPronunciation: 'You forgot the pronunciation of "{word}", do you remember it now?',
+    forgotExpression: 'You forgot how to express "{meaning}" in Japanese, do you remember it now?',
+    unableToUnderstand: 'You could not understand this sentence, can you understand it now after listening again?',
+    completion: {
+      congratulations: 'Congratulations!',
+      message: 'You have cleared all the knowledge points that you found forgotten today.\nKeep up the momentum!'
+    }
   }
 } as const; 

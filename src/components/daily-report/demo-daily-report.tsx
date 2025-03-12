@@ -292,10 +292,10 @@ export function StudyCard({
                         >
                             <AnimatedCheckbox checked={isChecked} onChange={handleCheck} />
 
-                            <div className="flex-1 min-w-0">
+                            <div className="flex-1 min-w-0 text-[18px]">
                                 <div className="flex items-center gap-4">
                                     {type === 'listening' && <AudioPlayer originalText={answer} />}
-                                    <p className="text-gray-700 text-sm truncate">{question}</p>
+                                    <p className="text-gray-700 text-[15px] truncate">{question}</p>
                                 </div>
                             </div>
 

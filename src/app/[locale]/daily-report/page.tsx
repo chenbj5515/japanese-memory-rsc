@@ -3,12 +3,14 @@ import { auth } from "@/auth"
 import { prisma } from "@/prisma"
 import { $Enums } from "@prisma/client"
 import { askAIDirectly } from '@/server-actions'
+import { getTranslations } from 'next-intl/server'
 
 export default async function YearEndReportPage({ searchParams }: { searchParams: Promise<{ date?: string }> }) {
   const session = await auth()
   if (!session?.userId) return null
   let id = 0
   let { date } = await searchParams;
+  const t = await getTranslations('dailyReport');
 
   const targetDate = date ? new Date(date) : new Date()
 
@@ -62,7 +64,7 @@ export default async function YearEndReportPage({ searchParams }: { searchParams
         return {
           id: id++,
           type: 'meaning',
-          question: `「${wordCard?.word}」の意味を忘れました、今覚えていますか？`,
+          question: t('forgotMeaning', { word: wordCard?.word || '' }),
           answer: `${wordCard?.meaning.replaceAll("意味：", "")}`,
           memo_card: wordCard?.memo_card
         }
@@ -84,7 +86,7 @@ export default async function YearEndReportPage({ searchParams }: { searchParams
         return {
           id: id++,
           type: 'pronunciation',
-          question: `「${wordCard?.word}」の発音を忘れました、今覚えていますか？`,
+          question: t('forgotPronunciation', { word: wordCard?.word || '' }),
           answer: `${wordCard?.word}(${output})`,
           memo_card: wordCard?.memo_card
         }
@@ -104,7 +106,7 @@ export default async function YearEndReportPage({ searchParams }: { searchParams
         return {
           id: id++,
           type: 'expression',
-          question: `「${wordCard?.meaning.replaceAll("意味：", "")}」の日本語で表現する方法を忘れました、今覚えていますか？`,
+          question: t('forgotExpression', { meaning: wordCard?.meaning.replaceAll("意味：", "") || '' }),
           answer: wordCard?.word || '',
           memo_card: wordCard?.memo_card
         }
@@ -123,7 +125,7 @@ export default async function YearEndReportPage({ searchParams }: { searchParams
         return {
           id: id++,
           type: 'listening',
-          question: 'この文を聞き取れませんでした、もう一回聞いて分かりますか？',
+          question: t('unableToUnderstand'),
           answer: memoCard?.original_text || '',
           memo_card: memoCard
         }

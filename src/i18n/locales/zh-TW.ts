@@ -361,6 +361,14 @@ export default {
         words: '單詞',
         test: '測試',
         noRecord: '今天還沒有學習記錄。要不要複習一下最近學過的句子？',
-        startReview: '開始複習'
+        startReview: '開始複習',
+        forgotMeaning: '「{word}」的含義你忘記了，現在記得了嗎？',
+        forgotPronunciation: '「{word}」的發音你忘記了，現在記得了嗎？',
+        forgotExpression: '「{meaning}」用日語怎麼表達你忘記了，現在記得了嗎？',
+        unableToUnderstand: '這句話你聽不懂，現在再聽一遍能聽懂嗎？',
+        completion: {
+            congratulations: '恭喜你！',
+            message: '你已經清理了今天發現的自己遺忘的知識點。\n保持這個節奏！'
+        }
     }
 } as const; 

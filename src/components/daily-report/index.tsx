@@ -98,18 +98,18 @@ export default function DailyReport({ data }: { data: ReportData }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <SkeuomorphicCard className='boder border-[#1d283a] dark:border-[#878a8c]'>
+          <SkeuomorphicCard className='boder border-[#1d283a] dark:border-darkBorderColor'>
             <div className="grid grid-cols-3 divide-x">
               <div className="px-6 py-4 text-center">
-                <h3 className="text-sm text-gray-600 mb-1">{t('sentences')}</h3>
+                <h3 className="text-[16px] font-mono font-semibold mb-1">{t('sentences')}</h3>
                 <p className="text-2xl font-bold text-gray-900">{data.stats.flashcards}</p>
               </div>
               <div className="px-6 py-4 text-center">
-                <h3 className="text-sm text-gray-600 mb-1">{t('words')}</h3>
+                <h3 className="text-[16px] font-mono font-semibold mb-1">{t('words')}</h3>
                 <p className="text-2xl font-bold text-gray-900">{data.stats.words}</p>
               </div>
               <div className="px-6 py-4 text-center">
-                <h3 className="text-sm text-gray-600 mb-1">{t('test')}</h3>
+                <h3 className="text-[16px] font-mono font-semibold mb-1">{t('test')}</h3>
                 <p className="text-2xl font-bold text-gray-900">{data.stats.score}</p>
               </div>
             </div>
