@@ -3,6 +3,16 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import Provider from "./provider";
 import "./globals.css";
 import { Pacifico } from 'next/font/google';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Bunn',
+  description: 'A Japanese learning application',
+  icons: {
+    icon: '/icon/brand.png',
+    apple: '/icon/brand.png',
+  },
+};
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
