@@ -1,23 +1,20 @@
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "../ui/button";
+import { useTranslations } from 'next-intl';
 
 interface ConfirmDialogProps {
     open: boolean;
     onConfirm: () => void;
     onCancel: () => void;
-    title?: string;
-    confirmLabel?: string;
-    cancelLabel?: string;
 }
 
 export function FixConfirmDialog({
     open,
     onConfirm,
     onCancel,
-    title = "この結果は正しいと確信されていますか？",
-    confirmLabel = "はい",
-    cancelLabel = "キャンセル"
 }: ConfirmDialogProps) {
+    const t = useTranslations('exam');
+
     const handleConfirm = (e: React.MouseEvent) => {
         e.stopPropagation();
         onConfirm();
@@ -32,14 +29,14 @@ export function FixConfirmDialog({
         <Dialog open={open} onOpenChange={onCancel}>
             <DialogContent aria-describedby='' onClick={(e) => e.stopPropagation()}>
                 <DialogHeader className='p-3'>
-                    <DialogTitle>{title}</DialogTitle>
+                    <DialogTitle>{t('fix_confirm.description')}</DialogTitle>
                 </DialogHeader>
                 <DialogFooter>
                     <Button className='w-[100px]' variant="default" onClick={handleConfirm}>
-                        {confirmLabel}
+                        {t('fix_confirm.confirm')}
                     </Button>
-                    <Button variant="secondary" onClick={handleCancel}>
-                        {cancelLabel}
+                    <Button className='w-[100px] ml-[20px]' variant="secondary" onClick={handleCancel}>
+                        {t('fix_confirm.cancel')}
                     </Button>
                 </DialogFooter>
             </DialogContent>

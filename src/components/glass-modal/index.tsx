@@ -1,4 +1,6 @@
 // 通用的毛玻璃Modal组件
+import { useEffect } from 'react';
+
 interface GlassModalProps {
     open: boolean;
     containerRef: React.RefObject<HTMLDivElement>;
@@ -6,6 +8,18 @@ interface GlassModalProps {
 }
 
 export function GlassModal({ open, containerRef, children }: GlassModalProps) {
+    useEffect(() => {
+        if (open) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [open]);
+
     if (!open) return null;
 
     return (

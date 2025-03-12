@@ -4,11 +4,13 @@ import { TooltipTrigger } from '@radix-ui/react-tooltip';
 import { CalendarIcon, ClockIcon } from 'lucide-react';
 import { useState } from 'react';
 import { Exam } from './exam-preparation';
+import { useTranslations } from 'next-intl';
 
 export function ExamItem({ exam }: { exam: Exam }) {
     const [hovered, setHovered] = useState(false);
     const router = useRouter();
     let isLocked = false;
+    const t = useTranslations('exam');
 
     function handleClick() {
         if (isLocked) return;
@@ -20,7 +22,7 @@ export function ExamItem({ exam }: { exam: Exam }) {
     return (
         <li
             key={exam.id}
-            className={`flex items-center justify-between p-2 rounded cursor-pointer ${hovered ? 'dark:bg-[#b2b3b5] bg-[#f3f4f6] dark:text-[black]' : ''}`}
+            className={`flex items-center justify-between p-2 rounded cursor-pointer ${hovered ? 'dark:bg-darkButtonBg bg-[#f3f4f6] dark:text-[black]' : ''}`}
             onMouseEnter={() => setHovered(true)}
             onMouseLeave={() => setHovered(false)}
             onClick={handleClick}
@@ -30,7 +32,7 @@ export function ExamItem({ exam }: { exam: Exam }) {
                 <span>{exam.date}</span>
             </div>
             <div className="flex items-center space-x-2">
-                <span>得分: {exam.score}</span>
+                <span>{t('score')}: {exam.score}</span>
                 <Tooltip>
                     <TooltipTrigger>
                         <ClockIcon
@@ -39,7 +41,7 @@ export function ExamItem({ exam }: { exam: Exam }) {
                         />
                     </TooltipTrigger>
                     <TooltipContent>
-                        <p>考试用时: {exam.duration} 分钟</p>
+                        <p>{t('duration')}: {exam.duration} {t('minutes')}</p>
                     </TooltipContent>
                 </Tooltip>
             </div>

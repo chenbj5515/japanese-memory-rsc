@@ -25,6 +25,7 @@ import { useEscToGoBack, useRefState } from '@/hooks';
 import { useState } from 'react';
 import LoadingButton from '../ui/loading-button';
 import { insertActionLogs } from './server-actions/insert-action-logs';
+import { useTranslations } from 'next-intl';
 
 interface IProps {
     initialResults: ExamInfo[];
@@ -48,6 +49,7 @@ export interface ExamInfo extends ExamResult {
 export default function NewExam(props: IProps) {
     const { initialResults, id } = props;
     const { timerDisplayRef } = useCountDowner();
+    const t = useTranslations('exam');
 
     // AIによって「不正解」と判定された問題を「正解」へと変更する操作を行う際に必要な確認ダイアログの表示・制御ロジック
     const { isOpen, currentQuestionNo, handleFixClick, handleConfirm, handleCancel } = useFixConfirmDialog({
@@ -217,14 +219,14 @@ export default function NewExam(props: IProps) {
     }
 
     return (
-        <div className="p-5 relative font-NewYork container w-[680px] mx-auto bg-gray-50 min-h-screen">
-            <h1 className='font-bold text-[24px] text-center'>試験</h1>
+        <div className="p-5 relative font-[system-ui] container w-[680px] mx-auto bg-gray-50 min-h-screen">
+            <h1 className='font-bold font-NewYork text-[24px] text-center'>{t('title')}</h1>
             {/* カウントダウン */}
             {
                 !allCompleted ? (
                     <div
                         ref={timerDisplayRef}
-                        className="p-2 inset-0 flex items-center justify-center text-xl font-medium tabular-nums"
+                        className="font-mono p-2 inset-0 flex items-center justify-center text-xl font-medium tabular-nums"
                     >
                         25:00
                     </div>
@@ -233,7 +235,7 @@ export default function NewExam(props: IProps) {
             {/* 点数 */}
             {
                 allCompleted ? (
-                    <div className='absolute w-[260px] top-[6px] -right-[360px]'>
+                    <div className='font-NewYork absolute w-[260px] top-[6px] -right-[360px]'>
                         <div
                             style={{ marginLeft: score.toString().length === 1 ? "46px" : "16px" }}
                             className='text-wrong w-[160px] h-[142px] -rotate-6 text-[112px]'
@@ -252,7 +254,7 @@ export default function NewExam(props: IProps) {
                 {/* 翻訳・読み */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-[18px]">翻訳・読み</CardTitle>
+                        <CardTitle className="text-[18px]">{t('translation_reading')}</CardTitle>
                     </CardHeader>
                     {q1List.map((group, index) => (
                         <CardContent key={index} className="space-y-6">
@@ -272,7 +274,7 @@ export default function NewExam(props: IProps) {
                                         key={inputInfo.no}
                                         inputInfo={inputInfo}
                                         disabled={inputInfo.completed}
-                                        placeholder={inputInfo.question_type === $Enums.question_type_enum.kana_from_japanese ? "平假名を入力してください" : "中国語で入力してください"}
+                                        placeholder={inputInfo.question_type === $Enums.question_type_enum.kana_from_japanese ? t('enter_hiragana') : t('enter_with_user_mother_tongue')}
                                         onChange={(val) => handleInputChange(inputInfo.no, val)}
                                         onFixClick={() => handleFixClick(inputInfo.no)}
                                     />
@@ -285,7 +287,7 @@ export default function NewExam(props: IProps) {
                 {/* 日本語への翻訳 */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-[18px]">日本語への翻訳</CardTitle>
+                        <CardTitle className="text-[18px]">{t('translation_to_japanese')}</CardTitle>
                     </CardHeader>
                     {q2List.map((result, index) => (
                         <CardContent key={index} className="space-y-6">
@@ -303,7 +305,7 @@ export default function NewExam(props: IProps) {
                                 <QuestionInput
                                     inputInfo={result}
                                     disabled={result.completed}
-                                    placeholder="日本語で入力してください"
+                                    placeholder={t('enter_japanese')}
                                     onChange={(val) => handleInputChange(result.no, val)}
                                     onFixClick={() => handleFixClick(result.no)}
                                 />
@@ -315,7 +317,7 @@ export default function NewExam(props: IProps) {
                 {/* 聴解問題 */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="text-[18px]">聴解問題</CardTitle>
+                        <CardTitle className="text-[18px]">{t('listening')}</CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-6">
                         {q3List.map((result, index) => (
@@ -323,9 +325,9 @@ export default function NewExam(props: IProps) {
                                 <div className="flex items-center justify-start mb-4">
                                     <Button onClick={() => handlePlay(result.question)} variant="outline" size="icon">
                                         <PlayCircle className="h-6 w-6" />
-                                        <span className="sr-only">音声を再生</span>
+                                        <span className="sr-only">{t('play_audio')}</span>
                                     </Button>
-                                    <span className="ml-2 text-[15px]">問題 {index + 1}</span>
+                                    <span className="ml-2 text-[15px]">{t('question')} {index + 1}</span>
                                     {result.completed && (
                                         <Search
                                             className="cursor-pointer text-[#999]-500 hover:text-blue-500 ml-4"
@@ -340,7 +342,7 @@ export default function NewExam(props: IProps) {
                                     ) : (
                                         <Input
                                             id={result.no.toString()}
-                                            placeholder="日本語で入力してください"
+                                            placeholder={t('enter_japanese')}
                                             autoComplete="off"
                                             className="mt-2"
                                             value={result.user_answer}
@@ -358,7 +360,7 @@ export default function NewExam(props: IProps) {
                 !allCompleted && (
                     <div className='flex justify-center mt-[42px] mb-[20px]'>
                         <LoadingButton isLoading={loading} onClick={handleCommit} className="w-[120px] text-md px-6 py-5">
-                            提出
+                            {t('submit')}
                         </LoadingButton>
                     </div>
                 )

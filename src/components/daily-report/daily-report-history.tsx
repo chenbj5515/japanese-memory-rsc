@@ -6,6 +6,9 @@ import { $Enums, Prisma } from '@prisma/client';
 import { use } from 'react';
 import Loading from '@/app/[locale]/loading';
 import { ReportItem } from './report-item';
+import { useTranslations } from 'next-intl';
+import { getLocaleClient } from '@/utils/utils';
+import { getMonthKey } from '@/utils/time';
 
 interface MonthData {
     month: string;
@@ -25,11 +28,13 @@ interface IProps {
 
 function processLogsData(logs: Awaited<IProps['logsPromise']>): MonthData[] {
     const dateMap = new Map<string, Set<string>>();
+    const locale = getLocaleClient();
 
     // 按月份收集日期
     logs.forEach(log => {
         const date = log.create_time;
-        const monthKey = `${date.getFullYear()}年${date.getMonth() + 1}月`;
+        const monthKey = getMonthKey(date.getFullYear(), date.getMonth() + 1, locale);
+        // const monthKey = `${date.getFullYear()}年${date.getMonth() + 1}月`;
         const dateStr = date.toISOString().split('T')[0];
 
         if (!dateMap.has(monthKey)) {
@@ -51,10 +56,11 @@ function processLogsData(logs: Awaited<IProps['logsPromise']>): MonthData[] {
 function DailyReportContent({ logsPromise }: IProps) {
     const logs = use(logsPromise);
     const monthlyData = processLogsData(logs);
+    const t = useTranslations('dailyReport');
 
     return (
         <div className="max-w-[768px] m-auto p-4">
-            <h2 className="text-xl font-semibold mb-4">レポート歴史</h2>
+            <h2 className="text-xl font-semibold mb-4">{t('history.title')}</h2>
             <div className="rounded-md border p-4">
                 <Accordion type="single" collapsible className="w-full" defaultValue="item-0">
                     {monthlyData.map((monthData, index) => (

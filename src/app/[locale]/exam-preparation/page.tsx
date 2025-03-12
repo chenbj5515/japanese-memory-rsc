@@ -1,7 +1,9 @@
 import { auth } from '@/auth';
 import ExamPreparation from '@/components/exam/exam-preparation';
 import { prisma } from '@/prisma';
+import { getLocaleServer } from '@/server-actions/get-locale-server';
 import { Prisma } from '@prisma/client';
+import { headers } from 'next/headers';
 
 interface Exam {
     id: string
@@ -24,7 +26,7 @@ export default async function App() {
 
     const count = await prisma.word_card.count({
         where: {
-            user_id: session?.userId, // 添加 user_id 条件
+            user_id: session?.userId,
         },
     });
     const randomShortCards = await prisma.$queryRaw<Prisma.memo_cardGetPayload<{}>[]>`
@@ -43,7 +45,7 @@ export default async function App() {
     const exams = await prisma.exams.findMany({
         where: { user_id: session?.userId },
         orderBy: {
-            create_time: 'desc', // 根据需要排序
+            create_time: 'desc',
         },
     });
 
@@ -60,7 +62,22 @@ export default async function App() {
 
         const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}`;
 
-        const monthKey = `${year}年${Number(month)}月`;
+        // 根据不同的语言环境设置不同格式的monthKey
+        let monthKey;
+        const locale = await getLocaleServer();
+        switch (locale) {
+            case 'zh':
+                monthKey = `${year}年${Number(month)}月`;
+                break;
+            case 'zh-TW':
+                monthKey = `${year}年${Number(month)}月`;
+                break;
+            default: // 'en'
+                const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                                  'July', 'August', 'September', 'October', 'November', 'December'];
+                monthKey = `${monthNames[Number(month) - 1]} ${year}`;
+                break;
+        }
 
         if (!groupedByMonth.has(monthKey)) {
             groupedByMonth.set(monthKey, []);

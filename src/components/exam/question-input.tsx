@@ -1,6 +1,7 @@
 import { Loader2, CheckCircle, XCircle, Wrench } from "lucide-react";
 import { Input } from "@/components/ui/input"
 import { ExamInfo } from ".";
+import { useTranslations } from "next-intl";
 
 interface QuestionProps {
     disabled: boolean;
@@ -18,6 +19,8 @@ export function QuestionInput({
     onFixClick
 }: QuestionProps) {
     const { reference_answer, is_correct, no, user_answer } = inputInfo;
+    const t = useTranslations('exam');
+    
     return (
         <div className="mt-2">
             <Input
@@ -42,7 +45,7 @@ export function QuestionInput({
                             <XCircle color="#E50914" className="h-5 w-5 text-red-500 mr-2" />
                         )}
                         <span className="text-sm">
-                            {is_correct ? "正解！" : `参考答案：${reference_answer}`}
+                            {is_correct ? t('correct') : t('reference_answer', { answer: reference_answer })}
                         </span>
                         {
                             user_answer && onFixClick && (

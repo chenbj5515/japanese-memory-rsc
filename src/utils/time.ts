@@ -48,3 +48,17 @@ export function formatDate(dateString: string) {
   const day = date.getDate();
   return `${month} ${day}, ${year}`;
 }
+
+export function getMonthKey(year: number, month: number, locale: string): string {
+  switch (locale) {
+    case 'zh':
+    case 'zh-TW':
+      return `${year}年${month}月`;
+    default: // 'en'
+      const monthNames = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      return `${monthNames[month - 1]} ${year}`;
+  }
+}

@@ -10,6 +10,7 @@ import { StudyCard } from './study-card'
 import { CompletionMessage } from './completion-message'
 import { Button } from '../ui/button'
 import { MemoCard } from '@/components/card/memo-card'
+import { useTranslations } from 'next-intl'
 
 interface ReportData {
   date: string
@@ -33,6 +34,7 @@ export default function DailyReport({ data }: { data: ReportData }) {
   const [currentMemoCard, setCurrentMemoCard] = useState<any>(null)
   const containerRef = useRef<HTMLDivElement>(null)
   const router = useRouter()
+  const t = useTranslations('dailyReport');
 
   const handleComplete = (id: number) => {
     setActiveItems(prev => prev.filter(item => item.id !== id))
@@ -66,7 +68,7 @@ export default function DailyReport({ data }: { data: ReportData }) {
   const noStudyRecord = data.stats.flashcards === 0 && data.stats.words === 0 && data.stats.score === 0;
 
   return (
-    <div className="font-NewYork pb-[14px]">
+    <div className="pb-[14px]">
       {showMemoCard && currentMemoCard ? (
         <div className="fixed w-[100vw] h-[100vh] left-[0] top-[0] backdrop-blur-[3px] backdrop-saturate-[180%] overflow-scroll z-[10000]">
           <div ref={containerRef} className="sm:w-[auto] sm:min-w-[46vw] w-full p-[22px] absolute max-h-[92%] overflow-auto left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2 transform">
@@ -82,12 +84,12 @@ export default function DailyReport({ data }: { data: ReportData }) {
       >
         <header className="text-center mb-12 flex justify-between items-center relative">
           <div className="absolute left-1/2 -translate-x-1/2">
-            <p className="text-xl text-gray-600 tracking-[2px]">{data.date}</p>
+            <p className="text-xl text-gray-600 text-[28px] font-NewYork">{data.date}</p>
           </div>
           <div className="ml-auto flex items-center gap-2 text-base font-medium">
             <Link href="/daily-report/history" className="flex items-center gap-2">
               <History className="h-5 w-5" />
-              履歴
+              {t('history.title')}
             </Link>
           </div>
         </header>
@@ -96,18 +98,18 @@ export default function DailyReport({ data }: { data: ReportData }) {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
         >
-          <SkeuomorphicCard className='boder border-[#1d283a]'>
+          <SkeuomorphicCard className='boder border-[#1d283a] dark:border-[#878a8c]'>
             <div className="grid grid-cols-3 divide-x">
               <div className="px-6 py-4 text-center">
-                <h3 className="text-sm text-gray-600 mb-1">文</h3>
+                <h3 className="text-sm text-gray-600 mb-1">{t('sentences')}</h3>
                 <p className="text-2xl font-bold text-gray-900">{data.stats.flashcards}</p>
               </div>
               <div className="px-6 py-4 text-center">
-                <h3 className="text-sm text-gray-600 mb-1">単語</h3>
+                <h3 className="text-sm text-gray-600 mb-1">{t('words')}</h3>
                 <p className="text-2xl font-bold text-gray-900">{data.stats.words}</p>
               </div>
               <div className="px-6 py-4 text-center">
-                <h3 className="text-sm text-gray-600 mb-1">テスト</h3>
+                <h3 className="text-sm text-gray-600 mb-1">{t('test')}</h3>
                 <p className="text-2xl font-bold text-gray-900">{data.stats.score}</p>
               </div>
             </div>
@@ -118,11 +120,11 @@ export default function DailyReport({ data }: { data: ReportData }) {
           <AnimatePresence mode="sync">
             {noStudyRecord ? (
               <div className="text-center py-12">
-                <p className="text-gray-600 mb-6 font-sans">
-                  今日はまだ学習記録がありません。最近学んだ文を復習してみませんか？
+                <p className="text-gray-600 mb-6 font-sans text-[18px]">
+                  {t('noRecord')}
                 </p>
-                <Button onClick={() => router.push('/memo-cards')}>
-                  復習を始める
+                <Button className='w-[240px] h-[44px] text-[15px] dark:bg-darkButtonBg' onClick={() => router.push('/memo-cards')}>
+                  {t('startReview')}
                 </Button>
               </div>
             ) : !isAllCompleted ? (

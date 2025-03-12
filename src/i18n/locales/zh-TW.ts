@@ -331,5 +331,36 @@ export default {
     },
     wordCards: {
         demoMeaning: "扭曲，曲解"
+    },
+    exam: {
+        title: '考試',
+        submit: '提交',
+        translation_reading: '翻譯・讀音',
+        translation_to_japanese: '日語翻譯',
+        listening: '聽力問題',
+        enter_hiragana: '請輸入平假名',
+        enter_with_user_mother_tongue: '請用中文輸入',
+        enter_japanese: '請用日語輸入',
+        question: '問題',
+        play_audio: '播放音頻',
+        fix_answer: '修改答案',
+        fix_confirm: {
+            title: '確認修改',
+            description: '您確定要將這個答案標記為正確嗎？',
+            confirm: '確定',
+            cancel: '取消'
+        },
+        correct: "正確！",
+        reference_answer: "參考答案：{answer}"
+    },
+    dailyReport: {
+        history: {
+            title: '學習報告歷史',
+        },
+        sentences: '句子',
+        words: '單詞',
+        test: '測試',
+        noRecord: '今天還沒有學習記錄。要不要複習一下最近學過的句子？',
+        startReview: '開始複習'
     }
 } as const; 

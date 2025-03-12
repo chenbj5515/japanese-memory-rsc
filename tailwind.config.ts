@@ -16,6 +16,7 @@ const config: Config = {
 			blue: '#1e07f0',
 			white: 'white',
 			hovered: '#f4f4f5',
+			darkButtonBg: '#e6e7e8',
 		},
 		extend: {
 			transitionProperty: {

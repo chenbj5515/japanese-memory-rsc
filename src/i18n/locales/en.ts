@@ -331,5 +331,43 @@ export default {
   },
   wordCards: {
     demoMeaning: "Twist, Misinterpret"
+  },
+  exam: {
+    title: 'Exam',
+    submit: 'Submit',
+    translation_reading: 'Translation & Reading',
+    translation_to_japanese: 'Japanese Translation',
+    listening: 'Listening Questions',
+    enter_hiragana: 'Enter hiragana',
+    enter_with_user_mother_tongue: 'Enter in English',
+    enter_japanese: 'Enter in Japanese',
+    question: 'Question',
+    play_audio: 'Play Audio',
+    fix_answer: 'Fix Answer',
+    fix_confirm: {
+      title: 'Confirm Fix',
+      description: 'Are you sure you want to mark this answer as correct?',
+      confirm: 'Confirm',
+      cancel: 'Cancel'
+    },
+    start: 'Start New Test',
+    history: 'Test History',
+    cannotStart: 'Cannot Start Test',
+    insufficientData: 'Insufficient data. Please enter enough Japanese sentences before starting the test.',
+    score: "Score",
+    duration: "Test Duration",
+    minutes: "minutes",
+    correct: "Correct!",
+    reference_answer: "Reference answer: {answer}"
+  },
+  dailyReport: {
+    history: {
+      title: 'Report History',
+    },
+    sentences: 'Sentences',
+    words: 'Words',
+    test: 'Test',
+    noRecord: 'No study records for today. Would you like to review recently learned sentences?',
+    startReview: 'Start Review'
   }
 } as const; 
