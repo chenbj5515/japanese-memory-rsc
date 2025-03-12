@@ -14,7 +14,8 @@ const config: Config = {
 			wrong: '#E50914',
 			correct: 'limegreen',
 			blue: '#1e07f0',
-			white: 'white'
+			white: 'white',
+			hovered: '#f4f4f5',
 		},
 		extend: {
 			transitionProperty: {

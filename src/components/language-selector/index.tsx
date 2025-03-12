@@ -42,20 +42,30 @@ export function LanguageSelector() {
                 onClick={() => setIsOpen(!isOpen)}
             >
                 <Globe className="h-5 w-5" />
-                <span>{locale === 'zh' ? '中文' : 'English'}</span>
+                <span>
+                    {locale === 'zh' ? '简体中文' : 
+                     locale === 'zh-TW' ? '繁體中文' : 
+                     'English'}
+                </span>
             </button>
 
             {isOpen && (
                 <div className="absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
                     <div className="py-1" role="menu" aria-orientation="vertical">
                         <button
-                            className={`block px-4 py-2 text-sm w-full text-left ${locale === 'zh' ? 'bg-gray-100' : 'hover:bg-gray-50'}`}
+                            className={`block px-4 py-2 text-sm w-full text-left hover:bg-hovered transition-colors duration-150 ${locale === 'zh' ? 'bg-gray-100' : ''}`}
                             onClick={() => handleLanguageChange('zh')}
                         >
-                            中文
+                            简体中文
                         </button>
                         <button
-                            className={`block px-4 py-2 text-sm w-full text-left ${locale === 'en' ? 'bg-gray-100' : 'hover:bg-gray-50'}`}
+                            className={`block px-4 py-2 text-sm w-full text-left hover:bg-hovered transition-colors duration-150 ${locale === 'zh-TW' ? 'bg-gray-100' : ''}`}
+                            onClick={() => handleLanguageChange('zh-TW')}
+                        >
+                            繁體中文
+                        </button>
+                        <button
+                            className={`block px-4 py-2 text-sm w-full text-left hover:bg-hovered transition-colors duration-150 ${locale === 'en' ? 'bg-gray-100' : ''}`}
                             onClick={() => handleLanguageChange('en')}
                         >
                             English

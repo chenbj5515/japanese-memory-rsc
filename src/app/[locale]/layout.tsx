@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 import ClientLayout from "./client-layout";
 
 export function generateStaticParams() {
-  return [{ locale: 'en' }, { locale: 'zh' }];
+  return [{ locale: 'en' }, { locale: 'zh' }, { locale: 'zh-TW' }];
 }
 
 export default async function LocaleLayout({
@@ -17,7 +17,7 @@ export default async function LocaleLayout({
   const { locale } = await params;
 
   // 验证locale
-  if (!['en', 'zh'].includes(locale)) {
+  if (!['en', 'zh', 'zh-TW'].includes(locale)) {
     notFound();
   }
 

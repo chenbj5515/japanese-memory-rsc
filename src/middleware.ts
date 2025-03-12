@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 import { NextRequest, NextResponse } from 'next/server';
 import createIntlMiddleware from 'next-intl/middleware';
 
-const locales = ['en', 'zh'];
+const locales = ['en', 'zh', 'zh-TW'];
 const publicPages = ['/home', '/privacy-policy', '/terms-of-service', '/business-disclosure', '/guide', '/pricing', '/login'];
 
 // 获取并设置用户语言偏好

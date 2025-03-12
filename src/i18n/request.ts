@@ -1,7 +1,7 @@
 import {getRequestConfig} from 'next-intl/server';
 
 // 定义支持的语言列表
-const locales = ['en', 'zh'];
+const locales = ['en', 'zh', 'zh-TW'];
 
 export default getRequestConfig(async ({requestLocale}) => {
   // 这里使用 requestLocale 而不是 locale
