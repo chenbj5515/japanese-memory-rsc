@@ -5,12 +5,14 @@ import Link from "next/link"
 import { useLocale, useTranslations } from 'next-intl'
 import { useState } from "react"
 import UserPanel from "@/components/user-panel"
+import { useAudioPermission } from "@/hooks/use-audio-permission"
 
 export default function LoginedHeader() {
   const pathname = usePathname()
   const locale = useLocale()
   const t = useTranslations('LoginedHeader')
   const [theme, setTheme] = useState("light")
+  useAudioPermission();
 
   function handleToggle() {
     if (theme === "dark") {

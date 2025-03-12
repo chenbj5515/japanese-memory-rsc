@@ -319,10 +319,12 @@ export default {
     wordCards: 'Word Cards',
     exam: 'Exam',
     dailyReport: 'Daily Report',
-    memoCards: 'Memo Cards'
+    memoCards: 'Memo Cards',
   },
   memoCards: {
     noDataFound: 'Enter Japanese text you are interested in',
-    importSampleData: 'Import Sample Data'
+    importSampleData: 'Import Sample Data',
+    inputPlaceholder: "Enter the Japanese sentence you want to learn",
+    limitMessage: "You have reached the daily limit of 20 sentences. Upgrade to"
   }
 } as const; 

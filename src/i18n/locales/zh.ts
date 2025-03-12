@@ -135,7 +135,7 @@ export default {
       description: '适合休闲用户的基本功能',
       price: '¥0 / 月',
       features: {
-        sentences: '每天20各句子',
+        sentences: '每天20个句子',
         words: '每天20个单词',
         subtitle: '字幕提取插件',
         webTranslation: '网页翻译插件'
@@ -323,6 +323,8 @@ export default {
   },
   memoCards: {
     noDataFound: '请输入您感兴趣的日语文本',
-    importSampleData: '导入示例数据'
+    importSampleData: '导入示例数据',
+    inputPlaceholder: "输入你想学习的日语句子",
+    limitMessage: "您今天已经录入了20个句子到达了使用限制，升级到"
   }
 } as const; 
