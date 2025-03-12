@@ -325,6 +325,11 @@ export default {
         noDataFound: '請輸入您感興趣的日語文本',
         importSampleData: '導入示例數據',
         inputPlaceholder: "輸入你想學習的日語句子",
-        limitMessage: "您今天已經錄入了20個句子到達了使用限制，升級到"
+        limitMessage: "您今天已經錄入了20個句子到達了使用限制，升級到",
+        demoTranslation1: "問這個問題太無聊了。",
+        demoTranslation2: "你是说要我因为私人情感扭曲事实吗？"
+    },
+    wordCards: {
+        demoMeaning: "扭曲，曲解"
     }
 } as const; 

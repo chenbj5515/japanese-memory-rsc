@@ -42,8 +42,6 @@ export async function checkLimit(cardType: CardType): Promise<boolean> {
             }
         });
 
-        console.log("todayCount", todayCount);
-
         return todayCount >= dailyLimit;
     }
 

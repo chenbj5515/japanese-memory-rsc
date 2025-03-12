@@ -325,6 +325,11 @@ export default {
     noDataFound: 'Enter Japanese text you are interested in',
     importSampleData: 'Import Sample Data',
     inputPlaceholder: "Enter the Japanese sentence you want to learn",
-    limitMessage: "You have reached the daily limit of 20 sentences. Upgrade to"
+    limitMessage: "You have reached the daily limit of 20 sentences. Upgrade to",
+    demoTranslation1: "Ask this question is too boring.",
+    demoTranslation2: "Are you saying I should twist the facts because of personal feelings?",
+  },
+  wordCards: {
+    demoMeaning: "Twist, Misinterpret"
   }
 } as const; 

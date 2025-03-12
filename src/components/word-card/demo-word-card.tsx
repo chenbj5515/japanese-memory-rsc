@@ -1,38 +1,16 @@
 "use client"
 import { WordCard } from "./index";
 import { TWordCard } from "@/app/[locale]/word-cards/page";
-
-// 默认单词卡数据
-const defaultWordCardInfo: TWordCard = {
-    "id": "",
-    "word": "捻じ曲げろ",
-    "meaning": "扭曲，曲解",
-    "create_time": new Date("2025-02-08T14:03:03.631Z"),
-    "user_id": "",
-    "review_times": 1,
-    "memo_card_id": "",
-    "forget_count": 0,
-    "memo_card": {
-        "id": "",
-        "translation": "你是说要我因为私人情感扭曲事实吗？",
-        "create_time": new Date("2025-02-08T14:02:46.828Z"),
-        "update_time": new Date("2025-02-12T08:57:52.715Z"),
-        "record_file_path": "",
-        "original_text": "え、私情で真相捻じ曲げろって事ですか？",
-        "review_times": 0,
-        "user_id": "",
-        "kana_pronunciation": "え、わたしじょうでしんそうねじまげろってことですか？",
-        "context_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=374",
-        "forget_count": 0
-    }
-};
+import { createTranslator, useTranslations } from 'next-intl';
 
 interface DemoWordCardProps {
     onUnRecognize?: (wordCardInfo: TWordCard) => void;
-    onRecognize?: (id: string) => void;
+    defaultWordCardInfo: TWordCard;
 }
 
-export function DemoWordCard({ onUnRecognize, onRecognize }: DemoWordCardProps = {}) {
+export function DemoWordCard({ onUnRecognize, defaultWordCardInfo }: DemoWordCardProps) {
+    const t = useTranslations();
+
     // 模拟回调函数
     const handleRecognize = (wordCardInfo: TWordCard) => {
     };
@@ -43,13 +21,10 @@ export function DemoWordCard({ onUnRecognize, onRecognize }: DemoWordCardProps =
     };
 
     return (
-        <WordCard 
+        <WordCard
             wordCardInfo={defaultWordCardInfo}
             onRecognize={handleRecognize}
             onUnRecognize={handleUnRecognize}
         />
     );
 }
-
-// 导出默认单词卡数据，以便外部访问
-export { defaultWordCardInfo };

@@ -1,6 +1,8 @@
+"use client"
 import React from "react";
 import diff_match_patch from "diff-match-patch";
 import { updateReviewTimes } from "./server-actions";
+import { usePathname } from "next/navigation";
 
 interface IProps {
   originalText: string;
@@ -10,6 +12,8 @@ interface IProps {
 
 export function Dictation(props: IProps) {
   const { originalText, cardID, onBlurChange } = props;
+  const pathname = usePathname();
+
   const dictationRef = React.useRef<HTMLDivElement>(null);
   // 入力内容
   const inputContentRef = React.useRef("");
@@ -43,7 +47,9 @@ export function Dictation(props: IProps) {
       // チェックが入っていない場合、チェックマークを入れる
       if (!dictationCheckInputRef.current?.checked) {
         dictationCheckInputRef.current?.click();
-        updateReviewTimes(cardID);
+        if (!pathname.includes('/home')) {
+          await updateReviewTimes(cardID);
+        }
         if (dictationRef.current) {
           dictationRef.current.innerHTML = originalText;
         }

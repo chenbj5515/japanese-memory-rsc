@@ -1,5 +1,4 @@
 "use client"
-import { useSession } from "next-auth/react"
 import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { useLocale, useTranslations } from 'next-intl'

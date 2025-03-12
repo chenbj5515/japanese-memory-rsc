@@ -11,6 +11,7 @@ import { ExternalLink } from "lucide-react";
 import { deleteMemoCard, updateMemoCardTranslation, updatePronunciation, updateOriginalText } from "./server-actions";
 import { useAudioRecorder } from "@/hooks/audio";
 import { Button } from "../ui/button";
+import { usePathname } from "next/navigation";
 
 export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     onDelete?: (id: string) => void;
@@ -27,6 +28,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     const prevTranslationTextRef = React.useRef<string>("");
     const kanaTextRef = React.useRef<HTMLDivElement>(null);
     const prevKanaTextRef = React.useRef<string>("");
+    const pathname = usePathname();
 
     const dispatch = useDispatch();
 
@@ -82,7 +84,7 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
     }
 
     function handleOriginalTextBlur() {
-        if (originalTextRef.current?.textContent) {
+        if (originalTextRef.current?.textContent && !pathname.includes('/home')) {
             updateOriginalText(id, originalTextRef.current?.textContent?.slice(3))
         }
     }

@@ -5,10 +5,37 @@ import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import React from "react"
 import { DemoCard } from "@/components/card/demo-card"
-import { DemoWordCard, defaultWordCardInfo } from "@/components/word-card/demo-word-card"
+import { DemoWordCard } from "@/components/word-card/demo-word-card"
 import { MemoCard } from "@/components/card/memo-card"
 import DemoExam from "@/components/exam/demo-exam"
 import DemoDailyReport from "@/components/daily-report/demo-daily-report"
+
+
+function createDefaultWordCardInfo(t: (key: string) => string) {
+  return {
+    "id": "",
+    "word": "捻じ曲げろ",
+    "meaning": t('wordCards.demoMeaning'),
+    "create_time": new Date("2025-02-08T14:03:03.631Z"),
+    "user_id": "",
+    "review_times": 1,
+    "memo_card_id": "",
+    "forget_count": 0,
+    "memo_card": {
+      "id": "",
+      "translation": t('memoCards.demoTranslation2'),
+      "create_time": new Date("2025-02-08T14:02:46.828Z"),
+      "update_time": new Date("2025-02-12T08:57:52.715Z"),
+      "record_file_path": "",
+      "original_text": "え、私情で真相捻じ曲げろって事ですか？",
+      "review_times": 0,
+      "user_id": "",
+      "kana_pronunciation": "え、わたしじょうでしんそうねじまげろってことですか？",
+      "context_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=374",
+      "forget_count": 0
+    }
+  };
+}
 
 export default function LandingPage() {
   const router = useRouter()
@@ -21,6 +48,8 @@ export default function LandingPage() {
   const [showMemoCard, setShowMemoCard] = React.useState(false)
   // 引用容器元素
   const containerRef = React.useRef<HTMLDivElement>(null)
+
+  const defaultWordCardInfo = createDefaultWordCardInfo(t);
 
   // 添加点击外部关闭弹窗的效果
   React.useEffect(() => {
@@ -74,10 +103,6 @@ export default function LandingPage() {
     setShowDemo(null);
   };
 
-  // return <div className="w-[680px] border border-[#1d283a] h-[calc(100vh-6px)] m-auto rounded-[12px]">
-  //   <DemoExam />
-  // </div>
-
   return (
     <div className="min-h-screen bg-white">
       {/* 添加毛玻璃弹窗 */}
@@ -103,14 +128,14 @@ export default function LandingPage() {
                   ? <DemoExam />
                   : showDemo === 'daily'
                     ? <DemoDailyReport />
-                    : showMemoCard
-                      ? <MemoCard {...defaultWordCardInfo.memo_card} onDelete={() => { }}/>
-                      : (
-                        <DemoWordCard
-                          onUnRecognize={handleUnRecognize}
-                          onRecognize={handleRecognize}
-                        />
-                      )
+                    : showDemo === "word"
+                      ? <DemoWordCard onUnRecognize={handleUnRecognize} defaultWordCardInfo={defaultWordCardInfo} />
+                      : null
+            }
+            {
+              showMemoCard
+                ? <MemoCard {...defaultWordCardInfo.memo_card} onDelete={() => { }} />
+                : null
             }
           </div>
         </div>
