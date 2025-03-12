@@ -4,16 +4,16 @@ import { TWordCard } from "@/app/[locale]/word-cards/page";
 
 // 默认单词卡数据
 const defaultWordCardInfo: TWordCard = {
-    "id": "27e8dc19-23c5-4e5f-8a6d-d19ece50baa7",
+    "id": "",
     "word": "捻じ曲げろ",
     "meaning": "扭曲，曲解",
     "create_time": new Date("2025-02-08T14:03:03.631Z"),
     "user_id": "",
     "review_times": 1,
-    "memo_card_id": "ce158482-798c-4380-bba9-b742f05f1404",
+    "memo_card_id": "",
     "forget_count": 0,
     "memo_card": {
-        "id": "ce158482-798c-4380-bba9-b742f05f1404",
+        "id": "",
         "translation": "你是说要我因为私人情感扭曲事实吗？",
         "create_time": new Date("2025-02-08T14:02:46.828Z"),
         "update_time": new Date("2025-02-12T08:57:52.715Z"),
