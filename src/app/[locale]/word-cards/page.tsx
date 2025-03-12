@@ -7,13 +7,24 @@ export type TWordCard = Prisma.word_cardGetPayload<{}> & {
     memo_card: Prisma.memo_cardGetPayload<{}>
 };
 
-export default async function App() {
+export default async function WordCardsApp() {
     const session = await auth()
-    const count = await prisma.word_card.count();
+    
+    if (!session) {
+        return new Error("Unauthorized")
+    }
 
-    const latestCardsPromise = prisma.word_card.findMany({
+    const newCardsCount = await prisma.word_card.count({
         where: {
             user_id: session?.userId,
+            review_times: 0
+        }
+    });
+
+    const newCardsPromise = prisma.word_card.findMany({
+        where: {
+            user_id: session?.userId,
+            review_times: 0
         },
         orderBy: {
             create_time: 'desc',
@@ -24,37 +35,32 @@ export default async function App() {
         },
     });
 
-    const randomSkip = Math.max(0, Math.floor(Math.random() * (count - 10)));
-    const randomCardsPromise = prisma.word_card.findMany({
+    const remainingCount = Math.max(0, 10 - newCardsCount);
+
+    const reviewCardsPromise = remainingCount > 0 ? prisma.word_card.findMany({
         where: {
             user_id: session?.userId,
+            review_times: {
+                gt: 0
+            }
         },
-        skip: randomSkip,
-        take: 10,
+        orderBy: {
+            forget_count: 'desc',
+        },
+        take: remainingCount,
         include: {
             memo_card: true,
         },
-    });
-
-    const results = await Promise.all([latestCardsPromise, randomCardsPromise])
-
-    const wordCards = results.flat(Infinity) as TWordCard[];
+    }) : Promise.resolve([]);
 
     return (
         <div className="w-full pl-[20px] pb-10 pr-[20px]">
-            {
-                wordCards.length === 0 ? (
-                    <div className="flex mt-[80px] items-center justify-center bg-gradient-to-b from-blue-50 to-white dark:from-blue-900 dark:to-blue-800">
-                        <div className="px-4 mx-auto text-center lg:px-8 sm:py-24 lg:py-32">
-                            <h1 className="text-3xl font-bold tracking-tight text-black dark:text-white sm:text-[2.2rem]">
-                                データが見つかりません
-                            </h1>
-                        </div>
-                    </div>
-                ) : <WordCards wordCards={wordCards} />
-            }
+            <WordCards 
+                newCardsPromise={newCardsPromise}
+                reviewCardsPromise={reviewCardsPromise}
+            />
         </div>
     );
 }
 
-export const dynamic = 'force-dynamic';
+// export const dynamic = 'force-dynamic';

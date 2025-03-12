@@ -27,7 +27,6 @@ export function Dictation(props: IProps) {
       originalText,
       dictationRef.current?.textContent || ""
     );
-    console.log(diff, "diff===")
     const htmlString = diff.map(([result, text]) => {
       return `<span class="${
         result === -1

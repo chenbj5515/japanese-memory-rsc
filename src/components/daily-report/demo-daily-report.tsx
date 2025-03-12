@@ -118,7 +118,6 @@ const mockData = {
 
 export default function DemoDailyReport() {
     // 模拟数据
-    console.log(mockData, "mockData=============")
     const [activeItems, setActiveItems] = useState(mockData.studyItems)
     const [showMemoCard, setShowMemoCard] = useState(false)
     const [currentMemoCard, setCurrentMemoCard] = useState<any>(null)

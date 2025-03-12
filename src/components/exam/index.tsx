@@ -48,7 +48,6 @@ export interface ExamInfo extends ExamResult {
 export default function NewExam(props: IProps) {
     const { initialResults, id } = props;
     const { timerDisplayRef } = useCountDowner();
-    console.log(initialResults);
 
     // AIによって「不正解」と判定された問題を「正解」へと変更する操作を行う際に必要な確認ダイアログの表示・制御ロジック
     const { isOpen, currentQuestionNo, handleFixClick, handleConfirm, handleCancel } = useFixConfirmDialog({

@@ -1,6 +1,6 @@
 "use client"
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { Suspense, use } from "react";
 import { $Enums, Prisma } from '@prisma/client';
 import { MemoCard, WordCard } from "@/components";
 import { updateReviewTimes } from "../_server-actions";
@@ -10,7 +10,8 @@ import { insertActionLogs } from "@/components/exam/server-actions/insert-action
 import { updateForgetCount } from "@/components/word-card/server-actions";
 
 interface IProps {
-    wordCards: TWordCard[]
+    newCardsPromise: Promise<TWordCard[]>;
+    reviewCardsPromise: Promise<TWordCard[]>;
 }
 
 function calculateElementsPerRow(parentWidth: number, childWidth = 280, minGap = 20) {
@@ -39,8 +40,12 @@ function splitIntoRows<T>(wordList: T[], n: number) {
 }
 
 export function WordCards(props: IProps) {
-    const { wordCards } = props;
+    const { newCardsPromise, reviewCardsPromise } = props;
     const router = useRouter();
+
+    const newCards = use(newCardsPromise);
+    const reviewCards = use(reviewCardsPromise);
+    const wordCards = [...newCards, ...reviewCards];
 
     const [rows, setRows] = React.useState<TWordCard[][]>([]);
     const [cardInfo, setCardInfo] = React.useState<Prisma.memo_cardGetPayload<{}> | null>(null);
@@ -126,7 +131,7 @@ export function WordCards(props: IProps) {
     }
 
     return (
-        <>
+        <Suspense fallback={<Loading />}>
             {
                 rows.flat().length === 0 ? <Loading /> : null
             }
@@ -187,6 +192,6 @@ export function WordCards(props: IProps) {
                     })
                 }
             </div>
-        </>
+        </Suspense>
     )
 }

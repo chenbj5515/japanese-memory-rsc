@@ -17,8 +17,6 @@ export async function importSampleMemoCards() {
   const now = new Date();
   const cookieStore = await cookies();
   const locale = cookieStore.get('NEXT_LOCALE')?.value || 'en';
-
-  console.log(cookieStore.get('NEXT_LOCALE'), "NEXT_LOCALE")
   
   const sampleCards = [
     {

@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 
 export async function POST() {
   try {
-    console.log(process.env.STRIPE_PRICE_ID, "process.env.STRIPE_PRICE_ID")
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [
@@ -16,8 +15,6 @@ export async function POST() {
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/subscription`,
     });
-
-    console.log(session, "session")
 
     return NextResponse.json({ sessionId: session.id });
   } catch (error) {

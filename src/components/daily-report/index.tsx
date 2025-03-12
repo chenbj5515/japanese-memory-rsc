@@ -28,7 +28,6 @@ interface ReportData {
 }
 
 export default function DailyReport({ data }: { data: ReportData }) {
-  console.log(data, "data=============")
   const [activeItems, setActiveItems] = useState(data.studyItems)
   const [showMemoCard, setShowMemoCard] = useState(false)
   const [currentMemoCard, setCurrentMemoCard] = useState<any>(null)

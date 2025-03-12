@@ -38,7 +38,6 @@ export function DemoWordCard({ onUnRecognize, onRecognize }: DemoWordCardProps =
     };
 
     const handleUnRecognize = (wordCardInfo: TWordCard) => {
-        console.log('未认识单词:', wordCardInfo.word);
         // 如果传入了外部的onUnRecognize回调，则调用它
         onUnRecognize?.(wordCardInfo);
     };

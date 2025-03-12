@@ -7,7 +7,6 @@ import { useState } from "react"
 import UserPanel from "@/components/user-panel"
 
 export default function LoginedHeader() {
-  const { data } = useSession()
   const pathname = usePathname()
   const locale = useLocale()
   const t = useTranslations('LoginedHeader')
@@ -31,7 +30,7 @@ export default function LoginedHeader() {
             <Link prefetch href={`/${locale}/memo-cards`} className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === `/${locale}/memo-cards` ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>{t('memoCards')}</Link>
           </li>
           <li>
-            <Link prefetch href={`/${locale}/word-cards`} className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === `/${locale}/word-cards` ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>{t('wordCards')}</Link>
+            <Link href={`/${locale}/word-cards`} className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === `/${locale}/word-cards` ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>{t('wordCards')}</Link>
           </li>
           <li className="sm:block hidden">
             <Link prefetch href={`/${locale}/exam-preparation`} className={`text-[15px] font-medium px-4 py-2 rounded-full ${pathname === `/${locale}/exam-preparation` ? 'text-[#a9aaab]' : 'hover:text-[#a9aaab]'}`}>{t('exam')}</Link>

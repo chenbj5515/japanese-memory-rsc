@@ -49,7 +49,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             if (!user_mail || !platform_id) return false;
 
             const dbUser = await findUserByPlatformID(platform_id);
-            console.log(dbUser, "dbUser")
             if (!dbUser) {
                 // 如果用户不存在，创建新用户
                 await createUserInDatabase(user_mail, platform_id, user.name, user.image);
@@ -79,8 +78,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
                         }
                     });
 
-                    console.log(subscription, "subscription")
-
                     if (subscription) {
                         token.subscription_end_time = subscription.end_time.toISOString();
                     }
@@ -95,8 +92,6 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             const profile = token.profile;
             const email = token.email;
             const subscription_end_time = token.subscription_end_time;
-
-            console.log(typeof subscription_end_time, "subscription_end_time")
 
             if (typeof userId === "string" && typeof profile === "string" && typeof email === "string") {
                 session.userId = userId;
