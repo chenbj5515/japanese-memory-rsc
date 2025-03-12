@@ -1,15 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 
 // 録音開始関数、停止関数と再生関数をエクスポートする
-export function useAudioRecorder() {
+export function useAudioRecorder(hasPermission: boolean) {
     const [mediaRecorder, setMediaRecorder] = useState<MediaRecorder | null>(null);
     const audioChunks = useRef<Blob[]>([]);
     const audioURL = useRef<string | null>(null);
     const audio = useRef<HTMLAudioElement | null>(null);
 
     const startRecording = async () => {
-        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-            console.error('ブラウザーは録音をサポートしていません。');
+        if (!hasPermission) {
+            console.error('マイクの権限がありません。');
             return;
         }
 
@@ -29,12 +29,14 @@ export function useAudioRecorder() {
                 audioURL.current = window.URL.createObjectURL(blob);
                 audio.current = new Audio(audioURL.current!);
                 audioChunks.current = [];
+                // 停止所有音轨
+                stream.getTracks().forEach(track => track.stop());
             };
 
             recorder.start();
             setMediaRecorder(recorder);
         } catch (err) {
-            console.error('マイクにアクセスできません', err);
+            console.error('録音を開始できません', err);
         }
     };
 

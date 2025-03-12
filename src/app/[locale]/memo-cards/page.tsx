@@ -7,6 +7,10 @@ import Loading from "@/components/ui/loading";
 export default async function Home() {
   const session = await auth()
 
+  if (!session) {
+    return new Error("Unauthorized")
+  }
+
   const newCardsCountPromise = prisma.memo_card.count({
     where: {
       user_id: session?.userId,
@@ -22,6 +26,7 @@ export default async function Home() {
     orderBy: {
       create_time: 'desc',
     },
+    take: 10,
   });
 
   const newCardsCount = await newCardsCountPromise;
@@ -43,12 +48,10 @@ export default async function Home() {
   return (
     <>
       <div className="pb-[36px]">
-        <Suspense fallback={<Loading />}>
-          <MemoCards
-            newCardsPromise={newCardsPromise}
-            forgottenCardsPromise={forgottenCardsPromise}
-          />
-        </Suspense>
+        <MemoCards
+          newCardsPromise={newCardsPromise}
+          forgottenCardsPromise={forgottenCardsPromise}
+        />
         <LocalCards />
       </div>
       <div className="fixed z-[12] max-w-80-680 left-[50%] -translate-x-1/2 bottom-2 h-[50px] w-[100%]">

@@ -1,5 +1,5 @@
 "use client"
-import React, { use } from "react";
+import React, { Suspense, use } from "react";
 import { useSelector, TypedUseSelectorHook } from "react-redux";
 import { MemoCard } from "@/components";
 import { Prisma } from '@prisma/client';
@@ -7,6 +7,8 @@ import { RootState } from "@/store";
 import { useTranslations } from 'next-intl';
 import LoadingButton from '@/components/ui/loading-button';
 import { importSampleMemoCards } from "./server-actions"
+import { useAudioPermission } from "@/hooks/use-audio-permission";
+import Loading from "@/app/[locale]/loading";
 
 interface IProps {
     newCardsPromise: Promise<Prisma.memo_cardGetPayload<{}>[]>
@@ -20,6 +22,7 @@ export function MemoCards(props: IProps) {
     const [isLoading, setIsLoading] = React.useState(false);
     const { localCards } = useTypedSelector((state: RootState) => state.localCardsSlice);
     const t = useTranslations('memoCards');
+    const hasAudioPermission = useAudioPermission();
 
     const newCards = use(newCardsPromise);
     const forgottenCards = use(forgottenCardsPromise);
@@ -41,10 +44,10 @@ export function MemoCards(props: IProps) {
     }
 
     return (
-        <>
+        <Suspense fallback={<Loading />}>
             {memoCards?.map(card => (
                 <div className="memo-card sm:text-base text-[18px] mx-auto mb-14 max-w-92-675" key={card.id}>
-                    <MemoCard {...card} onDelete={handleDelete} />
+                    <MemoCard {...card} onDelete={handleDelete} hasAudioPermission={hasAudioPermission} />
                 </div>
             ))}
             {
@@ -55,9 +58,6 @@ export function MemoCards(props: IProps) {
                                 {t('noDataFound')}
                             </h1>
                             <div className="mt-6 flex flex-col items-center gap-4">
-                                {/* <p className="text-base leading-7 text-black dark:text-white">
-                                    {t('enterJapanese')}
-                                </p> */}
                                 <LoadingButton
                                     onClick={handleImportSampleData}
                                     className="mt-2"
@@ -70,6 +70,6 @@ export function MemoCards(props: IProps) {
                     </div>
                 ) : null
             }
-        </>
+        </Suspense>
     )
 }
