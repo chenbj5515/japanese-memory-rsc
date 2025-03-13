@@ -79,12 +79,14 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
 
     async function handleBlur() {
         if (translationTextRef.current?.textContent && translationTextRef.current?.textContent !== prevTranslationTextRef.current) {
-            updateMemoCardTranslation(id, translationTextRef.current?.textContent)
+            if (!pathname.includes('/home') && !pathname.includes('/guide')) {
+                updateMemoCardTranslation(id, translationTextRef.current?.textContent)
+            }
         }
     }
 
     function handleOriginalTextBlur() {
-        if (originalTextRef.current?.textContent && !pathname.includes('/home')) {
+        if (originalTextRef.current?.textContent && !pathname.includes('/home') && !pathname.includes('/guide')) {
             updateOriginalText(id, originalTextRef.current?.textContent?.slice(3))
         }
     }
@@ -95,7 +97,9 @@ export function MemoCard(props: Prisma.memo_cardGetPayload<{}> & {
 
     async function handleKanaBlur() {
         if (kanaTextRef.current?.textContent && kanaTextRef.current?.textContent !== prevKanaTextRef.current) {
-            updatePronunciation(id, kanaTextRef.current?.textContent)
+            if (!pathname.includes('/home') && !pathname.includes('/guide')) {
+                updatePronunciation(id, kanaTextRef.current?.textContent)
+            }
         }
     }
 
