@@ -5,7 +5,7 @@ import { addCard } from "@/store/local-cards-slice";
 import { insertPlainTextAtCursor, parseJSONSafely, transformString } from "@/utils";
 import { useForceUpdate } from "@/hooks";
 import { checkLimit } from "@/server-actions/check-limit";
-import { LockIcon } from "lucide-react";
+import { LockIcon, HelpCircle } from "lucide-react";
 import * as ReactDOM from 'react-dom/client';
 import { useTranslations } from "next-intl";
 
@@ -156,7 +156,14 @@ export function InputBox() {
   }, []);
 
   return (
-    <>
+    <div className="relative w-full h-[52px]">
+      <div 
+        className="text-foreground absolute -top-[28px] left-0 opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center gap-1 text-gray-600 dark:text-gray-400 cursor-pointer"
+        onClick={() => window.location.href = "/guide?scroll=1148"}
+      >
+        <HelpCircle className="w-4 h-4 mr-[2px]" />
+        <span className="text-sm">{t('whereToGetSentence')}</span>
+      </div>
       <div
         ref={editableRef}
         onPaste={handlePaste}
@@ -164,7 +171,7 @@ export function InputBox() {
         onKeyDown={handleKeyDown}
         onCompositionStart={handleCompositionStart}
         onCompositionEnd={handleCompositionEnd}
-        className={`input-box dark:bg-bgDark dark:text-white dark:border-[1px] absolute w-full p-3 pl-3 pr-12 rounded-lg border-2 border-lightgrey outline-none focus:border-[#808080] bg-[#fff] left-[50%] bottom-0 transhtmlForm -translate-x-1/2`}
+        className={`input-box dark:bg-bgDark dark:text-white dark:border-[1px] w-full p-3 pl-3 pr-12 rounded-lg border-2 border-lightgrey outline-none focus:border-[#808080] bg-[#fff] transhtmlForm`}
         contentEditable={!isLimited}
         suppressContentEditableWarning
         onBlur={handleBlur}
@@ -190,6 +197,6 @@ export function InputBox() {
           </svg>
         </div>
       )}
-    </>
+    </div>
   );
 }

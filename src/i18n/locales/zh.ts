@@ -327,7 +327,8 @@ export default {
     inputPlaceholder: "输入你想学习的日语句子",
     limitMessage: "您今天已经录入了20个句子到达了使用限制，升级到",
     demoTranslation1: "问这个就太无聊了。",
-    demoTranslation2: "你是说要我因为私人情感扭曲事实吗？"
+    demoTranslation2: "你是说要我因为私人情感扭曲事实吗？",
+    whereToGetSentence: '哪里可以获取日语句子？'
   },
   wordCards: {
     demoMeaning: "扭曲，曲解"

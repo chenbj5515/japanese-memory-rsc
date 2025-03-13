@@ -328,6 +328,7 @@ export default {
     limitMessage: "You have reached the daily limit of 20 sentences. Upgrade to",
     demoTranslation1: "Ask this question is too boring.",
     demoTranslation2: "Are you saying I should twist the facts because of personal feelings?",
+    whereToGetSentence: 'Where to get Japanese sentences?'
   },
   wordCards: {
     demoMeaning: "Twist, Misinterpret"

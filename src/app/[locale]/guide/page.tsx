@@ -1,11 +1,23 @@
 "use client"
-import React from "react";
+import React, { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { DemoCard } from "@/components/card/demo-card";
 import {useTranslations} from 'next-intl';
+import { useSearchParams } from 'next/navigation';
 
 const App: React.FC = () => {
     const t = useTranslations('guide');
+    const searchParams = useSearchParams();
+    
+    useEffect(() => {
+        const scrollY = searchParams.get('scroll');
+        if (scrollY) {
+            window.scrollTo({
+                top: parseInt(scrollY),
+                behavior: 'smooth'
+            });
+        }
+    }, [searchParams]);
     
     return (
         <div className="min-h-screen bg-gray-50 text-[18px] tracking-[0.4px] leading-[1.9]">
