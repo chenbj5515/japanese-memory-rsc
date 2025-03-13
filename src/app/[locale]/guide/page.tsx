@@ -2,13 +2,13 @@
 import React, { useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { DemoCard } from "@/components/card/demo-card";
-import {useTranslations} from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useSearchParams } from 'next/navigation';
 
 const App: React.FC = () => {
     const t = useTranslations('guide');
     const searchParams = useSearchParams();
-    
+
     useEffect(() => {
         const scrollY = searchParams.get('scroll');
         if (scrollY) {
@@ -18,7 +18,7 @@ const App: React.FC = () => {
             });
         }
     }, [searchParams]);
-    
+
     return (
         <div className="min-h-screen bg-gray-50 text-[18px] tracking-[0.4px] leading-[1.9]">
             <div className="max-w-[1440px] mx-auto px-8">
@@ -31,14 +31,54 @@ const App: React.FC = () => {
                         {t('subtitle')}
                     </p>
                 </div>
-                {/* Core Concept Section */}
-                <Card className="p-8 mb-4 bg-white border-none shadow-none">
-                    <h2 className="text-2xl font-semibold text-center mb-8">
-                        {t('core.title')}
+
+                {/* Preface Section */}
+                <Card className="bg-white border-none shadow-none">
+                    <h2 className="text-2xl font-semibold text-center m-12">
+                        {t('preface.title')}
                     </h2>
                     <div className="max-w-3xl mx-auto">
                         <p className="text-gray-700 text-lg mb-8 leading-relaxed">
+                            {t('preface.challenge')}
+                        </p>
+                        <p className="text-gray-700 text-lg mb-8 leading-relaxed">
+                            {t('preface.aiEra')}
+                        </p>
+                        <p className="text-gray-700 text-lg mb-8 leading-relaxed">
+                            {t('preface.bestProcess')}
+                        </p>
+                        <ul className="space-y-3 text-gray-700 mb-8 pl-4">
+                            {(t.raw('preface.principles') as string[]).map((principle: string, index: number) => (
+                                <li key={index} className="list-disc">
+                                    {principle}
+                                </li>
+                            ))}
+                        </ul>
+                        <p className="text-gray-700 text-lg mb-8 leading-relaxed">
+                            {t('preface.creation')}
+                        </p>
+                    </div>
+                </Card>
+                {/* Core Concept Section */}
+                <Card className="bg-white border-none shadow-none">
+                    <h2 className="text-2xl font-semibold text-center m-12">
+                        {t('core.title')}
+                    </h2>
+                    <div className="max-w-3xl mx-auto">
+                        {/* <p className="text-gray-700 text-lg mb-8 leading-relaxed">
                             {t('core.description')}
+                        </p> */}
+                        {/* <p className="text-gray-700 text-lg mb-8 leading-relaxed">
+                            {t('core.gap')}
+                        </p> */}
+                        <p className="text-gray-700 text-lg mb-8 leading-relaxed">
+                            {t('core.origin')}
+                        </p>
+                        <p className="text-gray-700 text-lg mb-8 leading-relaxed">
+                            {t('core.features')}
+                        </p>
+                        <p className="text-gray-700 text-lg mb-8 leading-relaxed">
+                            {t('core.inputMethods')}
                         </p>
                         <div className="space-y-4 mb-8">
                             <div className="flex items-center gap-4">
@@ -64,7 +104,7 @@ const App: React.FC = () => {
                         <p className="text-gray-700 text-lg mt-8 mb-4 leading-relaxed">
                             {t('core.demo.intro')}
                         </p>
-                        <div className="space-y-4 mb-8">
+                        {/* <div className="space-y-4 mb-8">
                             <div className="flex items-center gap-4">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
@@ -81,15 +121,55 @@ const App: React.FC = () => {
                                     {t('core.demo.dictation')}
                                 </span>
                             </div>
-                        </div>
+                        </div> */}
                         <div className="mt-14 text-[16px]">
                             <DemoCard />
                         </div>
                     </div>
                 </Card>
+
+                {/* Review Section */}
+                <Card className="bg-white border-none shadow-none">
+                    <h2 className="text-2xl font-semibold text-center m-12">
+                        {t('review.title')}
+                    </h2>
+                    <div className="max-w-3xl mx-auto">
+                        <p className="text-gray-700 text-lg mb-8 leading-relaxed">
+                            {t('review.description')}
+                        </p>
+                        <p className="text-gray-700 text-lg mb-8 leading-relaxed">
+                            {t('review.reason')}
+                        </p>
+                        <p className="text-gray-700 text-lg mb-8 leading-relaxed">
+                            {t('review.solution')}
+                        </p>
+                        <p className="text-gray-700 text-lg mb-8 leading-relaxed">
+                            {t('review.interaction')}
+                        </p>
+                    </div>
+                </Card>
+
+                {/* Context Section */}
+                <Card className="bg-white border-none shadow-none">
+                    <h2 className="text-2xl font-semibold text-center m-12">
+                        {t('context.title')}
+                    </h2>
+                    <div className="max-w-3xl mx-auto">
+                        <p className="text-gray-700 mb-6">
+                            {t('context.intro')}
+                        </p>
+                        <p className="text-gray-700 mb-6">
+                            {t('context.importance')}
+                        </p>
+                        <p className="text-gray-700">
+                            {t('context.feature')}
+                        </p>
+                    </div>
+                </Card>
+
                 {/* Getting Started Section */}
-                <Card className="mb-12 bg-white border-none shadow-none">
-                    <h2 className="text-2xl font-semibold text-center mb-8">
+                <Card className="bg-white border-none shadow-none">
+                    <h2 className="text-2xl font-semibold text-center m-12">
                         {t('getStarted.title')}
                     </h2>
                     <div className="max-w-3xl mx-auto">
@@ -105,10 +185,10 @@ const App: React.FC = () => {
                                     <p className="text-gray-700">
                                         {t.rich('getStarted.steps.extension.description', {
                                             link: (chunks) => (
-                                                <a href="https://chromewebstore.google.com/detail/fpaloochihjldiaigldijhbmgjjjicoa?utm_source=item-share-cp" 
-                                                   target="_blank" 
-                                                   rel="noopener noreferrer" 
-                                                   className="text-blue-500 hover:text-blue-700 hover:underline"
+                                                <a href="https://chromewebstore.google.com/detail/fpaloochihjldiaigldijhbmgjjjicoa?utm_source=item-share-cp"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-blue-500 hover:text-blue-700 hover:underline"
                                                 >
                                                     {chunks}
                                                 </a>
@@ -139,10 +219,10 @@ const App: React.FC = () => {
                                     <p className="text-gray-700">
                                         {t.rich('getStarted.steps.paste.description', {
                                             link: (chunks) => (
-                                                <a href="https://japanese-memory-rsc.vercel.app/memo-cards" 
-                                                   target="_blank" 
-                                                   rel="noopener noreferrer" 
-                                                   className="text-blue-500 hover:text-blue-700 hover:underline"
+                                                <a href="https://japanese-memory-rsc.vercel.app/memo-cards"
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="text-blue-500 hover:text-blue-700 hover:underline"
                                                 >
                                                     {chunks}
                                                 </a>
@@ -155,7 +235,7 @@ const App: React.FC = () => {
                         <p className="text-gray-700 mt-8">
                             {t.rich('getStarted.review', {
                                 button: (chunks) => (
-                                    <button 
+                                    <button
                                         onClick={() => {
                                             const demoCard = document.querySelector('.mt-14');
                                             if (demoCard) {
@@ -163,24 +243,24 @@ const App: React.FC = () => {
                                                     behavior: 'smooth',
                                                     block: 'center'
                                                 });
-                                                
+
                                                 const clickMe = document.createElement('div');
                                                 clickMe.className = 'absolute -top-10 right-0 text-blue-500 font-medium animate-fadeInOut';
                                                 clickMe.textContent = t('getStarted.clickMe');
                                                 clickMe.style.zIndex = '30';
-                                                
+
                                                 const existingClickMe = document.querySelector('.animate-fadeInOut');
                                                 if (existingClickMe) {
                                                     existingClickMe.remove();
                                                 }
-                                                
+
                                                 const demoCardElement = document.querySelector('.mt-14') as HTMLElement;
                                                 if (demoCardElement) {
                                                     if (demoCardElement.style.position !== 'relative') {
                                                         demoCardElement.style.position = 'relative';
                                                     }
                                                     demoCardElement.appendChild(clickMe);
-                                                    
+
                                                     setTimeout(() => {
                                                         clickMe.classList.add('animate-fadeOut');
                                                         setTimeout(() => {
@@ -204,7 +284,7 @@ const App: React.FC = () => {
                                 channel: (chunks) => (
                                     <span className="flex items-center group">
                                         <a href="https://www.youtube.com/@marymarymary80s" target="_blank" rel="noopener noreferrer">
-                                            <img src="https://yt3.googleusercontent.com/x4eKHmgtnTU3xjqL3uP7sSJadSbaBIJL0g0T-dxo6veLCixHLxvg_4d8g9iF4Bcom1evobHjAg=s160-c-k-c0x00ffffff-no-rj" 
+                                            <img src="https://yt3.googleusercontent.com/x4eKHmgtnTU3xjqL3uP7sSJadSbaBIJL0g0T-dxo6veLCixHLxvg_4d8g9iF4Bcom1evobHjAg=s160-c-k-c0x00ffffff-no-rj"
                                                 alt="Mary's channel avatar"
                                                 className="w-[30px] h-[30px] rounded-full"
                                             />
@@ -224,11 +304,17 @@ const App: React.FC = () => {
                         <p className="text-gray-700 mt-8">
                             {t('getStarted.netflix')}
                         </p>
+                        <p className="text-gray-700 mt-8">
+                            {t('getStarted.websiteCopy')}
+                        </p>
+                        <div className="mt-12">
+                            <DemoCard type="contextText" />
+                        </div>
                     </div>
                 </Card>
 
                 {/* What If I Can't Remember Section */}
-                <Card className="mb-8 bg-white border-none shadow-none">
+                {/* <Card className="mb-8 bg-white border-none shadow-none">
                     <h2 className="text-2xl font-semibold text-center mb-12">
                         {t('remember.title')}
                     </h2>
@@ -251,11 +337,11 @@ const App: React.FC = () => {
                             {t('remember.conclusion')}
                         </p>
                     </div>
-                </Card>
+                </Card> */}
 
                 {/* Summary Section */}
-                <Card className="p-8 bg-white border-none shadow-none">
-                    <h2 className="text-2xl font-semibold text-center mb-12">
+                <Card className="bg-white border-none shadow-none">
+                    <h2 className="text-2xl font-semibold text-center m-12">
                         {t('why.title')}
                     </h2>
                     <div className="max-w-3xl mx-auto">
@@ -285,10 +371,10 @@ const App: React.FC = () => {
                     <div className="mt-4 max-w-3xl mx-auto">
                         {t.rich('why.explore', {
                             link: (chunks) => (
-                                <a href="https://japanese-memory-rsc.vercel.app/" 
-                                   target="_blank" 
-                                   rel="noopener noreferrer" 
-                                   className="text-blue-500 hover:text-blue-700 hover:underline"
+                                <a href="https://japanese-memory-rsc.vercel.app/"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-500 hover:text-blue-700 hover:underline"
                                 >
                                     {chunks}
                                 </a>

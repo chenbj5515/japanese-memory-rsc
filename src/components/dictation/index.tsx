@@ -47,7 +47,7 @@ export function Dictation(props: IProps) {
       // チェックが入っていない場合、チェックマークを入れる
       if (!dictationCheckInputRef.current?.checked) {
         dictationCheckInputRef.current?.click();
-        if (!pathname.includes('/home')) {
+        if (!pathname.includes('/home') && !pathname.includes('/guide')) {
           await updateReviewTimes(cardID);
         }
         if (dictationRef.current) {
