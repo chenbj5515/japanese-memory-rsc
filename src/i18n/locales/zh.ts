@@ -169,8 +169,8 @@ export default {
       features: {
         sentences: '每天20个句子',
         words: '每天20个单词',
-        subtitle: '字幕提取插件',
-        webTranslation: '网页翻译插件'
+        subtitle: '每天10次图片文字识别',
+        webTranslation: '每天20次网页文本翻译'
       },
       currentPlan: '当前方案'
     },
@@ -181,8 +181,8 @@ export default {
       features: {
         sentences: '无限句子',
         words: '无限单词',
-        subtitle: '字幕提取插件',
-        webTranslation: '网页翻译插件'
+        subtitle: '无限图片文字识别',
+        webTranslation: '无限网页文本翻译'
       },
       upgrade: '立即升级'
     }

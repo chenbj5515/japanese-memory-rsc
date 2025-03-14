@@ -168,21 +168,21 @@ export default {
       price: '¥0 / month',
       features: {
         sentences: '20 sentences per day',
-        words: '20 words per day',
-        subtitle: 'Subtitle extraction plugin',
-        webTranslation: 'Web translation plugin'
+        words: '20 words per day', 
+        subtitle: '10 OCR scans per day',
+        webTranslation: '20 web translations per day'
       },
       currentPlan: 'Current Plan'
     },
     proPlan: {
       title: 'Pro Plan',
-      description: 'Unlimited access and advanced features',
+      description: 'Unlimited access and premium features',
       price: '¥35 / month',
       features: {
         sentences: 'Unlimited sentences',
         words: 'Unlimited words',
-        subtitle: 'Subtitle extraction plugin',
-        webTranslation: 'Web translation plugin'
+        subtitle: 'Unlimited OCR scans',
+        webTranslation: 'Unlimited web translations'
       },
       upgrade: 'Upgrade Now'
     }
