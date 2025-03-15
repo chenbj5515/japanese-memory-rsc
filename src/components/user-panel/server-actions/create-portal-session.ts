@@ -26,7 +26,7 @@ export async function createPortalSession() {
     const nextLocale = cookieStore.get('NEXT_LOCALE')?.value || 'en';
     const locale = mapLocaleToStripe(nextLocale);
 
-    if (!session?.user?.email) {
+    if (!session?.email) {
         throw new Error('Not authenticated')
     }
 
