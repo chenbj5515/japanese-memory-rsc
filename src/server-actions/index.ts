@@ -41,7 +41,5 @@ export async function askAIDirectly(input: string, temperature?: number) {
 }
 
 export async function Logout() {
-    return signOut({
-        redirectTo: "/"
-    });
+    return signOut();
 }
