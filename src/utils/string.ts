@@ -13,15 +13,15 @@ export function transformString(input: string) {
     let result = input.trim();
 
     // 全角括弧と半角括弧の中身を削除
-    result = result.replace(/[（(].*?[）)]/g, "").trim();
+    // result = result.replace(/[（(].*?[）)]/g, "").trim();
 
     // 全角空白と半角空白を「、」に置換
-    result = result.replace(/[\s\u3000]+/g, "、");
+    // result = result.replace(/[\s\u3000]+/g, "、");
 
-    const quoteIndex = result.indexOf("“");
-    if (quoteIndex !== -1) {
-        result = result.slice(quoteIndex + 1);
-    }
+    // const quoteIndex = result.indexOf("“");
+    // if (quoteIndex !== -1) {
+    //     result = result.slice(quoteIndex + 1);
+    // }
 
     return result;
 }

@@ -53,7 +53,7 @@ export default async function Home() {
         />
         <LocalCards />
       </div>
-      <div className="fixed z-[12] max-w-80-680 left-[50%] -translate-x-1/2 bottom-2 h-[50px] w-[100%]">
+      <div className="fixed z-[12] max-w-80-680 left-[50%] -translate-x-1/2 bottom-2 min-h-[50px] w-[100%]">
         <InputBox />
       </div>
       <WordCardAdder />

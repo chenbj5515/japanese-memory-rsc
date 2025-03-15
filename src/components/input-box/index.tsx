@@ -156,7 +156,7 @@ export function InputBox() {
   }, []);
 
   return (
-    <div className="relative w-full h-[52px]">
+    <div className="relative w-full min-h-[52px]">
       <div 
         className="text-foreground absolute -top-[28px] left-0 opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center gap-1 text-gray-600 dark:text-gray-400 cursor-pointer"
         onClick={() => window.location.href = "/guide?scroll=1148"}
