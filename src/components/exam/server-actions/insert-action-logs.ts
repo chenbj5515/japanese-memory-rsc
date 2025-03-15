@@ -10,14 +10,14 @@ export async function insertActionLogs(
 ) {
     const session = await auth();
 
-    if (!session?.userId) {
+    if (!session?.user_id) {
         throw new Error('ユーザー未登録');
     }
 
     // 既存のログを確認
     const existingLog = await prisma.user_action_logs.findFirst({
         where: {
-            user_id: session.userId,
+            user_id: session.user_id,
             action_type,
             related_id,
             related_type
@@ -38,7 +38,7 @@ export async function insertActionLogs(
         // 既存のログがない場合は新規作成
         await prisma.user_action_logs.create({
             data: {
-                user_id: session.userId,
+                user_id: session.user_id,
                 action_type,
                 related_id,
                 related_type

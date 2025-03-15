@@ -13,7 +13,7 @@ export default async function App() {
 
     const latestCardsPromise = prisma.$queryRaw<Prisma.memo_cardGetPayload<{}>[]>`
         SELECT * FROM memo_card 
-        WHERE LENGTH(original_text) < 80 AND user_id = ${session?.userId}
+        WHERE LENGTH(original_text) < 80 AND user_id = ${session?.user_id}
         ORDER BY create_time DESC 
         LIMIT 10
     `;
@@ -22,7 +22,7 @@ export default async function App() {
 
     const randomCardsPromise = prisma.$queryRaw<Prisma.memo_cardGetPayload<{}>[]>`
         SELECT * FROM memo_card 
-        WHERE LENGTH(original_text) < 80 AND user_id = ${session?.userId}
+        WHERE LENGTH(original_text) < 80 AND user_id = ${session?.user_id}
         OFFSET ${randomSkip} 
         LIMIT 10
     `;

@@ -8,7 +8,7 @@ import { $Enums } from "@prisma/client";
 export async function updateExamResult(exam_id: string, result_id: string, total_score: number) {
     // 获取用户会话
     const session = await auth();
-    const user_id = session?.userId;
+    const user_id = session?.user_id;
 
     if (!user_id) {
         return { success: false, message: "User not authenticated" };
@@ -23,7 +23,7 @@ export async function updateExamResult(exam_id: string, result_id: string, total
         await prisma.exams.update({
             where: {
                 exam_id,
-                user_id: session.userId
+                user_id: session.user_id
             },
             data: {
                 total_score,

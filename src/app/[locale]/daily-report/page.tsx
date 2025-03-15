@@ -7,7 +7,7 @@ import { getTranslations } from 'next-intl/server'
 
 export default async function YearEndReportPage({ searchParams }: { searchParams: Promise<{ date?: string }> }) {
   const session = await auth()
-  if (!session?.userId) return null
+  if (!session?.user_id) return null
   let id = 0
   let { date } = await searchParams;
   const t = await getTranslations('dailyReport');
@@ -21,7 +21,7 @@ export default async function YearEndReportPage({ searchParams }: { searchParams
   // Get action logs for the specified date
   const actionLogs = await prisma.user_action_logs.findMany({
     where: {
-      user_id: session.userId,
+      user_id: session.user_id,
       create_time: {
         gte: targetDate,
         lt: nextDay

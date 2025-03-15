@@ -20,20 +20,20 @@ interface ExamMonth {
 export default async function App() {
     const session = await auth()
 
-    if (!session?.userId) {
+    if (!session?.user_id) {
         return null;
     }
 
     const count = await prisma.word_card.count({
         where: {
-            user_id: session?.userId,
+            user_id: session?.user_id,
         },
     });
     const randomShortCards = await prisma.$queryRaw<Prisma.memo_cardGetPayload<{}>[]>`
         SELECT *
         FROM memo_card
         WHERE LENGTH(original_text) < 50
-                AND user_id = ${session?.userId}
+                AND user_id = ${session?.user_id}
         ORDER BY RANDOM()
         LIMIT 5
     `;
@@ -43,7 +43,7 @@ export default async function App() {
     }
 
     const exams = await prisma.exams.findMany({
-        where: { user_id: session?.userId },
+        where: { user_id: session?.user_id },
         orderBy: {
             create_time: 'desc',
         },

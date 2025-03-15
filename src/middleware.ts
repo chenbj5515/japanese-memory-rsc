@@ -50,7 +50,7 @@ export async function middleware(req: NextRequest) {
 
     // 处理根路由重定向
     if (pathname === '/') {
-        const session = await auth();
+        const session = await auth(req);
         if (!session) {
             return NextResponse.redirect(new URL(`/${locale}/home`, req.url));
         }
@@ -65,7 +65,7 @@ export async function middleware(req: NextRequest) {
     // 检查是否是受保护的页面
     const isPublicPage = publicPages.some(page => pathname.endsWith(page));
     if (!isPublicPage) {
-        const session = await auth();
+        const session = await auth(req);
         if (!session) {
             return NextResponse.redirect(new URL(`/${locale}/home`, req.url));
         }

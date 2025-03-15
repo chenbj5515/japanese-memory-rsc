@@ -8,7 +8,8 @@ export type CardType = 'memo_card' | 'word_card';
 
 export async function checkLimit(cardType: CardType): Promise<boolean> {
     const session = await auth();
-    if (!session?.userId) {
+
+    if (!session?.user_id) {
         throw new Error("Unauthorized");
     }
 
@@ -33,7 +34,7 @@ export async function checkLimit(cardType: CardType): Promise<boolean> {
         // 获取今天创建的卡片数量
         const todayCount = await prisma.user_action_logs.count({
             where: {
-                user_id: session.userId,
+                user_id: session.user_id,
                 action_type: actionType,
                 create_time: {
                     gte: today,

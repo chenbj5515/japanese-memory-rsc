@@ -3,7 +3,7 @@ import { prisma } from "@/prisma";
 
 export async function checkSubscription(): Promise<boolean> {
     const session = await auth();
-    const userId = session?.userId;
+    const userId = session?.user_id;
 
     if (!userId) {
         throw new Error("用户未登录");

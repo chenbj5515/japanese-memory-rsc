@@ -7,7 +7,7 @@ export default async function DailyReportLayout({
     children: React.ReactNode
 }) {
     const session = await auth()
-    if (!session?.userId) return null
+    if (!session?.user_id) return null
 
     return (
         <TooltipProvider>

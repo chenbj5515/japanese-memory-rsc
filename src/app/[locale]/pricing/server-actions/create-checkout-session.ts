@@ -10,7 +10,7 @@ export async function createCheckoutSession() {
   const cookieStore = await cookies()
   const locale = cookieStore.get('NEXT_LOCALE')?.value || 'en'
   
-  if (!session?.userId) {
+  if (!session?.user_id) {
     return { url: `/${locale}/login?redirect=/pricing` }
     // throw new Error('User must be logged in')
   }
@@ -18,7 +18,7 @@ export async function createCheckoutSession() {
   const checkoutSession = await stripe.checkout.sessions.create({
     mode: 'subscription',
     payment_method_types: ['card'],
-    client_reference_id: session.userId,
+    client_reference_id: session.user_id,
     line_items: [
       {
         price: process.env.STRIPE_PRICE_ID,

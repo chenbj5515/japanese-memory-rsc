@@ -4,7 +4,7 @@ import { prisma } from "@/prisma";
 import { MemoCards, LocalCards, InputBox, WordCardAdder } from "@/components";
 // import Loading from "@/components/ui/loading";
 
-export default async function Home() {
+export default async function MemoCardsPage() {
   const session = await auth()
 
   if (!session) {
@@ -13,14 +13,14 @@ export default async function Home() {
 
   const newCardsCount = await prisma.memo_card.count({
     where: {
-      user_id: session?.userId,
+      user_id: session?.user_id,
       review_times: 0
     }
   });
 
   const newCardsPromise = prisma.memo_card.findMany({
     where: {
-      user_id: session?.userId,
+      user_id: session?.user_id,
       review_times: 0
     },
     orderBy: {
@@ -33,7 +33,7 @@ export default async function Home() {
 
   const forgottenCardsPromise = remainingCount > 0 ? prisma.memo_card.findMany({
     where: {
-      user_id: session?.userId,
+      user_id: session?.user_id,
       review_times: {
         gt: 0
       }

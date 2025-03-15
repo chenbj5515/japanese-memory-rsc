@@ -16,14 +16,14 @@ export default async function WordCardsApp() {
 
     const newCardsCount = await prisma.word_card.count({
         where: {
-            user_id: session?.userId,
+            user_id: session?.user_id,
             review_times: 0
         }
     });
 
     const newCardsPromise = prisma.word_card.findMany({
         where: {
-            user_id: session?.userId,
+            user_id: session?.user_id,
             review_times: 0
         },
         orderBy: {
@@ -39,7 +39,7 @@ export default async function WordCardsApp() {
 
     const reviewCardsPromise = remainingCount > 0 ? prisma.word_card.findMany({
         where: {
-            user_id: session?.userId,
+            user_id: session?.user_id,
             review_times: {
                 gt: 0
             }

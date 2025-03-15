@@ -7,7 +7,7 @@ export async function updateForgetCount(wordCardInfo: TWordCard) {
   try {
     const session = await auth();
 
-    if (!session?.userId) {
+    if (!session?.user_id) {
       throw new Error('ユーザー未登録');
     }
   

@@ -7,7 +7,7 @@ import { ExamInfo } from "..";
 export async function insertExamResults(results: ExamInfo[], total_score: number) {
     // 获取用户会话
     const session = await auth();
-    const user_id = session?.userId;
+    const user_id = session?.user_id;
 
     if (!user_id) {
         return { success: false, message: "User not authenticated" };

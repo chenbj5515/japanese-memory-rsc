@@ -4,7 +4,7 @@ import { prisma } from "@/prisma"
 
 export async function createExam() {
     const session = await auth();
-    const user_id = session?.userId;
+    const user_id = session?.user_id;
     
     if (!user_id) {
         return ""

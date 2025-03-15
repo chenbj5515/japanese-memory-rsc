@@ -6,7 +6,7 @@ import { cookies, headers } from 'next/headers';
 
 export async function importSampleMemoCards() {
   const session = await auth();
-  const userId = session?.userId;
+  const userId = session?.user_id;
 //   const headersList = await headers()
 //   const referer = headersList.get('referer')
 

@@ -6,14 +6,14 @@ import { TWordCard } from "../page";
 export async function updateReviewTimes(wordCardInfo: TWordCard) {
     const session = await auth();
 
-    if (!session?.userId) {
+    if (!session?.user_id) {
         throw new Error('ユーザー未登録');
     }
 
     const updatedMemoCard = await prisma.word_card.update({
         where: {
             id: wordCardInfo.id,
-            user_id: session?.userId
+            user_id: session?.user_id
         },
         data: {
             review_times: {

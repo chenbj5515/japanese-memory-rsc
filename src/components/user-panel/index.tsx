@@ -1,5 +1,5 @@
 "use client"
-import { useSession } from "next-auth/react"
+// import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useLocale, useTranslations } from 'next-intl'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -9,14 +9,15 @@ import { Logout } from "@/server-actions"
 import { ChevronRight } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 import { createPortalSession } from "./server-actions/create-portal-session"
+import { useSession } from "@/hooks/use-session"
 
 export default function UserPanel() {
-    const { data } = useSession()
+    const {user} = useSession()
     const router = useRouter()
     const locale = useLocale()
     const t = useTranslations('LoginedHeader')
 
-    const subscription_end_time = data?.subscription_end_time;
+    const subscription_end_time = user?.subscription_end_time;
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString)
@@ -41,13 +42,13 @@ export default function UserPanel() {
         <Popover>
             <PopoverTrigger asChild>
                 <Avatar className="hidden sm:block h-10 w-10 cursor-pointer">
-                    <AvatarImage src={data?.profile} alt="profile" />
+                    <AvatarImage src={user?.profile} alt="profile" />
                     <AvatarFallback>user</AvatarFallback>
                 </Avatar>
             </PopoverTrigger>
             <PopoverContent className="w-72 p-2 space-y-1">
                 <div className="h-10 px-2 flex items-center">
-                    <p className="text-sm font-medium truncate">{data?.email}</p>
+                    <p className="text-sm font-medium truncate">{user?.email}</p>
                 </div>
                 <div className="h-10 flex items-center">
                     <Button
