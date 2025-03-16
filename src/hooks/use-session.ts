@@ -26,7 +26,7 @@ export function useSession(): SessionData {
 
     async function fetchSession() {
       try {
-        const data = await fetchApi("/api/user/info", {
+        const data = await fetchApi("/user/info", {
           credentials: "include",
         });
 

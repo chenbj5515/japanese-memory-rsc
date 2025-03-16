@@ -109,7 +109,7 @@
 
 import { headers } from 'next/headers';
 import { cookies } from 'next/headers';
-import { fetchApi } from "./utils/fetchApi";
+import { fetchApi } from "./utils/fetch-api";
 import { cache } from 'react';
 import { NextRequest } from 'next/server';
 
@@ -134,7 +134,7 @@ export const auth = cache(async (req?: NextRequest): Promise<Session | null> => 
         // 构建请求头
         const requestHeaders: HeadersInit = {};
 
-        // 方式1：如果传入了请求对象(中间件环境)
+        // // 方式1：如果传入了请求对象(中间件环境)
         if (req) {
             const cookieHeader = req.headers.get('cookie');
             if (cookieHeader) {
@@ -180,11 +180,12 @@ export const auth = cache(async (req?: NextRequest): Promise<Session | null> => 
         }
 
         // 调用后端 API 获取用户信息，同时传递cookie
-        const data = await fetchApi("/api/user/info", {
+        const data = await fetchApi("/user/info", {
             credentials: "include", // 客户端环境下有效
             headers: requestHeaders // 服务端环境下手动传递cookie
         });
 
+        // return null;
         return data?.user || null;
     } catch (error) {
         console.error("获取用户信息失败:", error);
