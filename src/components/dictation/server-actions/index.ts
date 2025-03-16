@@ -25,7 +25,7 @@ export async function updateReviewTimes(id: string) {
     // ログは非同期で記録
     prisma.user_action_logs.create({
         data: {
-            user_id: session.user_id,
+            user_id: session.user.id,
             action_type: $Enums.action_type_enum.COMPLETE_SENTENCE_REVIEW,
             related_id: id,
             related_type: 'memo_card'

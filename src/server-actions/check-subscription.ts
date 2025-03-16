@@ -1,7 +1,14 @@
+"use server"
 import { getSession } from "@/lib/auth";
 import { prisma } from "@/prisma";
 
-export async function checkSubscription(): Promise<boolean> {
+// 定义返回类型接口
+export interface SubscriptionStatus {
+    isSubscribed: boolean;
+    expiryTime: Date | null;
+}
+
+export async function checkSubscription(): Promise<SubscriptionStatus> {
     const session = await getSession();
     const userId = session?.user.id;
 
@@ -11,7 +18,7 @@ export async function checkSubscription(): Promise<boolean> {
 
     const userSubscription = await prisma.user_subscription.findFirst({
         where: {
-            userId: userId,
+            user_id: userId,
         },
         select: {
             end_time: true,
@@ -19,11 +26,17 @@ export async function checkSubscription(): Promise<boolean> {
     });
 
     if (!userSubscription) {
-        return false;
+        return {
+            isSubscribed: false,
+            expiryTime: null
+        };
     }
 
     const currentTime = new Date();
-    const isValid = userSubscription.end_time > currentTime;
+    const isSubscribed = userSubscription.end_time > currentTime;
 
-    return isValid;
+    return {
+        isSubscribed,
+        expiryTime: userSubscription.end_time
+    };
 }

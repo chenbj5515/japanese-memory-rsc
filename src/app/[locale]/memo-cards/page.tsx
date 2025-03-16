@@ -1,11 +1,11 @@
 import React from "react";
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth";
 import { prisma } from "@/prisma";
 import { MemoCards, LocalCards, InputBox, WordCardAdder } from "@/components";
 // import Loading from "@/components/ui/loading";
 
 export default async function MemoCardsPage() {
-  const session = await auth()
+  const session = await getSession()
 
   if (!session) {
     return new Error("Unauthorized")
@@ -13,14 +13,14 @@ export default async function MemoCardsPage() {
 
   const newCardsCount = await prisma.memo_card.count({
     where: {
-      user_id: session?.user_id,
+      user_id: session?.user?.id,
       review_times: 0
     }
   });
 
   const newCardsPromise = prisma.memo_card.findMany({
     where: {
-      user_id: session?.user_id,
+      user_id: session?.user?.id,
       review_times: 0
     },
     orderBy: {
@@ -33,7 +33,7 @@ export default async function MemoCardsPage() {
 
   const forgottenCardsPromise = remainingCount > 0 ? prisma.memo_card.findMany({
     where: {
-      user_id: session?.user_id,
+      user_id: session?.user?.id,
       review_times: {
         gt: 0
       }

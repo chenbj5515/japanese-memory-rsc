@@ -14,25 +14,25 @@ import DemoDailyReport from "@/components/daily-report/demo-daily-report"
 function createDefaultWordCardInfo(t: (key: string) => string) {
   return {
     "id": "",
-    "word": "捻じ曲げろ",
+    "word": "捻じ曲げろ", 
     "meaning": t('wordCards.demoMeaning'),
-    "createTime": new Date("2025-02-08T14:03:03.631Z"),
-    "userId": "",
-    "reviewTimes": 1,
-    "memoCard_id": "",
-    "forgetCount": 0,
-    "memoCard": {
+    "create_time": new Date("2025-02-08T14:03:03.631Z"),
+    "user_id": "",
+    "review_times": 1,
+    "memo_card_id": "",
+    "forget_count": 0,
+    "memo_card": {
       "id": "",
       "translation": t('memoCards.demoTranslation2'),
-      "createTime": new Date("2025-02-08T14:02:46.828Z"),
+      "create_time": new Date("2025-02-08T14:02:46.828Z"), 
       "update_time": new Date("2025-02-12T08:57:52.715Z"),
       "record_file_path": "",
       "original_text": "え、私情で真相捻じ曲げろって事ですか？",
-      "reviewTimes": 0,
-      "userId": "",
+      "review_times": 0,
+      "user_id": "",
       "kana_pronunciation": "え、わたしじょうでしんそうねじまげろってことですか？",
       "context_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=374",
-      "forgetCount": 0
+      "forget_count": 0
     }
   };
 }
@@ -134,7 +134,7 @@ export default function LandingPage() {
             }
             {
               showMemoCard
-                ? <MemoCard {...defaultWordCardInfo.memoCard} onDelete={() => { }} />
+                ? <MemoCard {...defaultWordCardInfo.memo_card} onDelete={() => { }} />
                 : null
             }
           </div>

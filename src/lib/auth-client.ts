@@ -3,9 +3,9 @@ export const authClient = createAuthClient({
     baseURL: "http://localhost:3000" // the base url of your auth server
 })
 
-export const signIn = async () => {
+export const signIn = async (type: "github" | "google") => {
     const data = await authClient.signIn.social({
-        provider: "github"
+        provider: type
     })
     console.log(data)
 }

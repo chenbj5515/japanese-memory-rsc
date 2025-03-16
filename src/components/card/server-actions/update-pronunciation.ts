@@ -12,7 +12,7 @@ export async function updatePronunciation(id: string, kana_pronunciation: string
     const updatedMemoCard = await prisma.memo_card.updateMany({
         where: {
             id: id,
-            userId: session?.user?.id
+            user_id: session?.user?.id
         },
         data: {
             kana_pronunciation

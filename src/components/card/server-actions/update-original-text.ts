@@ -12,7 +12,7 @@ export async function updateOriginalText(id: string, original_text: string) {
     const updatedMemoCard = await prisma.memo_card.updateMany({
         where: {
             id: id,
-            userId: session?.user?.id
+            user_id: session?.user?.id
         },
         data: {
             original_text

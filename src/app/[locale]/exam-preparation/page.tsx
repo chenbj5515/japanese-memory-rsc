@@ -1,4 +1,4 @@
-import { auth } from '@/auth';
+import { getSession } from '@/lib/auth';
 import ExamPreparation from '@/components/exam/exam-preparation';
 import { prisma } from '@/prisma';
 import { getLocaleServer } from '@/server-actions/get-locale-server';
@@ -18,22 +18,22 @@ interface ExamMonth {
 }
 
 export default async function App() {
-    const session = await auth()
+    const session = await getSession()
 
-    if (!session?.user_id) {
+    if (!session?.user?.id) {
         return null;
     }
 
     const count = await prisma.word_card.count({
         where: {
-            user_id: session?.user_id,
+            user_id: session?.user?.id,
         },
     });
     const randomShortCards = await prisma.$queryRaw<Prisma.memo_cardGetPayload<{}>[]>`
         SELECT *
         FROM memo_card
         WHERE LENGTH(original_text) < 50
-                AND user_id = ${session?.user_id}
+                AND user_id = ${session?.user?.id}
         ORDER BY RANDOM()
         LIMIT 5
     `;
@@ -43,7 +43,7 @@ export default async function App() {
     }
 
     const exams = await prisma.exams.findMany({
-        where: { user_id: session?.user_id },
+        where: { user_id: session?.user?.id },
         orderBy: {
             create_time: 'desc',
         },

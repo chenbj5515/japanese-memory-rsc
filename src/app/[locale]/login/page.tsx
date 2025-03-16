@@ -19,7 +19,7 @@ export default function LoginPage() {
   async function onGitHubSignIn() {
     try {
       setIsGithubLoading(true);
-      await signIn();
+      await signIn("github");
     } catch (error) {
       console.error("GitHub 登录错误：", error);
       setIsGithubLoading(false);
@@ -27,16 +27,13 @@ export default function LoginPage() {
   }
 
   async function onGoogleSignIn() {
-    // try {
-    //   setIsGoogleLoading(true);
-    //   await signIn.social({ 
-    //     provider: 'google', 
-    //     callbackURL: callbackUrl 
-    //   });
-    // } catch (error) {
-    //   console.error("Google 登录错误：", error);
-    //   setIsGoogleLoading(false);
-    // }
+    try {
+      setIsGoogleLoading(true);
+      await signIn("google");
+    } catch (error) {
+      console.error("Google 登录错误：", error);
+      setIsGoogleLoading(false);
+    }
   }
 
   return (

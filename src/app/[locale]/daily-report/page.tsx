@@ -21,7 +21,7 @@ export default async function YearEndReportPage({ searchParams }: { searchParams
   // Get action logs for the specified date
   const actionLogs = await prisma.user_action_logs.findMany({
     where: {
-      user_id: session.user_id,
+      user_id: session.user.id,
       create_time: {
         gte: targetDate,
         lt: nextDay
