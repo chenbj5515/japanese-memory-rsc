@@ -1,19 +1,19 @@
 "use server"
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth";
 import { prisma } from "@/prisma";
 import { $Enums } from "@prisma/client";
 
 export async function updateReviewTimes(id: string) {
-    const session = await auth();
+    const session = await getSession();
 
-    if (!session?.user_id) {
+    if (!session?.user.id) {
         throw new Error('ユーザー未登録');
     }
 
     const updatedMemoCard = await prisma.memo_card.updateMany({
         where: {
             id: id,
-            user_id: session.user_id
+            userId: session?.user?.id
         },
         data: {
             review_times: {

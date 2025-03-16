@@ -20,7 +20,7 @@ export async function openaiAuthMiddleware(request: NextRequest) {
         return NextResponse.json({ success: false, error: '无效的会话' }, { status: 401 });
     }
 
-    if (!decoded?.user_id) {
+    if (!decoded?.userId) {
         return NextResponse.json({ success: false, error: '用户未登录' }, { status: 401 });
     }
 
@@ -30,7 +30,7 @@ export async function openaiAuthMiddleware(request: NextRequest) {
     // 由于NextRequest是不可变的，我们需要克隆它并添加属性
     // 这里我们将用户信息添加到headers中，在处理程序中再提取出来
     const requestHeaders = new Headers(request.headers);
-    requestHeaders.set('x-user-id', decoded.user_id);
+    requestHeaders.set('x-user-id', decoded.userId);
     requestHeaders.set('x-user-email', decoded.email);
     requestHeaders.set('x-user-name', decoded.name);
     requestHeaders.set('x-user-profile', decoded.profile || '');

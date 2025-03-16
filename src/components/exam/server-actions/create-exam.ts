@@ -1,19 +1,19 @@
 "use server"
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth";
 import { prisma } from "@/prisma"
 
 export async function createExam() {
-    const session = await auth();
-    const user_id = session?.user_id;
+    const session = await getSession();
+    const userId = session?.user.id;
     
-    if (!user_id) {
+    if (!userId) {
         return ""
     }
     
     const newExam = await prisma.exams.create({
         data: {
             exam_name: "",
-            user_id,
+            userId,
             create_time: new Date(),
         },
     });

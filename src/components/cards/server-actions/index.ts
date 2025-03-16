@@ -1,12 +1,12 @@
 "use server";
 
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth";
 import { prisma } from "@/prisma";
 import { cookies, headers } from 'next/headers';
 
 export async function importSampleMemoCards() {
-  const session = await auth();
-  const userId = session?.user_id;
+  const session = await getSession();
+  const userId = session?.user.id;
 //   const headersList = await headers()
 //   const referer = headersList.get('referer')
 
@@ -23,8 +23,8 @@ export async function importSampleMemoCards() {
       translation: locale === 'zh' ? 
         "福冈美女众多的传闻已经不再是传说，可以说是定论了。" : 
         "The rumor that there are many beautiful women in Fukuoka is no longer just a legend, it can be said to be a definitive conclusion.",
-      create_time: now,
-      update_time: now,
+        create_time: now,
+        update_time: now,
       original_text: "福岡に美人が多いという噂は伝説でもなんでもなく、もはや定説と言ってもいいでしょう。",
       review_times: 0,
       user_id: userId,
@@ -35,8 +35,8 @@ export async function importSampleMemoCards() {
       translation: locale === 'zh' ? 
         "你是不是在没有磨合的情况下就使用了负荷很高的植入物？" : 
         "Did you use a high-load implant without breaking it in?",
-      create_time: now,
-      update_time: now,
+        create_time: now,
+        update_time: now,
       original_text: "負荷の高いインプラントを、慣らしもせずに使ったんでしょ",
       review_times: 0,
       user_id: userId,
@@ -47,8 +47,8 @@ export async function importSampleMemoCards() {
       translation: locale === 'zh' ? 
         "每次都完全抄袭封面的搭配，真是时尚。" : 
         "Every time you completely copy the cover's coordination, it's so fashionable.",
-      create_time: now,
-      update_time: now,
+        create_time: now,
+        update_time: now,
       original_text: "毎回表紙のコーディネート丸パクリしてておしゃれ",
       review_times: 0,
       user_id: userId,
@@ -59,8 +59,8 @@ export async function importSampleMemoCards() {
       translation: locale === 'zh' ? 
         "探索Cursor的项目和规则运用的最佳实践。" : 
         "Explore best practices for Cursor's project and rules implementation.",
-      create_time: now,
-      update_time: now,
+        create_time: now,
+        update_time: now,
       original_text: "CursorのProject、Rules運用のベストプラクティスを探る",
       review_times: 0,
       user_id: userId,

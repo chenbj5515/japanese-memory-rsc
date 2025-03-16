@@ -3,7 +3,7 @@
 import { streamText } from 'ai';
 import { openai } from '@ai-sdk/openai';
 import { createStreamableValue } from 'ai/rsc';
-import { signOut } from "@/auth";
+import { signOut } from "@/lib/auth-client";
 
 export async function askAI(input: string, temperature?: number) {
     const stream = createStreamableValue('');

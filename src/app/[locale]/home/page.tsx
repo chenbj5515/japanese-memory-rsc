@@ -16,23 +16,23 @@ function createDefaultWordCardInfo(t: (key: string) => string) {
     "id": "",
     "word": "捻じ曲げろ",
     "meaning": t('wordCards.demoMeaning'),
-    "create_time": new Date("2025-02-08T14:03:03.631Z"),
-    "user_id": "",
-    "review_times": 1,
-    "memo_card_id": "",
-    "forget_count": 0,
-    "memo_card": {
+    "createTime": new Date("2025-02-08T14:03:03.631Z"),
+    "userId": "",
+    "reviewTimes": 1,
+    "memoCard_id": "",
+    "forgetCount": 0,
+    "memoCard": {
       "id": "",
       "translation": t('memoCards.demoTranslation2'),
-      "create_time": new Date("2025-02-08T14:02:46.828Z"),
+      "createTime": new Date("2025-02-08T14:02:46.828Z"),
       "update_time": new Date("2025-02-12T08:57:52.715Z"),
       "record_file_path": "",
       "original_text": "え、私情で真相捻じ曲げろって事ですか？",
-      "review_times": 0,
-      "user_id": "",
+      "reviewTimes": 0,
+      "userId": "",
       "kana_pronunciation": "え、わたしじょうでしんそうねじまげろってことですか？",
       "context_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=374",
-      "forget_count": 0
+      "forgetCount": 0
     }
   };
 }
@@ -134,7 +134,7 @@ export default function LandingPage() {
             }
             {
               showMemoCard
-                ? <MemoCard {...defaultWordCardInfo.memo_card} onDelete={() => { }} />
+                ? <MemoCard {...defaultWordCardInfo.memoCard} onDelete={() => { }} />
                 : null
             }
           </div>
@@ -189,7 +189,7 @@ export default function LandingPage() {
                   onClick={() => handleCardClick('memo')}
                 >
                   <Image
-                    src="/assets/slogans/memo_card.png"
+                    src="/assets/slogans/memoCard.png"
                     alt="Memo Card"
                     width={260}
                     height={260}

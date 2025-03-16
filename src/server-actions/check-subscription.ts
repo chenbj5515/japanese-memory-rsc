@@ -1,9 +1,9 @@
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth";
 import { prisma } from "@/prisma";
 
 export async function checkSubscription(): Promise<boolean> {
-    const session = await auth();
-    const userId = session?.user_id;
+    const session = await getSession();
+    const userId = session?.user.id;
 
     if (!userId) {
         throw new Error("用户未登录");
@@ -11,7 +11,7 @@ export async function checkSubscription(): Promise<boolean> {
 
     const userSubscription = await prisma.user_subscription.findFirst({
         where: {
-            user_id: userId,
+            userId: userId,
         },
         select: {
             end_time: true,

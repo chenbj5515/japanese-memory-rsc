@@ -1,12 +1,12 @@
 "use server"
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth";
 import { prisma } from "@/prisma"
 import { checkLimit } from "@/server-actions/check-limit";
 import { $Enums } from "@prisma/client";
 
 export async function insertMemoCard(originalText: string, translation: string, pronunciation: string, url: string) {
-    const session = await auth();
-    if (!session?.user_id) {
+    const session = await getSession();
+    if (!session?.user.id) {
         return null;
     }
 

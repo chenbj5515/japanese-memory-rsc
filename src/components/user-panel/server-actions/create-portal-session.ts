@@ -1,6 +1,6 @@
 'use server'
 
-import { auth } from '@/auth';
+import { getSession } from '@/lib/auth';
 import { stripe } from '@/stripe'
 import { cookies } from 'next/headers'
 
@@ -21,18 +21,18 @@ function mapLocaleToStripe(locale: string): Locale {
 }
 
 export async function createPortalSession() {
-    const session = await auth();
+    const session = await getSession();
     const cookieStore = await cookies();
     const nextLocale = cookieStore.get('NEXT_LOCALE')?.value || 'en';
     const locale = mapLocaleToStripe(nextLocale);
 
-    if (!session?.email) {
+    if (!session?.user?.email) {
         throw new Error('Not authenticated')
     }
 
     // 获取用户的 Stripe 客户 ID
     const customer = await stripe.customers.list({
-        email: session.email,
+        email: session?.user?.email,
         limit: 1
     })
 
