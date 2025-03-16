@@ -23,8 +23,8 @@ export function MemoCards(props: IProps) {
     const { localCards } = useTypedSelector((state: RootState) => state.localCardsSlice);
     const t = useTranslations('memoCards');
 
-    const newCards = use(newCardsPromise);
-    const forgottenCards = use(forgottenCardsPromise);
+    const newCards = use(newCardsPromise) || [];
+    const forgottenCards = use(forgottenCardsPromise) || [];
 
     const memoCards = [...newCards, ...forgottenCards];
 
