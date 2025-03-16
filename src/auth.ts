@@ -140,7 +140,7 @@ export const auth = cache(async (req?: NextRequest): Promise<Session | null> => 
             if (cookieHeader) {
                 requestHeaders['Cookie'] = cookieHeader;
             }
-            console.log('从中间件环境获取的Cookies:', cookieHeader);
+            console.log('从中间件环境获取的Cookies:', req.headers.get('cookie'));
         }
         // 方式2：如果没有传入请求对象(RSC或Server Actions环境)
         else {

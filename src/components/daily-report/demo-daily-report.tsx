@@ -1,21 +1,68 @@
 'use client'
 
 import React, { useEffect, useRef, useState } from 'react'
-import DailyReport from './index'
 import { AnimatePresence } from 'framer-motion'
 import { useRouter } from 'next/navigation'
-import { MemoCard } from '../card/memo-card'
+import { MemoCard as MemoCardComponent } from '../card/memo-card'
 import { motion } from 'framer-motion'
 import { SkeuomorphicCard } from './skeuomorphic-card'
-import { Link } from 'lucide-react'
-import { History } from 'lucide-react'
 import { Button } from '../ui/button'
 import { CompletionMessage } from './completion-message'
 import { ScribbleReveal } from './scribble-reveal'
 import { AudioPlayer } from './audio-player'
 import { AnimatedCheckbox } from './animated-checkbox'
+import { useTranslations } from 'next-intl'
+import { getLocalizedMockData } from '@/utils/i18n-helpers'
 
-const mockData = {
+// 定义类型接口
+interface MemoCardData {
+  id: string;
+  translation: string;
+  create_time: string;
+  update_time: string;
+  record_file_path: string | null;
+  original_text: string;
+  review_times: number;
+  forget_count: number; 
+  user_id: string;
+  kana_pronunciation: string;
+  context_url: string | null;
+}
+
+interface StudyItem {
+  id: number;
+  type: string;
+  question: string;
+  answer: string;
+  memo_card: MemoCardData;
+}
+
+interface MockData {
+  date: string;
+  stats: {
+    flashcards: number;
+    words: number;
+    score: number;
+  };
+  studyItems: StudyItem[];
+}
+
+// 将MemoCardData转换为MemoCard组件需要的格式
+function convertMemoCardFormat(memoCard: MemoCardData) {
+  return {
+    ...memoCard,
+    // 转换字符串日期为Date对象
+    create_time: new Date(memoCard.create_time),
+    update_time: new Date(memoCard.update_time),
+    // 确保可为null的字段符合要求
+    original_text: memoCard.original_text || null,
+    review_times: memoCard.review_times ?? null,
+    kana_pronunciation: memoCard.kana_pronunciation || null
+  };
+}
+
+// 原始的mock数据，作为模板
+const mockDataTemplate: MockData = {
     "date": "Feb 27, 2025",
     "stats": {
         "flashcards": 0,
@@ -36,6 +83,7 @@ const mockData = {
                 "record_file_path": "",
                 "original_text": "俺好みの専属メイドで、ハーレムを作るなんてことも…",
                 "review_times": 0,
+                "forget_count": 1,
                 "user_id": "",
                 "kana_pronunciation": "おれすきのせんぞくめいどで、はーれむをつくるなんてことも…",
                 "context_url": "https://www.netflix.com/watch/81402908?trackId=155573558&t=659"
@@ -54,6 +102,7 @@ const mockData = {
                 "record_file_path": "",
                 "original_text": "まだしらばっくれるか！",
                 "review_times": 0,
+                "forget_count": 1,
                 "user_id": "",
                 "kana_pronunciation": "まだしらばっくれるか！",
                 "context_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=14"
@@ -72,6 +121,7 @@ const mockData = {
                 "record_file_path": null,
                 "original_text": "先日、ご依頼いただいた件ですが、私どもではお引き受けしかねます。",
                 "review_times": 4,
+                "forget_count": 2,
                 "user_id": "",
                 "kana_pronunciation": "せんじつ、ごいらいいただいたけんですが、わたくしどもではおひきうけしかねます。",
                 "context_url": null
@@ -90,6 +140,7 @@ const mockData = {
                 "record_file_path": "",
                 "original_text": "挙げ句の果てに自分の罪も認められない",
                 "review_times": 0,
+                "forget_count": 1,
                 "user_id": "",
                 "kana_pronunciation": "あげくのはてにじぶんのつみもみとめられない",
                 "context_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=21"
@@ -108,6 +159,7 @@ const mockData = {
                 "record_file_path": "",
                 "original_text": "ここまできたら俺も引き下がれない",
                 "review_times": 0,
+                "forget_count": 1,
                 "user_id": "",
                 "kana_pronunciation": "ここまできたらおれもひきさがれない，",
                 "context_url": "https://www.youtube.com/watch?v=QrwxVi9hWJg&t=426"
@@ -117,18 +169,23 @@ const mockData = {
 }
 
 export default function DemoDailyReport() {
-    // 模拟数据
-    const [activeItems, setActiveItems] = useState(mockData.studyItems)
-    const [showMemoCard, setShowMemoCard] = useState(false)
-    const [currentMemoCard, setCurrentMemoCard] = useState<any>(null)
-    const containerRef = useRef<HTMLDivElement>(null)
     const router = useRouter()
+    const t = useTranslations('dailyReport');
+    
+    // 使用t函数本地化mock数据
+    const mockData = getLocalizedMockData(t, mockDataTemplate);
+    
+    // 模拟数据
+    const [activeItems, setActiveItems] = useState<StudyItem[]>(mockData.studyItems)
+    const [showMemoCard, setShowMemoCard] = useState(false)
+    const [currentMemoCard, setCurrentMemoCard] = useState<MemoCardData | null>(null)
+    const containerRef = useRef<HTMLDivElement>(null)
 
     const handleComplete = (id: number) => {
         setActiveItems(prev => prev.filter(item => item.id !== id))
     }
 
-    const handleShowMemoCard = (memoCard: any) => {
+    const handleShowMemoCard = (memoCard: MemoCardData) => {
         if (memoCard) {
             setCurrentMemoCard(memoCard)
             setShowMemoCard(true)
@@ -161,7 +218,7 @@ export default function DemoDailyReport() {
                 {showMemoCard && currentMemoCard ? (
                     <div className="fixed w-[100%] h-[100vh] left-[0] top-[0] backdrop-blur-[3px] backdrop-saturate-[180%] overflow-scroll z-[10000]">
                         <div ref={containerRef} className="sm:w-[auto] sm:min-w-[46vw] w-full p-[22px] absolute max-h-[92%] overflow-auto left-[50%] top-[50%] -translate-x-1/2 -translate-y-1/2 transform">
-                            <MemoCard {...currentMemoCard} />
+                            <MemoCardComponent {...convertMemoCardFormat(currentMemoCard)} />
                         </div>
                     </div>
                 ) : null}
@@ -183,20 +240,20 @@ export default function DemoDailyReport() {
                     >
                         <SkeuomorphicCard className='boder border-[#1d283a]'>
                             <div className="grid grid-cols-1 gap-2">
-                                <div className="px-6 text-center">
+                                {/* <div className="px-6 text-center">
                                     <h2 className="text-lg font-medium text-gray-800">完了した学習</h2>
-                                </div>
+                                </div> */}
                                 <div className="grid grid-cols-3 divide-x">
                                     <div className="px-6 py-4 text-center">
-                                        <h3 className="text-sm text-gray-600 mb-1">文</h3>
+                                        <h3 className="text-[16px] font-mono font-semibold mb-1">{t('sentences')}</h3>
                                         <p className="text-2xl font-bold text-gray-900">{mockData.stats.flashcards}</p>
                                     </div>
                                     <div className="px-6 py-4 text-center">
-                                        <h3 className="text-sm text-gray-600 mb-1">単語</h3>
+                                        <h3 className="text-[16px] font-mono font-semibold mb-1">{t('words')}</h3>
                                         <p className="text-2xl font-bold text-gray-900">{mockData.stats.words}</p>
                                     </div>
                                     <div className="px-6 py-4 text-center">
-                                        <h3 className="text-sm text-gray-600 mb-1">テスト</h3>
+                                        <h3 className="text-[16px] font-mono font-semibold mb-1">{t('test')}</h3>
                                         <p className="text-2xl font-bold text-gray-900">{mockData.stats.score}</p>
                                     </div>
                                 </div>

@@ -410,6 +410,28 @@ export default {
     completion: {
       congratulations: 'Congratulations!',
       message: 'You\'ve cleared all the knowledge points you found yourself forgetting today.\nKeep up this pace!'
+    },
+    studyItems: {
+      item0: {
+        question: "You forgot the meaning of 「ハーレム」, do you remember it now?",
+        translation: "I want to create a harem filled with my favorite personal maids..."
+      },
+      item1: {
+        question: "You forgot the meaning of 「しらばっくれる」, do you remember it now?",
+        translation: "Are you still playing dumb!"
+      },
+      item2: {
+        question: "You forgot the meaning of 「しかねます」, do you remember it now?",
+        translation: "Regarding your previous request, we are unable to accept it."
+      },
+      item3: {
+        question: "You forgot the meaning of 「挙げ句の果てに」, do you remember it now?",
+        translation: "In the end, they don't even admit their own crimes."
+      },
+      item4: {
+        question: "You forgot the meaning of 「引き下がれない」, do you remember it now?",
+        translation: "Having come this far, I can't back down now."
+      }
     }
   }
 } as const; 
