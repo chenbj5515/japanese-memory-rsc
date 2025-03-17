@@ -1,6 +1,6 @@
 import { prisma } from "@/prisma";
 import { Prisma } from '@prisma/client';
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth";
 import { WordCards } from "./_components/word-cards";
 
 export type TWordCard = Prisma.word_cardGetPayload<{}> & {
@@ -8,7 +8,7 @@ export type TWordCard = Prisma.word_cardGetPayload<{}> & {
 };
 
 export default async function WordCardsApp() {
-    const session = await auth()
+    const session = await getSession()
     
     if (!session) {
         return new Error("Unauthorized")
@@ -16,14 +16,14 @@ export default async function WordCardsApp() {
 
     const newCardsCount = await prisma.word_card.count({
         where: {
-            user_id: session?.user_id,
+            user_id: session?.user?.id,
             review_times: 0
         }
     });
 
     const newCardsPromise = prisma.word_card.findMany({
         where: {
-            user_id: session?.user_id,
+            user_id: session?.user?.id,
             review_times: 0
         },
         orderBy: {
@@ -39,7 +39,7 @@ export default async function WordCardsApp() {
 
     const reviewCardsPromise = remainingCount > 0 ? prisma.word_card.findMany({
         where: {
-            user_id: session?.user_id,
+            user_id: session?.user?.id,
             review_times: {
                 gt: 0
             }

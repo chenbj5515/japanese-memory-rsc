@@ -1,16 +1,16 @@
 "use server";
 
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth";
 import { prisma } from "@/prisma";
 import { insertActionLogs } from "./insert-action-logs";
 import { $Enums } from "@prisma/client";
 
 export async function updateExamResult(exam_id: string, result_id: string, total_score: number) {
     // 获取用户会话
-    const session = await auth();
-    const user_id = session?.user_id;
+    const session = await getSession();
+    const userId = session?.user.id;
 
-    if (!user_id) {
+    if (!userId) {
         return { success: false, message: "User not authenticated" };
     }
 
@@ -23,7 +23,7 @@ export async function updateExamResult(exam_id: string, result_id: string, total
         await prisma.exams.update({
             where: {
                 exam_id,
-                user_id: session.user_id
+                userId: session?.user?.id
             },
             data: {
                 total_score,

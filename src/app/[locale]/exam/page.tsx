@@ -1,5 +1,5 @@
 import { prisma } from "@/prisma";
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth";
 import NewExam, { ExamInfo } from "@/components/exam";
 import { $Enums, Prisma } from '@prisma/client';
 import { containsKanji, getDiff } from "@/utils";
@@ -7,14 +7,14 @@ import { containsKanji, getDiff } from "@/utils";
 export default async function App({ searchParams }: { searchParams: Promise<{ [key: string]: string }> }) {
     const { id } = await searchParams;
 
-    const session = await auth()
+    const session = await getSession()
 
-    if (!session?.user_id) {
+    if (!session?.user?.id) {
         return null;
     }
 
     const exam = await prisma.exams.findUnique({
-        where: { exam_id: id, user_id: session.user_id },
+        where: { exam_id: id, user_id: session.user.id },
         select: { exam_id: true, status: true },
     });
 
@@ -66,7 +66,7 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
                 const wordCard = await prisma.word_card.findUnique({
                     where: {
                         id: result.question_ref,
-                        user_id: session.user_id
+                        user_id: session.user.id
                     },
                     // 根据实际字段需求去选择
                     select: {
@@ -95,14 +95,14 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
     } else {
         const count = await prisma.word_card.count({
             where: {
-                user_id: session?.user_id, // 添加 user_id 条件
+                user_id: session?.user?.id, // 添加 user_id 条件
             },
         });
 
         const randomSkip = Math.max(0, Math.floor(Math.random() * (count - 10)));
         const wordCards = await prisma.word_card.findMany({
             where: {
-                user_id: session?.user_id,
+                user_id: session?.user?.id,
             },
             skip: randomSkip,
             take: 10,
@@ -115,7 +115,7 @@ export default async function App({ searchParams }: { searchParams: Promise<{ [k
             SELECT *
             FROM memo_card
             WHERE LENGTH(original_text) < 50
-                AND user_id = ${session?.user_id}
+                AND user_id = ${session?.user?.id}
             ORDER BY RANDOM()
             LIMIT 5
         `;

@@ -1,13 +1,13 @@
 import DailyReport from '@/components/daily-report'
-import { auth } from "@/auth"
+import { getSession } from "@/lib/auth";
 import { prisma } from "@/prisma"
 import { $Enums } from "@prisma/client"
 import { askAIDirectly } from '@/server-actions'
 import { getTranslations } from 'next-intl/server'
 
 export default async function YearEndReportPage({ searchParams }: { searchParams: Promise<{ date?: string }> }) {
-  const session = await auth()
-  if (!session?.user_id) return null
+  const session = await getSession()
+  if (!session?.user.id) return null
   let id = 0
   let { date } = await searchParams;
   const t = await getTranslations('dailyReport');
@@ -21,7 +21,7 @@ export default async function YearEndReportPage({ searchParams }: { searchParams
   // Get action logs for the specified date
   const actionLogs = await prisma.user_action_logs.findMany({
     where: {
-      user_id: session.user_id,
+      user_id: session.user.id,
       create_time: {
         gte: targetDate,
         lt: nextDay

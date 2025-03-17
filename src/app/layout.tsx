@@ -1,5 +1,4 @@
 import localFont from "next/font/local";
-import { SpeedInsights } from "@vercel/speed-insights/next"
 import Provider from "./provider";
 import "./globals.css";
 import { Pacifico } from 'next/font/google';

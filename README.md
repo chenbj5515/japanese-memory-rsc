@@ -12,11 +12,11 @@ NextJS App Router/Prisma/RSC/Server Actionsを使用して構築されたAIア�
 ```
 // AuthJS
 
-AUTH_GITHUB_ID=[GITHUB開発者設定画面](https://github.com/settings/developers)で生成する
-AUTH_GITHUB_SECRET=[GITHUB開発者設定画面](https://github.com/settings/developers)で生成する
+GITHUB_CLIENT_ID=[GITHUB開発者設定画面](https://github.com/settings/developers)で生成する
+GITHUB_CLIENT_SECRET=[GITHUB開発者設定画面](https://github.com/settings/developers)で生成する
 GOOGLE_CLIENT_ID=Google Cloud Platformで生成する
 GOOGLE_CLIENT_SECRET=Google Cloud Platformで生成する
-AUTH_SECRET=node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"っていうコマンドで生成する
+JWT_SECRET=node -e "console.log(require('crypto').randomBytes(32).toString('base64'))"っていうコマンドで生成する
 
 // vercel Postgres Database
 

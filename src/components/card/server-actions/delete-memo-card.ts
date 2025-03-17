@@ -1,14 +1,14 @@
 "use server"
-import { auth } from "@/auth";
+import { getSession } from "@/lib/auth";
 import { prisma } from "@/prisma";
 
 export async function deleteMemoCard(id: string) {
-    const session = await auth();
+    const session = await getSession();
 
     const deletedMemoCard = await prisma.memo_card.deleteMany({
         where: {
             id: id,
-            user_id: session?.user_id // 确保只能删除属于当前用户的记录
+            user_id: session?.user?.id // 确保只能删除属于当前用户的记录
         },
     });
 

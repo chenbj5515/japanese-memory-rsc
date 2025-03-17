@@ -14,7 +14,7 @@ import DemoDailyReport from "@/components/daily-report/demo-daily-report"
 function createDefaultWordCardInfo(t: (key: string) => string) {
   return {
     "id": "",
-    "word": "捻じ曲げろ",
+    "word": "捻じ曲げろ", 
     "meaning": t('wordCards.demoMeaning'),
     "create_time": new Date("2025-02-08T14:03:03.631Z"),
     "user_id": "",
@@ -24,7 +24,7 @@ function createDefaultWordCardInfo(t: (key: string) => string) {
     "memo_card": {
       "id": "",
       "translation": t('memoCards.demoTranslation2'),
-      "create_time": new Date("2025-02-08T14:02:46.828Z"),
+      "create_time": new Date("2025-02-08T14:02:46.828Z"), 
       "update_time": new Date("2025-02-12T08:57:52.715Z"),
       "record_file_path": "",
       "original_text": "え、私情で真相捻じ曲げろって事ですか？",
@@ -189,7 +189,7 @@ export default function LandingPage() {
                   onClick={() => handleCardClick('memo')}
                 >
                   <Image
-                    src="/assets/slogans/memo_card.png"
+                    src="/assets/slogans/memoCard.png"
                     alt="Memo Card"
                     width={260}
                     height={260}

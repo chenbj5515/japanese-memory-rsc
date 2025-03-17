@@ -1,4 +1,4 @@
-import { auth } from "@/auth"
+import { getSession } from "@/lib/auth";
 import { TooltipProvider } from '@/components/ui/tooltip'
 
 export default async function DailyReportLayout({
@@ -6,8 +6,8 @@ export default async function DailyReportLayout({
 }: {
     children: React.ReactNode
 }) {
-    const session = await auth()
-    if (!session?.user_id) return null
+    const session = await getSession()
+    if (!session?.user.id) return null
 
     return (
         <TooltipProvider>

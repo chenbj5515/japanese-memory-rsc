@@ -4,58 +4,35 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { useTranslations } from 'next-intl'
-import { useSearchParams } from 'next/navigation'
-import { fetchApi } from "@/utils"
+import { useSearchParams, useRouter } from 'next/navigation'
 import LoadingButton from "@/components/ui/loading-button"
+import { signIn } from "@/lib/auth-client"
 
 export default function LoginPage() {
   const t = useTranslations('login');
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get('callbackUrl') || '/';
   const [isGithubLoading, setIsGithubLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
   async function onGitHubSignIn() {
     try {
-      setIsGithubLoading(true)
-
-      // 获取 CSRF token
-      const { csrf_token } = await fetchApi("/auth/csrf-token", {
-        credentials: "include"
-      })
-
-      // 请求 GitHub 登录链接
-      const data = await fetchApi("/auth/github/login", {
-        credentials: "include",
-        headers: {
-          'X-CSRF-Token': csrf_token
-        }
-      })
-
-      window.location.href = data.authUrl
+      setIsGithubLoading(true);
+      await signIn("github");
     } catch (error) {
-      setIsGoogleLoading(false)
-      console.error("GitHub 登录错误：", error)
+      console.error("GitHub 登录错误：", error);
+      setIsGithubLoading(false);
     }
   }
 
   async function onGoogleSignIn() {
     try {
-      setIsGoogleLoading(true)
-      // 获取 CSRF token
-      const { csrf_token } = await fetchApi("/auth/csrf-token", {
-        credentials: "include"
-      })
-
-      // 请求 Google 登录链接
-      const data = await fetchApi("/auth/google/login", {
-        credentials: "include",
-        headers: {
-          'X-CSRF-Token': csrf_token
-        }
-      })
-      window.location.href = data.authUrl
+      setIsGoogleLoading(true);
+      await signIn("google");
     } catch (error) {
-      console.error("Google 登录错误：", error)
-      setIsGoogleLoading(false)
+      console.error("Google 登录错误：", error);
+      setIsGoogleLoading(false);
     }
   }
 
@@ -81,7 +58,6 @@ export default function LoginPage() {
             <div className="mt-[26px] grid gap-6">
               <div className="flex flex-col gap-4">
                 <LoadingButton
-                  // variant="outline"
                   className="w-full"
                   onClick={onGitHubSignIn}
                   isLoading={isGithubLoading}
@@ -96,7 +72,6 @@ export default function LoginPage() {
                   {t('loginWithGithub')}
                 </LoadingButton>
                 <LoadingButton
-                  // variant="outline"
                   className="w-full"
                   onClick={onGoogleSignIn}
                   isLoading={isGoogleLoading}

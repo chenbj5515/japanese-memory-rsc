@@ -26,7 +26,7 @@ export function MemoCards(props: IProps) {
     const newCards = use(newCardsPromise) || [];
     const forgottenCards = use(forgottenCardsPromise) || [];
 
-    const memoCards = [...newCards, ...forgottenCards];
+    const memoCards = Array.isArray(newCards) && Array.isArray(forgottenCards) ? [...newCards, ...forgottenCards] : [];
 
     function handleDelete(id: string) {
         window.location.reload();

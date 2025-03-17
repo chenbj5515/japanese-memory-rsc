@@ -16,9 +16,9 @@ export function getLocalizedMockData(t: any, mockData: any) {
       // 使用t函数获取本地化的问题文本
       item.question = t(`studyItems.item${index}.question`);
       
-      // 处理memo_card中的translation
-      if (item.memo_card) {
-        item.memo_card.translation = t(`studyItems.item${index}.translation`);
+      // 处理memoCard中的translation
+      if (item.memoCard) {
+        item.memoCard.translation = t(`studyItems.item${index}.translation`);
       }
       
       return item;

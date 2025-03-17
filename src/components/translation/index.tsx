@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/card";
 import { updateMemoCardTranslation } from "./server-actions";
 
-export function Translation(props: Pick<Prisma.memo_cardGetPayload<{}>, 'id' | 'original_text' | 'translation'>) {
+export function Translation(props: Pick<Prisma.memoCardGetPayload<{}>, 'id' | 'original_text' | 'translation'>) {
   const { id, original_text, translation } = props;
   const translationTextRef = React.useRef<HTMLDivElement>(null);
 
