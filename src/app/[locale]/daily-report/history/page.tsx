@@ -8,7 +8,7 @@ export default async function DailyReportHistoryPage() {
 
     const logsPromise = prisma.user_action_logs.findMany({
         where: {
-            userId: session?.user?.id
+            user_id: session?.user?.id
         }
     })
 
