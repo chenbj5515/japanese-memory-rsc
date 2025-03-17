@@ -1,6 +1,6 @@
 "use server";
 
-import { getSession } from "@/lib/auth";
+import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 import { $Enums } from "@prisma/client";
 import { insertActionLogs } from "./insert-action-logs";
@@ -9,10 +9,10 @@ import { insertActionLogs } from "./insert-action-logs";
 
 export async function updateExamStatus(exam_id: string, new_status: $Enums.exam_status_enum) {
     // 获取用户会话
-    const session = await getSession();
-    const userId = session?.user.id;
+    const session = await auth();
+    const user_id = session?.userId;
 
-    if (!userId) {
+    if (!user_id) {
         return { success: false, message: "User not authenticated" };
     }
 

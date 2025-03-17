@@ -1,4 +1,4 @@
-import { auth } from "@/lib/auth";
+import { auth } from "@/auth";
 import { NextRequest, NextResponse } from 'next/server';
 import createIntlMiddleware from 'next-intl/middleware';
 
@@ -38,68 +38,8 @@ const intlMiddleware = createIntlMiddleware({
     localePrefix: 'always'
 });
 
-// 更明确的matcher配置，使中间件只处理页面路由，不拦截API请求
-export const config = {
-    matcher: [
-        // 让better-auth处理其路由
-        '/api/auth/:path*',
-        // 只匹配页面路由，不匹配API和静态资源
-        '/((?!api|_next/static|_next/image|public|scribble.svg|manifest.json|favicon.ico|assets|icon).*)',
-    ],
-};
-
 export async function middleware(req: NextRequest) {
     const pathname = req.nextUrl.pathname;
-
-    // 如果是better-auth API路由，交由better-auth中间件处理
-    if (pathname.startsWith('/api/auth/')) {
-        // 启用CORS，支持跨域认证
-        const origin = req.headers.get('origin');
-        const response = NextResponse.next();
-        
-        // 设置CORS头
-        if (origin) {
-            response.headers.set('Access-Control-Allow-Origin', origin);
-            response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-            response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-            response.headers.set('Access-Control-Allow-Credentials', 'true');
-        }
-        
-        // 处理预检请求
-        if (req.method === 'OPTIONS') {
-            return new NextResponse(null, { 
-                status: 200,
-                headers: response.headers
-            });
-        }
-        
-        return response;
-    }
-
-    // 处理API路由的CORS
-    if (pathname.startsWith('/api/')) {
-        // 获取请求的Origin
-        const origin = req.headers.get('origin');
-        const response = NextResponse.next();
-        
-        // 允许特定的Chrome扩展访问
-        if (origin === 'chrome-extension://lmepenbgdgfihjehjnanphnfhobclghl') {
-            response.headers.set('Access-Control-Allow-Origin', origin);
-            response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-            response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-            response.headers.set('Access-Control-Allow-Credentials', 'true');
-        }
-        
-        // 处理预检请求
-        if (req.method === 'OPTIONS') {
-            return new NextResponse(null, { 
-                status: 200,
-                headers: response.headers
-            });
-        }
-        
-        return response;
-    }
 
     // 如果是monitoring路由，直接放行
     if (pathname.includes('/monitoring')) {
@@ -110,12 +50,10 @@ export async function middleware(req: NextRequest) {
 
     // 处理根路由重定向
     if (pathname === '/') {
-        // 从Cookie中获取会话信息
-        const sessionCookie = req.cookies.get('session');
-        if (!sessionCookie?.value) {
+        const session = await auth();
+        if (!session) {
             return NextResponse.redirect(new URL(`/${locale}/home`, req.url));
         }
-        
         const redirectParam = req.nextUrl.searchParams.get('redirect');
         if (redirectParam) {
             const redirectPath = redirectParam.startsWith('/') ? redirectParam : `/${redirectParam}`;
@@ -127,9 +65,8 @@ export async function middleware(req: NextRequest) {
     // 检查是否是受保护的页面
     const isPublicPage = publicPages.some(page => pathname.endsWith(page));
     if (!isPublicPage) {
-        // 从Cookie中获取会话信息
-        const sessionCookie = req.cookies.get('session');
-        if (!sessionCookie?.value) {
+        const session = await auth();
+        if (!session) {
             return NextResponse.redirect(new URL(`/${locale}/home`, req.url));
         }
     }
@@ -137,3 +74,16 @@ export async function middleware(req: NextRequest) {
     // 应用国际化中间件
     return intlMiddleware(req);
 }
+
+export const config = {
+    matcher: [
+        /*
+         * Match all request paths except for the ones starting with:
+         * - api (API routes)
+         * - _next/static (static files)
+         * - _next/image (image optimization files)
+         * - favicon.ico (favicon file)
+         */
+        '/((?!public|scribble.svg|manifest.json|api|_next/static|_next/image|favicon.ico|assets|icon).*)',
+    ],
+};

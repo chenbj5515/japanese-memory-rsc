@@ -1,5 +1,5 @@
 "use client"
-// import { useSession } from "next-auth/react"
+import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation"
 import { useLocale, useTranslations } from 'next-intl'
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -9,18 +9,14 @@ import { Logout } from "@/server-actions"
 import { ChevronRight } from "lucide-react"
 import { Separator } from "@/components/ui/separator"
 import { createPortalSession } from "./server-actions/create-portal-session"
-import { useSession } from "@/lib/auth-client"
-import { useSubscription } from "@/hooks/use-subscription"
 
 export default function UserPanel() {
-    const {data} = useSession()
+    const { data } = useSession()
     const router = useRouter()
     const locale = useLocale()
     const t = useTranslations('LoginedHeader')
 
-    const { expiryTime } = useSubscription()
-
-    // const subscription_end_time = data?.user?.subscription_end_time;
+    const subscription_end_time = data?.subscription_end_time;
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString)
@@ -45,13 +41,13 @@ export default function UserPanel() {
         <Popover>
             <PopoverTrigger asChild>
                 <Avatar className="hidden sm:block h-10 w-10 cursor-pointer">
-                    <AvatarImage src={data?.user?.image?.toString()} alt="profile" />
+                    <AvatarImage src={data?.profile} alt="profile" />
                     <AvatarFallback>user</AvatarFallback>
                 </Avatar>
             </PopoverTrigger>
             <PopoverContent className="w-72 p-2 space-y-1">
                 <div className="h-10 px-2 flex items-center">
-                    <p className="text-sm font-medium truncate">{data?.user?.email}</p>
+                    <p className="text-sm font-medium truncate">{data?.email}</p>
                 </div>
                 <div className="h-10 flex items-center">
                     <Button
@@ -62,17 +58,17 @@ export default function UserPanel() {
                     >
                         <p className="text-sm font-medium">{t('membershipPlan')}</p>
                         <span className="text-sm">
-                            {expiryTime ? 'Premium' : 'Free'}
+                            {subscription_end_time ? 'Premium' : 'Free'}
                         </span>
                     </Button>
                 </div>
-                {expiryTime && (
+                {subscription_end_time && (
                     <div className="h-10 px-2 flex items-center justify-between">
                         <p className="text-sm font-medium">{t('expiryDate')}</p>
-                        <span className="text-sm">{expiryTime.toLocaleDateString('ja-JP', { year: 'numeric', month: 'numeric', day: 'numeric' })}</span>
+                        <span className="text-sm">{formatDate(subscription_end_time)}</span>
                     </div>
                 )}
-                {expiryTime && (
+                {subscription_end_time && (
                     <Button
                         variant="ghost"
                         size="sm"

@@ -410,28 +410,6 @@ export default {
         completion: {
             congratulations: '恭喜你！',
             message: '你已經清理了今天發現的自己遺忘的知識點。\n保持這個節奏！'
-        },
-        studyItems: {
-            item0: {
-                question: "你忘記了「ハーレム」的意思，現在記得嗎？",
-                translation: "我要打造一個全是我喜歡的專屬女僕的後宮……"
-            },
-            item1: {
-                question: "你忘記了「しらばっくれる」的意思，現在記得嗎？",
-                translation: "你還在裝傻嗎！"
-            },
-            item2: {
-                question: "你忘記了「しかねます」的意思，現在記得嗎？",
-                translation: "關於先前您提出的請求，我們無法承接。"
-            },
-            item3: {
-                question: "你忘記了「挙げ句の果てに」的意思，現在記得嗎？",
-                translation: "到頭來連自己的罪行也不承認。"
-            },
-            item4: {
-                question: "你忘記了「引き下がれない」的意思，現在記得嗎？",
-                translation: "既然來到這一步，我也無法退縮了。"
-            }
         }
     }
 } as const; 

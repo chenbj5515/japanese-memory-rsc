@@ -1,16 +1,9 @@
-"use server"
-import { getSession } from "@/lib/auth";
+import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 
-// 定义返回类型接口
-export interface SubscriptionStatus {
-    isSubscribed: boolean;
-    expiryTime: Date | null;
-}
-
-export async function checkSubscription(): Promise<SubscriptionStatus> {
-    const session = await getSession();
-    const userId = session?.user.id;
+export async function checkSubscription(): Promise<boolean> {
+    const session = await auth();
+    const userId = session?.userId;
 
     if (!userId) {
         throw new Error("用户未登录");
@@ -26,17 +19,11 @@ export async function checkSubscription(): Promise<SubscriptionStatus> {
     });
 
     if (!userSubscription) {
-        return {
-            isSubscribed: false,
-            expiryTime: null
-        };
+        return false;
     }
 
     const currentTime = new Date();
-    const isSubscribed = userSubscription.end_time > currentTime;
+    const isValid = userSubscription.end_time > currentTime;
 
-    return {
-        isSubscribed,
-        expiryTime: userSubscription.end_time
-    };
+    return isValid;
 }

@@ -1,19 +1,19 @@
 "use server"
-import { getSession } from "@/lib/auth";
+import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 import { $Enums } from "@prisma/client";
 
 export async function updateReviewTimes(id: string) {
-    const session = await getSession();
+    const session = await auth();
 
-    if (!session?.user.id) {
+    if (!session?.userId) {
         throw new Error('ユーザー未登録');
     }
 
     const updatedMemoCard = await prisma.memo_card.updateMany({
         where: {
             id: id,
-            userId: session?.user?.id
+            user_id: session.userId
         },
         data: {
             review_times: {
@@ -25,7 +25,7 @@ export async function updateReviewTimes(id: string) {
     // ログは非同期で記録
     prisma.user_action_logs.create({
         data: {
-            user_id: session.user.id,
+            user_id: session.userId,
             action_type: $Enums.action_type_enum.COMPLETE_SENTENCE_REVIEW,
             related_id: id,
             related_type: 'memo_card'

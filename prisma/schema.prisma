@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = "postgresql://bunn-db_owner:npg_FJE4KONQY7Ub@ep-gentle-surf-a527smip-pooler.us-east-2.aws.neon.tech/bunn-db?sslmode=require"
+  url      = env("POSTGRES_PRISMA_URL")
 }
 
 model memo_card {
@@ -18,8 +18,20 @@ model memo_card {
   forget_count       Int         @default(0)
   user_id            String      @default("chenbj")
   kana_pronunciation String?
-  context_url        String?
+  context_url   String?
   word_card          word_card[] @relation("MemoToWord")
+}
+
+model user {
+  user_id     String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email       String    @db.VarChar(255)
+  name        String?   @db.VarChar(255)
+  image       String?   @db.VarChar(255)
+  create_time DateTime? @default(now()) @db.Timestamptz(6)
+  update_time DateTime? @default(now()) @db.Timestamptz(6)
+  github_id   String?   @db.VarChar(255)
+  profile     String?   @db.VarChar(100)
+  subscriptions user_subscription[]
 }
 
 model word_card {
@@ -49,7 +61,7 @@ model exam_results {
 
 model exams {
   exam_id          String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user_id          String
+  user_id          String           @db.Uuid
   exam_name        String           @db.VarChar(255)
   total_score      Int              @default(0)
   status           exam_status_enum @default(initial)
@@ -67,12 +79,12 @@ model articles {
 }
 
 model user_action_logs {
-  id           String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user_id      String
+  id           String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id      String              @db.Uuid
   action_type  action_type_enum
-  related_id   String            @db.Uuid
+  related_id   String              @db.Uuid
   related_type related_type_enum
-  create_time  DateTime          @default(now()) @db.Timestamptz(6)
+  create_time  DateTime            @default(now()) @db.Timestamptz(6)
 }
 
 enum action_type_enum {
@@ -85,8 +97,6 @@ enum action_type_enum {
   UNABLE_TO_UNDERSTAND_AUDIO
   CREATE_MEMO
   CREATE_WORD
-  COMPLETE_IMAGE_OCR
-  COMPLETE_TEXT_TRANSLATION_BY_EXTENSION
 }
 
 enum related_type_enum {
@@ -109,81 +119,18 @@ enum exam_status_enum {
 }
 
 /// 会員プランの種類を示す列挙型
-
 enum membership_plan_enum {
-  MONTHLY // 月額プラン
+  MONTHLY     // 月額プラン
 }
 
 /// 会員サブスクリプションモデル：ユーザーが特定の会員プランに加入した詳細情報を記録
-
 model user_subscription {
-  id             String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  user_id        String   
-  start_time     DateTime @default(now()) @db.Timestamptz(6) // サブスクリプションの開始日時
-  end_time       DateTime @db.Timestamptz(6) // サブスクリプションの終了日時
-  active         Boolean  @default(true) // サブスクリプションが有効かどうか
-  openai_api_key String? // SELF_API の場合、ユーザー自身の OPENAI API KEY を保持
+  id                  String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  user_id             String              @db.Uuid
+  start_time          DateTime            @default(now()) @db.Timestamptz(6) // サブスクリプションの開始日時
+  end_time            DateTime            @db.Timestamptz(6) // サブスクリプションの終了日時
+  active              Boolean             @default(true)  // サブスクリプションが有効かどうか
+  openai_api_key      String?             // SELF_API の場合、ユーザー自身の OPENAI API KEY を保持
 
-  user User @relation(fields: [user_id], references: [id])
-}
-
-model User {
-  id            String    @id
-  name          String
-  email         String
-  emailVerified Boolean
-  image         String?
-  createdAt     DateTime
-  updatedAt     DateTime
-  sessions      Session[]
-  accounts      Account[]
-  subscriptions user_subscription[]
-
-  @@unique([email])
-  @@map("user")
-}
-
-model Session {
-  id        String   @id
-  expiresAt DateTime
-  token     String
-  createdAt DateTime
-  updatedAt DateTime
-  ipAddress String?
-  userAgent String?
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@unique([token])
-  @@map("session")
-}
-
-model Account {
-  id                    String    @id
-  accountId             String
-  providerId            String
-  userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken           String?
-  refreshToken          String?
-  idToken               String?
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
-  scope                 String?
-  password              String?
-  createdAt             DateTime
-  updatedAt             DateTime
-
-  @@map("account")
-}
-
-model Verification {
-  id         String    @id
-  identifier String
-  value      String
-  expiresAt  DateTime
-  createdAt  DateTime?
-  updatedAt  DateTime?
-
-  @@map("verification")
+  user                user                @relation(fields: [user_id], references: [user_id])
 }

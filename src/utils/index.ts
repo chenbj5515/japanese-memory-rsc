@@ -3,4 +3,3 @@ export * from "./speak-text";
 export * from "./dom";
 export * from "./utils";
 export * from "./string";
-export * from "./fetch-api";

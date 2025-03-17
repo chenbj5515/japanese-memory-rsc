@@ -1,15 +1,15 @@
 "use server"
 
-import { getSession } from "@/lib/auth";
+import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 import { ExamInfo } from "..";
 
 export async function insertExamResults(results: ExamInfo[], total_score: number) {
     // 获取用户会话
-    const session = await getSession();
-    const userId = session?.user.id;
+    const session = await auth();
+    const user_id = session?.userId;
 
-    if (!userId) {
+    if (!user_id) {
         return { success: false, message: "User not authenticated" };
     }
 

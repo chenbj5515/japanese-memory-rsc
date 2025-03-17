@@ -1,6 +1,7 @@
 "use client"
 import React from "react";
 import { Provider } from "react-redux";
+import { SessionProvider } from "next-auth/react";
 import store from "@/store";
 
 export default function ReduxProvider({
@@ -11,7 +12,9 @@ export default function ReduxProvider({
 
     return (
         <Provider store={store}>
-            {children}
+            <SessionProvider>
+                {children}
+            </SessionProvider>
         </Provider>
     )
 }

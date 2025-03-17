@@ -410,28 +410,6 @@ export default {
     completion: {
       congratulations: '恭喜你！',
       message: '你已经清理了今天发现的自己遗忘的知识点。\n保持这个节奏！'
-    },
-    studyItems: {
-      item0: {
-        question: "你忘记了「ハーレム」的意思，现在记得吗？",
-        translation: "我要打造一个全是我喜欢的专属女仆的后宫……"
-      },
-      item1: {
-        question: "你忘记了「しらばっくれる」的意思，现在记得吗？",
-        translation: "你还在装傻吗！"
-      },
-      item2: {
-        question: "你忘记了「しかねます」的意思，现在记得吗？",
-        translation: "关于先前您提出的请求，我们无法承接。"
-      },
-      item3: {
-        question: "你忘记了「挙げ句の果てに」的意思，现在记得吗？",
-        translation: "到头来连自己的罪行也不承认。"
-      },
-      item4: {
-        question: "你忘记了「引き下がれない」的意思，现在记得吗？",
-        translation: "既然来到这一步，我也无法退缩了。"
-      }
     }
   }
 } as const; 

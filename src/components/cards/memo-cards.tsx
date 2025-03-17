@@ -23,10 +23,10 @@ export function MemoCards(props: IProps) {
     const { localCards } = useTypedSelector((state: RootState) => state.localCardsSlice);
     const t = useTranslations('memoCards');
 
-    const newCards = use(newCardsPromise) || [];
-    const forgottenCards = use(forgottenCardsPromise) || [];
+    const newCards = use(newCardsPromise);
+    const forgottenCards = use(forgottenCardsPromise);
 
-    const memoCards = Array.isArray(newCards) && Array.isArray(forgottenCards) ? [...newCards, ...forgottenCards] : [];
+    const memoCards = [...newCards, ...forgottenCards];
 
     function handleDelete(id: string) {
         window.location.reload();

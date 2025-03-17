@@ -1,12 +1,12 @@
 "use server"
-import { getSession } from "@/lib/auth";
+import { auth } from "@/auth";
 import { prisma } from "@/prisma"
 import { checkLimit } from "@/server-actions/check-limit";
 import { $Enums } from "@prisma/client";
 
 export async function insertMemoCard(originalText: string, translation: string, pronunciation: string, url: string) {
-    const session = await getSession();
-    if (!session?.user.id) {
+    const session = await auth();
+    if (!session?.userId) {
         return null;
     }
 
@@ -20,7 +20,7 @@ export async function insertMemoCard(originalText: string, translation: string, 
             original_text: originalText,
             review_times: 0,
             translation: translation,
-            user_id: session?.user?.id,
+            user_id: session?.userId,
             kana_pronunciation: pronunciation,
             create_time: new Date(),
             update_time: new Date(),
@@ -31,7 +31,7 @@ export async function insertMemoCard(originalText: string, translation: string, 
     // 创建用户行为日志
     await prisma.user_action_logs.create({
         data: {
-            user_id: session.user.id,
+            user_id: session.userId,
             action_type: $Enums.action_type_enum.CREATE_MEMO,
             related_id: newMemoCard.id,
             related_type: $Enums.related_type_enum.memo_card

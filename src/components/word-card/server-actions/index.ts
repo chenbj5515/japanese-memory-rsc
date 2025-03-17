@@ -1,13 +1,13 @@
 "use server"
 import { TWordCard } from "@/app/[locale]/word-cards/page";
-import { getSession } from "@/lib/auth";
+import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 
 export async function updateForgetCount(wordCardInfo: TWordCard) {
   try {
-    const session = await getSession();
+    const session = await auth();
 
-    if (!session?.user?.id) {
+    if (!session?.userId) {
       throw new Error('ユーザー未登録');
     }
   

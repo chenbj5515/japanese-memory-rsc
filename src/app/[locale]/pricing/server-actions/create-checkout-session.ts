@@ -1,16 +1,16 @@
 'use server'
 
-import { getSession } from "@/lib/auth";
+import { auth } from "@/auth"
 import { cookies } from 'next/headers'
 import { stripe } from '@/stripe'
 
 
 export async function createCheckoutSession() {
-  const session = await getSession()
+  const session = await auth()
   const cookieStore = await cookies()
   const locale = cookieStore.get('NEXT_LOCALE')?.value || 'en'
   
-  if (!session?.user.id) {
+  if (!session?.userId) {
     return { url: `/${locale}/login?redirect=/pricing` }
     // throw new Error('User must be logged in')
   }
@@ -18,7 +18,7 @@ export async function createCheckoutSession() {
   const checkoutSession = await stripe.checkout.sessions.create({
     mode: 'subscription',
     payment_method_types: ['card'],
-    client_reference_id: session?.user?.id,
+    client_reference_id: session.userId,
     line_items: [
       {
         price: process.env.STRIPE_PRICE_ID,

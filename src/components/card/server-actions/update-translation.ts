@@ -1,18 +1,18 @@
 "use server"
-import { getSession } from "@/lib/auth";
+import { auth } from "@/auth";
 import { prisma } from "@/prisma";
 
 export async function updateMemoCardTranslation(id: string, translation: string) {
-    const session = await getSession();
+    const session = await auth();
 
-    if (!session?.user?.id) {
+    if (!session?.userId) {
         throw new Error('用户未登录');
     }
 
     const updatedMemoCard = await prisma.memo_card.updateMany({
         where: {
             id: id,
-            user_id: session.user.id
+            user_id: session.userId
         },
         data: {
             translation: translation

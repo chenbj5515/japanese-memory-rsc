@@ -1,0 +1,46 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main  # 当代码推送到 main 分支时触发
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Copy .env.local to EC2
+        run: |
+          ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+            echo 'POSTGRES_PRISMA_URL="${{ secrets.POSTGRES_PRISMA_URL }}"' > ~/japanese-memory-rsc/.env.local
+            echo 'NEXTAUTH_URL="${{ vars.NEXTAUTH_URL }}"' >> ~/japanese-memory-rsc/.env.local
+            echo 'AUTH_GITHUB_ID="${{ vars.AUTH_GITHUB_ID }}"' >> ~/japanese-memory-rsc/.env.local
+            echo 'AUTH_GITHUB_SECRET="${{ secrets.AUTH_GITHUB_SECRET }}"' >> ~/japanese-memory-rsc/.env.local
+            echo 'GOOGLE_CLIENT_ID="${{ vars.GOOGLE_CLIENT_ID }}"' >> ~/japanese-memory-rsc/.env.local
+            echo 'GOOGLE_CLIENT_SECRET="${{ secrets.GOOGLE_CLIENT_SECRET }}"' >> ~/japanese-memory-rsc/.env.local
+            echo 'AUTH_SECRET="${{ secrets.AUTH_SECRET }}"' >> ~/japanese-memory-rsc/.env.local
+            echo 'NEXT_PUBLIC_SUBSCRIPTION_KEY="${{ secrets.NEXT_PUBLIC_SUBSCRIPTION_KEY }}"' >> ~/japanese-memory-rsc/.env.local
+            echo 'NEXT_PUBLIC_REGION="${{ vars.NEXT_PUBLIC_REGION }}"' >> ~/japanese-memory-rsc/.env.local
+            echo 'OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"' >> ~/japanese-memory-rsc/.env.local
+          EOF
+
+      - name: Deploy to EC2
+        run: |
+          ssh -i ~/.ssh/id_rsa ec2-user@${{ secrets.EC2_HOST }} << 'EOF'
+            cd ~/japanese-memory-rsc
+            git pull origin main
+            docker-compose down
+            sudo docker system prune -a -f  # 添加 -f 标志以自动确认，避免交互式提示
+            docker-compose up --build -d
+          EOF
